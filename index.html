@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>KRONA Analytics</title>
+  <!-- Tailwind CSS CDN para renderização ágil de estilos -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Telegram WebApp JS SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            darkbg: '#060A13',
+            cardbg: '#101B2E',
+            gold: '#D4A84B',
+            correct: '#4E9F3D',
+            wrong: '#E05D5D',
+            textgray: '#8F9CAE'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Ocultar barra de rolagem padrão para melhor visualização em dispositivos móveis */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+    .accordion-active .accordion-content {
+      max-height: 500px;
+    }
+  </style>
+</head>
+<body class="bg-darkbg text-white font-sans min-h-screen relative flex flex-col selection:bg-gold/30">
+
+  <!-- Container de Mensagens Flutuantes (Toast) -->
+  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 pointer-events-none w-full px-4"></div>
+
+  <!-- Main Viewport (Limitada a largura de smartphones padrão) -->
+  <main class="w-full max-w-[480px] mx-auto flex-1 flex flex-col px-4 pt-4 pb-28 overflow-y-auto">
+
+    <!-- SCREEN 1: DASHBOARD -->
+    <section id="screen-dashboard" class="space-y-5">
+      <!-- Cabeçalho de Perfil -->
+      <div class="flex items-center justify-between bg-cardbg p-4 rounded-2xl border border-white/5 shadow-lg">
+        <div class="flex items-center gap-3">
+          <div id="user-avatar" class="w-12 h-12 rounded-full bg-gradient-to-tr from-gold to-yellow-600 flex items-center justify-center font-bold text-darkbg text-lg">
+            ?
+          </div>
+          <div>
+            <h2 id="user-name" class="font-bold text-base text-white">Carregando...</h2>
+            <p id="user-level-label" class="text-xs text-gold font-medium">Nível 1 • Aprendiz</p>
+          </div>
+        </div>
+        <div class="bg-darkbg px-3 py-1.5 rounded-xl border border-gold/20 flex items-center gap-1.5">
+          <span class="text-xs text-textgray font-semibold">FOGO 🔥</span>
+          <span id="stat-streak" class="text-sm font-bold text-gold">1</span>
+        </div>
+      </div>
+
+      <!-- Progresso de XP -->
+      <div class="bg-cardbg p-4 rounded-2xl border border-white/5 space-y-2">
+        <div class="flex justify-between text-xs font-semibold">
+          <span class="text-textgray">XP Total: <span id="info-xp" class="text-white">0</span></span>
+          <span class="text-gold" id="info-xp-needed">Próximo Nível: 1000 XP</span>
+        </div>
+        <div class="w-full h-2.5 bg-darkbg rounded-full overflow-hidden">
+          <div id="xp-progress-bar" class="h-full bg-gradient-to-r from-gold to-yellow-600 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Barra de Progresso Geral -->
+      <div class="bg-cardbg p-4 rounded-2xl border border-white/5 space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-bold text-textgray tracking-wider uppercase">Progresso Geral</span>
+          <span id="general-progress-txt" class="text-sm font-extrabold text-gold">0 / 15 Temas</span>
+        </div>
+        <div class="w-full h-3 bg-darkbg rounded-full overflow-hidden">
+          <div id="general-progress-bar" class="h-full bg-gold rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Desempenho por Áreas (Gráfico customizado nativo) -->
+      <div class="bg-cardbg p-4 rounded-2xl border border-white/5 space-y-4">
+        <h3 class="text-xs font-bold text-textgray tracking-wider uppercase">Desempenho por Áreas</h3>
+        <div class="grid grid-cols-8 gap-1.5 h-32 items-end pt-2 pb-1 bg-darkbg/50 rounded-xl px-2">
+          <!-- Coluna 1 -->
+          <div class="flex flex-col items-center h-full justify-end">
+            <div id="bar-agro" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
+            <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Agro</span>
+          </div>
+          <!-- Coluna 2 -->
+          <div class="flex flex-col items-center h-full justify-end">
+            <div id="bar-veg" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
+            <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Veg</span>
+          </div>
+          <!-- Coluna 3 -->
+          <div class="flex flex-col items-center h-full justify-end">
+            <div id="bar-agua" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
+            <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Água</span>
+          </div>
+          <!-- Coluna 4 -->
+          <div class="flex flex-col items-center h-full justify-end">
+            <div id="bar-cult" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
+            <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Cult</span>
+          </div>
+          <!-- Coluna 5 -->
+          <div class="flex flex-col items-center h-full justify-end">
+            <div id="bar-anim" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
+            <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Anim</span>
+          </div>
+          <!-- Coluna 6 -->
+          <div class="flex flex-col items-center h-full justify-end">
+            <div id="bar-gen" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
+            <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Gen</span>
+          </div>
+          <!-- Coluna 7 -->
+          <div class="flex flex-col items-center h-full justify-end">
+            <div id="bar-tech" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
+            <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Tech</span>
+          </div>
+          <!-- Coluna 8 -->
+          <div class="flex flex-col items-center h-full justify-end">
+            <div id="bar-bonus" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
+            <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Bônus</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Matriz de Estatísticas -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-cardbg p-3 rounded-2xl border border-white/5 flex flex-col justify-center">
+          <span class="text-xs text-textgray">Total Acertos</span>
+          <span id="stat-hits" class="text-xl font-bold mt-1 text-white">0</span>
+        </div>
+        <div class="bg-cardbg p-3 rounded-2xl border border-white/5 flex flex-col justify-center">
+          <span class="text-xs text-textgray">Questões Feitas</span>
+          <span id="stat-total" class="text-xl font-bold mt-1 text-white">0</span>
+        </div>
+        <div class="bg-cardbg p-3 rounded-2xl border border-white/5 flex flex-col justify-center">
+          <span class="text-xs text-textgray">Aproveitamento</span>
+          <span id="stat-rate" class="text-xl font-bold mt-1 text-gold">0%</span>
+        </div>
+        <div class="bg-cardbg p-3 rounded-2xl border border-white/5 flex flex-col justify-center">
+          <span class="text-xs text-textgray">Melhor Nota</span>
+          <span id="stat-best" class="text-xl font-bold mt-1 text-white">0.0/10</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: SIMULADOS -->
+    <section id="screen-simulados" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-white">Simulados Disponíveis</h2>
+        <span class="text-xs bg-gold/10 text-gold px-2.5 py-1 rounded-full border border-gold/30 font-semibold uppercase tracking-wider">15 Temas</span>
+      </div>
+
+      <!-- Módulos em Acordeão -->
+      <div class="space-y-3" id="accordion-container">
+        
+        <!-- MÓDULO I -->
+        <div class="bg-cardbg rounded-2xl border border-white/5 overflow-hidden transition-all duration-200" id="mod-1">
+          <button class="w-full flex items-center justify-between p-4 focus:outline-none" onclick="toggleAccordion('mod-1')">
+            <div class="text-left">
+              <h4 class="font-bold text-sm text-white">Módulo I: Gestão & Solo</h4>
+              <p class="text-[11px] text-textgray mt-0.5" id="mod-1-status">0 de 4 concluídos</p>
+            </div>
+            <span class="text-gold text-lg font-bold">➔</span>
+          </button>
+          <div class="accordion-content border-t border-white/5 bg-darkbg/30 px-4 py-2 space-y-3">
+            <div id="theme-T1" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+            <div id="theme-T2" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+            <div id="theme-T3" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+            <div id="theme-T4" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          </div>
+        </div>
+
+        <!-- MÓDULO II -->
+        <div class="bg-cardbg rounded-2xl border border-white/5 overflow-hidden transition-all duration-200" id="mod-2">
+          <button class="w-full flex items-center justify-between p-4 focus:outline-none" onclick="toggleAccordion('mod-2')">
+            <div class="text-left">
+              <h4 class="font-bold text-sm text-white">Módulo II: Água & Culturas</h4>
+              <p class="text-[11px] text-textgray mt-0.5" id="mod-2-status">0 de 2 concluídos</p>
+            </div>
+            <span class="text-gold text-lg font-bold">➔</span>
+          </button>
+          <div class="accordion-content border-t border-white/5 bg-darkbg/30 px-4 py-2 space-y-3">
+            <div id="theme-T5" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+            <div id="theme-T6" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          </div>
+        </div>
+
+        <!-- MÓDULO III -->
+        <div class="bg-cardbg rounded-2xl border border-white/5 overflow-hidden transition-all duration-200" id="mod-3">
+          <button class="w-full flex items-center justify-between p-4 focus:outline-none" onclick="toggleAccordion('mod-3')">
+            <div class="text-left">
+              <h4 class="font-bold text-sm text-white">Módulo III: Produção Animal</h4>
+              <p class="text-[11px] text-textgray mt-0.5" id="mod-3-status">0 de 5 concluídos</p>
+            </div>
+            <span class="text-gold text-lg font-bold">➔</span>
+          </button>
+          <div class="accordion-content border-t border-white/5 bg-darkbg/30 px-4 py-2 space-y-3">
+            <div id="theme-T7" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+            <div id="theme-T8" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+            <div id="theme-T9" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+            <div id="theme-T10" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+            <div id="theme-T11" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          </div>
+        </div>
+
+        <!-- MÓDULO IV -->
+        <div class="bg-cardbg rounded-2xl border border-white/5 overflow-hidden transition-all duration-200" id="mod-4">
+          <button class="w-full flex items-center justify-between p-4 focus:outline-none" onclick="toggleAccordion('mod-4')">
+            <div class="text-left">
+              <h4 class="font-bold text-sm text-white">Módulo IV: Tecnologias & Bônus</h4>
+              <p class="text-[11px] text-textgray mt-0.5" id="mod-4-status">0 de 4 concluídos</p>
+            </div>
+            <span class="text-gold text-lg font-bold">➔</span>
+          </button>
+          <div class="accordion-content border-t border-white/5 bg-darkbg/30 px-4 py-2 space-y-3">
+            <div id="theme-T12" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+            <div id="theme-T13" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+            <div id="theme-T14" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+            <div id="theme-T15" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SCREEN 3: CADERNO DE ERROS -->
+    <section id="screen-erros" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-white">Caderno de Erros</h2>
+        <button onclick="clearMistakes()" class="text-xs bg-red-500/10 text-red-400 hover:bg-red-500/20 px-3 py-1.5 rounded-xl border border-red-500/30 font-semibold">
+          Limpar Tudo
+        </button>
+      </div>
+
+      <div id="mistakes-list" class="space-y-3">
+        <!-- Injetado dinamicamente -->
+      </div>
+    </section>
+
+    <!-- SCREEN 4: RANKING -->
+    <section id="screen-ranking" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-white">Ranking da Comunidade</h2>
+        <span class="text-xs bg-gold/10 text-gold px-3 py-1.5 rounded-full border border-gold/20 font-semibold">Simulado Geral</span>
+      </div>
+
+      <div id="ranking-list" class="bg-cardbg rounded-2xl border border-white/5 p-2 divide-y divide-white/5">
+        <!-- Injetado dinamicamente -->
+      </div>
+    </section>
+
+    <!-- SCREEN 5: QUIZ INTERATIVO (Ocupa o container da mesma tela) -->
+    <section id="screen-quiz" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <span id="quiz-theme-tag" class="text-xs text-gold font-bold uppercase tracking-wider"></span>
+        <button onclick="exitQuiz()" class="text-xs text-textgray hover:text-white bg-white/5 px-2.5 py-1 rounded-lg border border-white/10">Sair</button>
+      </div>
+
+      <!-- Barra de Progresso da Questão -->
+      <div class="space-y-1">
+        <div class="flex justify-between text-xs text-textgray">
+          <span id="quiz-question-number">Questão 1 de 1</span>
+          <span id="quiz-time-left">⏱️ Tempo Livre</span>
+        </div>
+        <div class="w-full h-1.5 bg-cardbg rounded-full overflow-hidden">
+          <div id="quiz-progress-bar" class="h-full bg-gold rounded-full" style="width: 100%"></div>
+        </div>
+      </div>
+
+      <!-- Corpo da Questão -->
+      <div class="bg-cardbg p-5 rounded-2xl border border-white/5 space-y-4 shadow-lg">
+        <p id="quiz-question-text" class="text-sm font-medium leading-relaxed text-slate-100">Carregando questão...</p>
+      </div>
+
+      <!-- Alternativas de Opções -->
+      <div id="quiz-options-container" class="space-y-2">
+        <!-- Injetado dinamicamente -->
+      </div>
+
+      <!-- Área de Feedback / Explicação -->
+      <div id="quiz-feedback-box" class="hidden bg-cardbg p-5 rounded-2xl border border-white/5 space-y-2 animate-fade-in">
+        <h4 id="quiz-feedback-status" class="font-extrabold text-sm uppercase"></h4>
+        <p id="quiz-explanation-text" class="text-xs text-textgray leading-relaxed"></p>
+        <button id="quiz-next-btn" onclick="nextQuestion()" class="w-full mt-2 bg-gold hover:bg-yellow-600 text-darkbg font-bold py-3 rounded-xl transition duration-150 text-sm">
+          Avançar
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Navegação Inferior Fixa (Estilo Mobile App nativo) -->
+  <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-cardbg/95 backdrop-blur-md border-t border-white/5 py-3 px-6 flex justify-between items-center z-40 shadow-2xl rounded-t-2xl">
+    <button onclick="switchScreen('dashboard')" id="nav-dashboard" class="flex flex-col items-center gap-1 group text-gold">
+      <span class="text-xl">📊</span>
+      <span class="text-[10px] font-semibold tracking-wider">Painel</span>
+    </button>
+    <button onclick="switchScreen('simulados')" id="nav-simulados" class="flex flex-col items-center gap-1 group text-textgray">
+      <span class="text-xl">📚</span>
+      <span class="text-[10px] font-semibold tracking-wider">Simulados</span>
+    </button>
+    <button onclick="switchScreen('erros')" id="nav-erros" class="flex flex-col items-center gap-1 group text-textgray">
+      <span class="text-xl">📓</span>
+      <span class="text-[10px] font-semibold tracking-wider">Erros</span>
+    </button>
+    <button onclick="switchScreen('ranking')" id="nav-ranking" class="flex flex-col items-center gap-1 group text-textgray">
+      <span class="text-xl">🏆</span>
+      <span class="text-[10px] font-semibold tracking-wider">Ranking</span>
+    </button>
+    <button onclick="location.reload()" class="flex flex-col items-center gap-1 text-textgray hover:text-white">
+      <span class="text-xl">🔄</span>
+      <span class="text-[10px] font-semibold tracking-wider">Recarregar</span>
+    </button>
+  </nav>
+
+  <!-- BANCO DE QUESTÕES INTEGRADO -->
+  <script>
+    const QUESTIONS_DB = {
+      "TEMA_1": [
+        {
+          "pergunta": "John Davis e Ray Goldberg, em 1957, cunharam pioneiramente um conceito que integra o encadeamento das atividades econômicas rurais. Como ficou conhecida essa definição sob a ótica de sistemas integrados?",
+          "opcoes": {
+            "A": "Subsistência camponesa verticalizada.",
+            "B": "Agronegócio (ou Agribusiness).",
+            "C": "Cooperativismo agroecológico fechado.",
+            "D": "Monopólio agrário governamental.",
+            "E": "Sistemas agroalimentares de subsistência."
+          },
+          "correta": "B",
+          "explicacao": "O conceito pioneiro de Davis e Goldberg consolidou o termo agronegócio (agribusiness), demonstrando que a agropecuária comercial não opera isolada, mas integrada com fornecedores de insumos e indústrias de beneficiamento."
+        }
+      ],
+      "TEMA_2": [
+        {
+          "pergunta": "Qual prática agrícola é amplamente adotada visando mitigar a degradação física do solo e conservar a umidade por meio do não revolvimento da terra com arados?",
+          "opcoes": {
+            "A": "Monocultura de soja contínua.",
+            "B": "Aração profunda anual.",
+            "C": "Queimada preventiva de restolhos.",
+            "D": "Sistema de Plantio Direto (SPD).",
+            "E": "Gradagem intensiva pós-colheita."
+          },
+          "correta": "D",
+          "explicacao": "O Sistema de Plantio Direto (SPD) baseia-se em três pilares básicos: ausência de revolvimento prévio do solo, cobertura vegetal perene e rotação programada de culturas."
+        }
+      ],
+      "TEMA_3": [
+        {
+          "pergunta": "As plantas vasculares possuem tecidos especializados para a translocação de água e nutrientes. Qual tecido transporta seiva elaborada (açúcares derivados da fotossíntese)?",
+          "opcoes": {
+            "A": "Xilema primário.",
+            "B": "Córtex medular.",
+            "C": "Floema.",
+            "D": "Esclerênquima lignificado.",
+            "E": "Parênquima aquífero."
+          },
+          "correta": "C",
+          "explicacao": "O floema é o tecido condutor responsável por distribuir a seiva elaborada (compostos orgânicos originados nas folhas pela fotossíntese) para os demais órgãos das plantas."
+        }
+      ],
+      "TEMA_4": [
+        {
+          "pergunta": "De acordo com os princípios da nutrição mineral de plantas, especificamente em relação à Lei do Mínimo de Liebig, pode-se afirmar que:",
+          "opcoes": {
+            "A": "A produtividade depende da concentração do macronutriente abundante.",
+            "B": "O desenvolvimento vegetal limita-se pelo elemento essencial em menor proporção.",
+            "C": "Os micronutrientes tornam-se dispensáveis em solos ricos em nitrogênio.",
+            "D": "A dosagem de fertilizantes orgânicos neutraliza todas as restrições minerais.",
+            "E": "A água supre integralmente as carências de ferro e potássio das folhas."
+          },
+          "correta": "B",
+          "explicacao": "A Lei do Mínimo postula que o crescimento vegetal é prejudicado e restringido diretamente pela carência do elemento que apresentar menor adequação ideal no solo."
+        }
+      ],
+      "TEMA_5": [
+        {
+          "pergunta": "Qual metodologia de irrigação oferece os maiores níveis de eficiência na conservação de recursos hídricos ao gotejar água de forma pontual perto do colo da planta?",
+          "opcoes": {
+            "A": "Irrigação por gotejamento localizado.",
+            "B": "Inundação aberta de arrozal.",
+            "C": "Aspersão mecânica por aspersores móveis.",
+            "D": "Sulcos paralelos de declive acentuado.",
+            "E": "Pivô central de grande fluxo."
+          },
+          "correta": "A",
+          "explicacao": "O gotejamento direciona recursos diretamente à raiz reduzindo perdas e permitindo uma eficiência operacional de aplicação que ultrapassa 90%."
+        }
+      ],
+      "TEMA_6": [
+        {
+          "pergunta": "A introdução da cultura da soja no Cerrado foi viabilizada pelo uso de inoculantes microbianos. Qual gênero de bactérias desempenha a Fixação Biológica de Nitrogênio (FBN) nessa leguminosa?",
+          "opcoes": {
+            "A": "Bradyrhizobium.",
+            "B": "Lactobacillus.",
+            "C": "Escherichia.",
+            "D": "Clostridium.",
+            "E": "Bacillus."
+          },
+          "correta": "A",
+          "explicacao": "Bactérias simbióticas do gênero Bradyrhizobium associam-se às raízes e convertem nitrogênio gasoso (N2) em formas químicas prontamente utilizáveis pelas plantas."
+        }
+      ],
+      "TEMA_7": [
+        {
+          "pergunta": "Qual das cadeias da pecuária nacional destaca-se pelo elevado índice de automação tecnológica e liderança de volume exportado com contratos integrados?",
+          "opcoes": {
+            "A": "Bubalinocultura extensiva para queijo.",
+            "B": "Cunicultura especializada de peles.",
+            "C": "Avicultura de corte.",
+            "D": "Caprinocultura rústica do semiárido.",
+            "E": "Apicultura silvestre sedentária."
+          },
+          "correta": "C",
+          "explicacao": "A avicultura de corte brasileira está no topo de eficiência global, apoiada em sistemas eficientes de integração vertical, controle de sanidade e genética apurada."
+        }
+      ],
+      "TEMA_8": [
+        {
+          "pergunta": "Na fisiologia gástrica de herbívoros poligástricos, qual região do estômago atua primariamente como câmara de fermentação biológica e abrigo bacteriano?",
+          "opcoes": {
+            "A": "Duodeno proximal.",
+            "B": "Rúmen.",
+            "C": "Omaso.",
+            "D": "Abomaso.",
+            "E": "Esofágico."
+          },
+          "correta": "B",
+          "explicacao": "O rúmen constitui uma imensa cuba de fermentação anaeróbica que abriga microrganismos essenciais para a digestão enzimática de fibras celulósicas."
+        }
+      ],
+      "TEMA_9": [
+        {
+          "pergunta": "No cálculo nutricional técnico de animais monogástricos e ruminantes, a sigla NDT expressa qual parâmetro fundamental de energia disponível de um volumoso ou concentrado?",
+          "opcoes": {
+            "A": "Nível Degradável do Trato.",
+            "B": "Nutrientes Digestíveis Totais.",
+            "C": "Nitrato de Deposição Térmica.",
+            "D": "Núcleo de Defesa Tecidual.",
+            "E": "Nutrição de Desenvolvimento Tardio."
+          },
+          "correta": "B",
+          "explicacao": "Nutrientes Digestíveis Totais (NDT) expressam a equivalência energética agregada do ingrediente com base na digestibilidade aparente do alimento analisado."
+        }
+      ],
+      "TEMA_10": [
+        {
+          "pergunta": "Qual prática de manejo de pasto preconiza dividir a gleba produtiva em piquetes independentes, alternando períodos de pastejo rápido com janelas de repouso?",
+          "opcoes": {
+            "A": "Pastejo rotacionado intensivo.",
+            "B": "Lotação extensiva estática.",
+            "C": "Queima anual para brotação livre.",
+            "D": "Pastejo contínuo livre de divisórias.",
+            "E": "Diferimento estacional fixo."
+          },
+          "correta": "A",
+          "explicacao": "O pastejo rotacionado propicia melhor aproveitamento da pastagem, respeitando os ciclos de recuperação fisiológica e rebrota foliar da espécie forrageira utilizada."
+        }
+      ],
+      "TEMA_11": [
+        {
+          "pergunta": "Em programas de melhoramento animal, qual parâmetro exprime a proporção de variância fenotípica devida a efeitos puramente aditivos nos genitores selecionados?",
+          "opcoes": {
+            "A": "Índice de Heterose.",
+            "B": "Endogamia.",
+            "C": "Herdabilidade.",
+            "D": "Epistasia de dominância.",
+            "E": "Pleiotropia simples."
+          },
+          "correta": "C",
+          "explicacao": "A herdabilidade indica o grau em que as características observadas no rebanho são influenciadas pela variação genética herdável de seus reprodutores."
+        }
+      ],
+      "TEMA_12": [
+        {
+          "pergunta": "Na produção intensiva de suínos, qual etapa de criação demanda maior intervenção térmica e rígidas dietas de transição logo após a retirada da matriz lactante?",
+          "opcoes": {
+            "A": "Gestação coletiva.",
+            "B": "Fase de Creche.",
+            "C": "Fase de Terminação.",
+            "D": "Quarentenário geral.",
+            "E": "Fase de Recria tardia."
+          },
+          "correta": "B",
+          "explicacao": "A fase de creche abriga leitões recém-desmamados que enfrentam mudanças em suas dietas. Esta fase necessita de instalações limpas, aquecidas e secas."
+        }
+      ],
+      "TEMA_13": [
+        {
+          "pergunta": "Bovinos em confinamento para acabamento final recebem altas proporções de rações concentradas. Qual o objetivo dessa transição dietética?",
+          "opcoes": {
+            "A": "Prevenir a ocorrência de timpanismo ruminal.",
+            "B": "Prolongar o tempo do animal na fazenda.",
+            "C": "Acelerar ganho de peso e deposição de gordura na carcaça.",
+            "D": "Aumentar a atividade ruminal física.",
+            "E": "Favorecer a mastigação e salivação constante."
+          },
+          "correta": "C",
+          "explicacao": "O aumento na oferta de concentrados (grãos/energia rápida) otimiza os ganhos diários de carcaça e assegura a cobertura de gordura demandada pelos frigoríficos."
+        }
+      ],
+      "TEMA_14": [
+        {
+          "pergunta": "Qual termo caracteriza a tecnologia que permite aplicar de forma georreferenciada corretivos de solo com vazões variadas ajustadas em tempo real pelas coordenadas do GPS?",
+          "opcoes": {
+            "A": "VRT (Tecnologia de Taxa Variável).",
+            "B": "Barra de comando puramente mecânica.",
+            "C": "Mapeamento orbital analógico.",
+            "D": "Sensoriamento térmico inercial.",
+            "E": "Fração de amostragem aleatória simples."
+          },
+          "correta": "A",
+          "explicacao": "VRT (Variable Rate Technology) refere-se ao sistema de distribuição que altera as doses aplicadas no talhão conforme prescrições digitais prévias inseridas nos computadores das máquinas agrícolas."
+        }
+      ],
+      "TEMA_15": [
+        {
+          "pergunta": "Qual instrumento de diagnóstico estratégico é empregado no agronegócio para ponderar Forças, Oportunidades, Fraquezas e Ameaças atuantes no empreendimento rural?",
+          "opcoes": {
+            "A": "Matriz Kanban de Tarefas.",
+            "B": "Diagrama de Ishikawa.",
+            "C": "Matriz SWOT (ou FOFA).",
+            "D": "Ciclo PDCA contínuo.",
+            "E": "Histograma de Capabilidade."
+          },
+          "correta": "C",
+          "explicacao": "A matriz SWOT permite realizar um diagnóstico integrado, identificando os pontos fortes e fracos internos da propriedade e mapeando as ameaças e oportunidades do mercado externo."
+        }
+      ]
+    };
+
+    const TEMAS_INFO = {
+      "TEMA_1": { nome: "🌾 T1 - Contextualização do Agronegócio", categoria: "Agro" },
+      "TEMA_2": { nome: "🌱 T2 - Sistemas de Produção Sustentável", categoria: "Veg." },
+      "TEMA_3": { nome: "🌿 T3 - Fundamentos de Botânica", categoria: "Veg." },
+      "TEMA_4": { nome: "🧪 T4 - Nutrição Mineral & Solo", categoria: "Cult." },
+      "TEMA_5": { nome: "💧 T5 - Irrigação e Drenagem", categoria: "Água" },
+      "TEMA_6": { nome: "🌽 T6 - Principais Culturas", categoria: "Cult." },
+      "TEMA_7": { nome: "🐄 T7 - Produção Animal no Agro", categoria: "Anim." },
+      "TEMA_8": { nome: "🔬 T8 - Anatomia & Fisiologia Animal", categoria: "Anim." },
+      "TEMA_9": { nome: "🍽️ T9 - Alimentação & Nutrição Animal", categoria: "Anim." },
+      "TEMA_10": { nome: "🌾 T10 - Forragicultura e Pastagens", categoria: "Anim." },
+      "TEMA_11": { nome: "🧬 T11 - Melhoramento Genético Animal", categoria: "Gen." },
+      "TEMA_12": { nome: "🐔 T12 - Produção de Monogástricos", categoria: "Tech" },
+      "TEMA_13": { nome: "🐮 T13 - Produção de Ruminantes", categoria: "Tech" },
+      "TEMA_14": { nome: "📡 T14 - Agricultura de Precisão", categoria: "Tech" },
+      "TEMA_15": { nome: "🎁 T15 - Simulado Bônus", categoria: "Bônus" }
+    };
+
+    // Estado da Aplicação persistido no localStorage
+    let userState = {
+      xp: 0,
+      level: 1,
+      streak: 1,
+      lastActive: "",
+      totalHits: 0,
+      totalQuestions: 0,
+      completedThemes: [],
+      scores: {},
+      mistakes: [] // Máximo de 10 registros
+    };
+
+    // Iniciar dados do SDK do Telegram ou simular dados de testes
+    let tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+    // Inicialização da página
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      initTelegramUser();
+      checkStreak();
+      updateDashboardUI();
+      renderThemes();
+      switchScreen('dashboard');
+    });
+
+    function initTelegramUser() {
+      const nameElem = document.getElementById('user-name');
+      const avatarElem = document.getElementById('user-avatar');
+      
+      let firstName = "Estudante";
+      
+      if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        firstName = tg.initDataUnsafe.user.first_name;
+      }
+      
+      nameElem.innerText = firstName.toUpperCase();
+      avatarElem.innerText = firstName.charAt(0).toUpperCase();
+    }
+
+    // Carregar Estado do LocalStorage
+    function loadState() {
+      const local = localStorage.getItem('krona_analytics_state');
+      if (local) {
+        try {
+          userState = JSON.parse(local);
+        } catch (e) {
+          console.error("Falha ao ler dados de progresso locais.");
+        }
+      }
+    }
+
+    // Salvar Estado no LocalStorage
+    function saveState() {
+      localStorage.setItem('krona_analytics_state', JSON.stringify(userState));
+    }
+
+    // Mostrar Notificação Toast na tela do app
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `px-4 py-3 rounded-2xl shadow-xl text-xs font-semibold tracking-wide transition-all duration-300 transform translate-y-3 opacity-0 flex items-center gap-2 mb-2 w-max max-w-[340px] border`;
+      
+      if (type === 'success') {
+        toast.className += ' bg-correct text-white border-green-700/50';
+      } else if (type === 'error') {
+        toast.className += ' bg-wrong text-white border-red-700/50';
+      } else {
+        toast.className += ' bg-cardbg text-gold border-gold/30';
+      }
+      
+      toast.innerHTML = `<span>${message}</span>`;
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.classList.remove('translate-y-3', 'opacity-0');
+      }, 50);
+      
+      setTimeout(() => {
+        toast.classList.add('translate-y-3', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Sistema de Sequência (Streak)
+    function checkStreak() {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const lastActive = userState.lastActive;
+      
+      if (!lastActive) {
+        userState.streak = 1;
+      } else if (lastActive !== todayStr) {
+        const lastDate = new Date(lastActive);
+        const todayDate = new Date(todayStr);
+        const diffTime = Math.abs(todayDate - lastDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === 1) {
+          userState.streak += 1;
+          showToast(`Sua sequência diária aumentou! 🔥 Sequência atual: ${userState.streak} dias.`, 'success');
+        } else if (diffDays > 1) {
+          userState.streak = 1;
+        }
+      }
+      userState.lastActive = todayStr;
+      saveState();
+    }
+
+    // Gerenciador de Abas de Navegação
+    function switchScreen(screenId) {
+      if (activeQuizState) {
+        if (!confirm("Tem certeza que deseja sair do simulado atual? Seu progresso nesta rodada será desconsiderado.")) {
+          return;
+        }
+        activeQuizState = null;
+      }
+
+      // Telas disponíveis
+      const screens = ['dashboard', 'simulados', 'erros', 'ranking', 'quiz'];
+      screens.forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        if (el) el.classList.add('hidden');
+      });
+      
+      document.getElementById(`screen-${screenId}`).classList.remove('hidden');
+
+      // Botões de Navegação Inferior
+      const navButtons = ['dashboard', 'simulados', 'erros', 'ranking'];
+      navButtons.forEach(b => {
+        const btn = document.getElementById(`nav-${b}`);
+        if (btn) {
+          btn.classList.remove('text-gold');
+          btn.classList.add('text-textgray');
+        }
+      });
+      
+      const activeBtn = document.getElementById(`nav-${screenId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-textgray');
+        activeBtn.classList.add('text-gold');
+      }
+
+      if (screenId === 'dashboard') {
+        updateDashboardUI();
+      } else if (screenId === 'erros') {
+        renderMistakes();
+      } else if (screenId === 'ranking') {
+        renderRanking();
+      }
+    }
+
+    // Alternar abertura dos Módulos em Acordeão
+    function toggleAccordion(moduleId) {
+      const mod = document.getElementById(moduleId);
+      const isOpen = mod.classList.contains('accordion-active');
+      
+      // Fechar outros acordeões para manter o layout compacto
+      document.querySelectorAll('#accordion-container > div').forEach(d => {
+        d.classList.remove('accordion-active');
+      });
+
+      if (!isOpen) {
+        mod.classList.add('accordion-active');
+      }
+    }
+
+    // Renderização dos Temas de acordo com a listagem oficial
+    function renderThemes() {
+      const mod1List = ["TEMA_1", "TEMA_2", "TEMA_3", "TEMA_4"];
+      const mod2List = ["TEMA_5", "TEMA_6"];
+      const mod3List = ["TEMA_7", "TEMA_8", "TEMA_9", "TEMA_10", "TEMA_11"];
+      const mod4List = ["TEMA_12", "TEMA_13", "TEMA_14", "TEMA_15"];
+
+      const renderUnit = (themeId) => {
+        const el = document.getElementById(`theme-${themeId}`);
+        if (!el) return;
+        
+        const isCompleted = userState.completedThemes.includes(themeId);
+        const score = userState.scores[themeId] !== undefined ? userState.scores[themeId] : null;
+        
+        el.innerHTML = `
+          <div class="flex-1 pr-3">
+            <p class="text-xs font-semibold text-white leading-snug">${TEMAS_INFO[themeId].nome}</p>
+            <span class="text-[10px] text-textgray">1 Questão do Simulado</span>
+          </div>
+          <div class="flex items-center gap-2">
+            ${isCompleted ? `<span class="text-[11px] text-gold font-bold bg-gold/10 px-2 py-1 rounded border border-gold/20">Aprovado (${score}/10)</span>` : ''}
+            <button onclick="startQuiz('${themeId}')" class="text-xs bg-gold hover:bg-yellow-600 text-darkbg font-bold px-3 py-1.5 rounded-xl transition">
+              ${isCompleted ? 'Refazer' : 'Iniciar'}
+            </button>
+          </div>
+        `;
+      };
+
+      [...mod1List, ...mod2List, ...mod3List, ...mod4List].forEach(renderUnit);
+      
+      // Contagem de Conclusão nos Módulos
+      const countCompleted = (list) => list.filter(t => userState.completedThemes.includes(t)).length;
+      
+      document.getElementById('mod-1-status').innerText = `${countCompleted(mod1List)} de ${mod1List.length} concluídos`;
+      document.getElementById('mod-2-status').innerText = `${countCompleted(mod2List)} de ${mod2List.length} concluídos`;
+      document.getElementById('mod-3-status').innerText = `${countCompleted(mod3List)} de ${mod3List.length} concluídos`;
+      document.getElementById('mod-4-status').innerText = `${countCompleted(mod4List)} de ${mod4List.length} concluídos`;
+    }
+
+    // Atualização Geral da Interface do Dashboard
+    function updateDashboardUI() {
+      document.getElementById('stat-streak').innerText = userState.streak;
+      document.getElementById('stat-hits').innerText = userState.totalHits;
+      document.getElementById('stat-total').innerText = userState.totalQuestions;
+      document.getElementById('info-xp').innerText = userState.xp;
+
+      // Cálculo de Aproveitamento %
+      const rate = userState.totalQuestions > 0 ? Math.round((userState.totalHits / userState.totalQuestions) * 100) : 0;
+      document.getElementById('stat-rate').innerText = `${rate}%`;
+
+      // Cálculo de Níveis (A cada 1000 XP)
+      const level = Math.floor(userState.xp / 1000) + 1;
+      userState.level = level;
+      document.getElementById('user-level-label').innerText = `Nível ${level} • ${getRankTitle(level)}`;
+      
+      const xpNeeded = level * 1000;
+      const prevXp = (level - 1) * 1000;
+      const progressPercent = Math.min(Math.max(((userState.xp - prevXp) / (xpNeeded - prevXp)) * 100, 0), 100);
+      
+      document.getElementById('info-xp-needed').innerText = `Próximo Nível: ${xpNeeded} XP`;
+      document.getElementById('xp-progress-bar').style.width = `${progressPercent}%`;
+
+      // Progresso dos Temas
+      const completedCount = userState.completedThemes.length;
+      document.getElementById('general-progress-txt').innerText = `${completedCount} / 15 Temas`;
+      const generalPercent = Math.round((completedCount / 15) * 100);
+      document.getElementById('general-progress-bar').style.width = `${generalPercent}%`;
+
+      // Cálculo de melhor nota global
+      let maxScore = 0;
+      Object.values(userState.scores).forEach(s => {
+        if (s > maxScore) maxScore = s;
+      });
+      document.getElementById('stat-best').innerText = `${maxScore.toFixed(1)}/10`;
+
+      updateChartUI();
+    }
+
+    function getRankTitle(level) {
+      if (level >= 8) return "Mestre Supremo";
+      if (level >= 6) return "Produtor Consultor";
+      if (level >= 4) return "Técnico Master";
+      if (level >= 2) return "Assistente de Campo";
+      return "Estudante Novato";
+    }
+
+    // Atualizar Gráfico Dinâmico por Áreas
+    function updateChartUI() {
+      const CATEGORIES = ["Agro", "Veg.", "Água", "Cult.", "Anim.", "Gen.", "Tech", "Bônus"];
+      
+      // Mapeamento correspondente de categorias para cada tema
+      const mapping = {
+        "Agro": ["TEMA_1"],
+        "Veg.": ["TEMA_2", "TEMA_3"],
+        "Cult.": ["TEMA_4", "TEMA_6"],
+        "Água": ["TEMA_5"],
+        "Anim.": ["TEMA_7", "TEMA_8", "TEMA_9", "TEMA_10"],
+        "Gen.": ["TEMA_11"],
+        "Tech": ["TEMA_12", "TEMA_13", "TEMA_14"],
+        "Bônus": ["TEMA_15"]
+      };
+
+      const ids = {
+        "Agro": "bar-agro",
+        "Veg.": "bar-veg",
+        "Água": "bar-agua",
+        "Cult.": "bar-cult",
+        "Anim.": "bar-anim",
+        "Gen.": "bar-gen",
+        "Tech": "bar-tech",
+        "Bônus": "bar-bonus"
+      };
+
+      CATEGORIES.forEach(cat => {
+        const themes = mapping[cat];
+        let scoreSum = 0;
+        let count = 0;
+        
+        themes.forEach(t => {
+          if (userState.scores[t] !== undefined) {
+            scoreSum += userState.scores[t];
+            count++;
+          }
+        });
+
+        // Se o tema foi concluído, o aproveitamento reflete a nota (Ex: Nota 10 = 100% de barra preenchida)
+        const percent = count > 0 ? Math.round((scoreSum / (count * 10)) * 100) : 0;
+        const barEl = document.getElementById(ids[cat]);
+        if (barEl) {
+          barEl.style.height = `${percent}%`;
+        }
+      });
+    }
+
+    // ================= LÓGICA DO SIMULADO (QUIZ) =================
+    let activeQuizState = null;
+
+    function startQuiz(themeId) {
+      const list = QUESTIONS_DB[themeId];
+      if (!list || list.length === 0) {
+        showToast("Não encontramos questões cadastradas para este tema.", "error");
+        return;
+      }
+      
+      showToast("Carregando ambiente do simulado...", "info");
+      
+      activeQuizState = {
+        themeId: themeId,
+        questions: JSON.parse(JSON.stringify(list)), // Cópia limpa
+        currentIndex: 0,
+        hits: 0,
+        answered: false
+      };
+
+      // Carregar UI do Simulado
+      document.getElementById('quiz-theme-tag').innerText = TEMAS_INFO[themeId].nome;
+      switchScreen('quiz');
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const qState = activeQuizState;
+      const question = qState.questions[qState.currentIndex];
+      
+      qState.answered = false;
+      document.getElementById('quiz-question-number').innerText = `Questão ${qState.currentIndex + 1} de ${qState.questions.length}`;
+      document.getElementById('quiz-question-text').innerText = question.pergunta;
+      
+      const container = document.getElementById('quiz-options-container');
+      container.innerHTML = '';
+      document.getElementById('quiz-feedback-box').classList.add('hidden');
+
+      // Embaralhar opções visualmente mantendo rastreamento das chaves
+      const keys = ["A", "B", "C", "D", "E"];
+      keys.forEach(key => {
+        const text = question.opcoes[key];
+        const btn = document.createElement('button');
+        btn.id = `opt-${key}`;
+        btn.onclick = () => selectOption(key);
+        btn.className = "w-full text-left bg-cardbg hover:bg-slate-800 border border-white/5 p-4 rounded-xl text-xs flex items-center gap-3 transition focus:outline-none";
+        btn.innerHTML = `
+          <span class="w-6 h-6 rounded-full bg-darkbg border border-gold/30 text-gold flex items-center justify-center font-bold text-xs shrink-0">${key}</span>
+          <span class="leading-relaxed">${text}</span>
+        `;
+        container.appendChild(btn);
+      });
+
+      // Progresso da barra do simulado
+      const progVal = ((qState.currentIndex) / qState.questions.length) * 100;
+      document.getElementById('quiz-progress-bar').style.width = `${100 - progVal}%`;
+    }
+
+    function selectOption(keySelected) {
+      const qState = activeQuizState;
+      if (qState.answered) return;
+      qState.answered = true;
+
+      const question = qState.questions[qState.currentIndex];
+      const correctKey = question.correta;
+      const isCorrect = keySelected === correctKey;
+
+      if (isCorrect) {
+        qState.hits++;
+        showToast("Você acertou! 🌟 +100 XP", "success");
+        document.getElementById(`opt-${keySelected}`).classList.add('border-correct', 'bg-correct/10');
+        document.getElementById(`opt-${keySelected}`).querySelector('span').classList.add('bg-correct', 'text-white', 'border-correct');
+        
+        document.getElementById('quiz-feedback-status').innerText = "Resposta Correta! 🌟";
+        document.getElementById('quiz-feedback-status').className = "font-extrabold text-sm uppercase text-correct";
+      } else {
+        showToast("Ops! Resposta incorreta.", "error");
+        document.getElementById(`opt-${keySelected}`).classList.add('border-wrong', 'bg-wrong/10');
+        document.getElementById(`opt-${keySelected}`).querySelector('span').classList.add('bg-wrong', 'text-white', 'border-wrong');
+        
+        // Destacar alternativa correta
+        document.getElementById(`opt-${correctKey}`).classList.add('border-correct', 'bg-correct/10');
+        
+        document.getElementById('quiz-feedback-status').innerText = "A alternativa correta era: " + correctKey;
+        document.getElementById('quiz-feedback-status').className = "font-extrabold text-sm uppercase text-wrong";
+
+        // Salvar erro no caderno (Mantém apenas os últimos 10 erros)
+        userState.mistakes.push({
+          theme: TEMAS_INFO[qState.themeId].nome,
+          question: question.pergunta,
+          yourAnswer: keySelected + ") " + question.opcoes[keySelected],
+          correctAnswer: correctKey + ") " + question.opcoes[correctKey],
+          explanation: question.explicacao,
+          date: new Date().toLocaleDateString('pt-BR')
+        });
+
+        if (userState.mistakes.length > 10) {
+          userState.mistakes.shift(); // Remove o erro mais antigo
+        }
+      }
+
+      // Travar demais botões
+      const keys = ["A", "B", "C", "D", "E"];
+      keys.forEach(k => {
+        document.getElementById(`opt-${k}`).disabled = true;
+      });
+
+      // Mostrar a Caixa de Feedback / Explicação
+      document.getElementById('quiz-explanation-text').innerText = question.explicacao;
+      document.getElementById('quiz-feedback-box').classList.remove('hidden');
+
+      if (qState.currentIndex === qState.questions.length - 1) {
+        document.getElementById('quiz-next-btn').innerText = "Finalizar Simulado";
+      } else {
+        document.getElementById('quiz-next-btn').innerText = "Avançar";
+      }
+    }
+
+    function nextQuestion() {
+      const qState = activeQuizState;
+      if (qState.currentIndex < qState.questions.length - 1) {
+        qState.currentIndex++;
+        renderQuestion();
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function finishQuiz() {
+      const qState = activeQuizState;
+      const themeId = qState.themeId;
+      
+      const score = (qState.hits / qState.questions.length) * 10;
+      const earnedXp = qState.hits * 100;
+
+      userState.xp += earnedXp;
+      userState.totalHits += qState.hits;
+      userState.totalQuestions += qState.questions.length;
+
+      if (!userState.completedThemes.includes(themeId)) {
+        userState.completedThemes.push(themeId);
+      }
+
+      // Manter a maior nota do tema
+      if (userState.scores[themeId] === undefined || score > userState.scores[themeId]) {
+        userState.scores[themeId] = score;
+      }
+
+      saveState();
+      activeQuizState = null;
+
+      // Renderizar feedback final
+      alert(`🎉 Simulado Concluído!\n\nNota: ${score.toFixed(1)}/10.0\nPontos Obtidos: +${earnedXp} XP`);
+      
+      renderThemes();
+      switchScreen('dashboard');
+    }
+
+    function exitQuiz() {
+      if (confirm("Seu progresso atual neste simulado será perdido. Deseja sair?")) {
+        activeQuizState = null;
+        switchScreen('simulados');
+      }
+    }
+
+    // ================= CADERNO DE ERROS =================
+    function renderMistakes() {
+      const container = document.getElementById('mistakes-list');
+      container.innerHTML = '';
+
+      if (userState.mistakes.length === 0) {
+        container.innerHTML = `
+          <div class="bg-cardbg p-8 rounded-2xl border border-white/5 text-center space-y-2">
+            <span class="text-3xl">🎉</span>
+            <h4 class="font-bold text-sm text-white">Sem Erros Registrados</h4>
+            <p class="text-xs text-textgray leading-relaxed max-w-[280px] mx-auto">Parabéns! Seus erros em simulados serão documentados aqui para que você possa revisá-los.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Exibe os erros na ordem do mais recente para o mais antigo
+      [...userState.mistakes].reverse().forEach(item => {
+        const div = document.createElement('div');
+        div.className = "bg-cardbg p-4 rounded-2xl border border-white/5 space-y-3";
+        div.innerHTML = `
+          <div class="flex items-center justify-between border-b border-white/5 pb-2">
+            <span class="text-[10px] text-gold font-bold uppercase tracking-wider">${item.theme}</span>
+            <span class="text-[9px] text-textgray">${item.date}</span>
+          </div>
+          <p class="text-xs text-white leading-relaxed font-medium">${item.question}</p>
+          <div class="bg-darkbg/50 p-2.5 rounded-xl space-y-1 text-[11px] border border-white/5">
+            <p class="text-wrong"><span class="font-bold text-wrong">Sua resposta:</span> ${item.yourAnswer}</p>
+            <p class="text-correct"><span class="font-bold text-correct">Gabarito:</span> ${item.correctAnswer}</p>
+          </div>
+          <p class="text-[10px] text-textgray leading-normal italic bg-darkbg/20 p-2 rounded-lg border border-gold/10">
+            <span class="font-bold text-gold not-italic">Explicação:</span> ${item.explanation}
+          </p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function clearMistakes() {
+      if (confirm("Tem certeza que deseja limpar todo o seu caderno de erros?")) {
+        userState.mistakes = [];
+        saveState();
+        renderMistakes();
+        showToast("Caderno de erros redefinido com sucesso.", "success");
+      }
+    }
+
+    // ================= SISTEMA DE RANKING =================
+    function renderRanking() {
+      const listContainer = document.getElementById('ranking-list');
+      listContainer.innerHTML = '';
+
+      // Competidores simulados locais da plataforma
+      const competitors = [
+        { name: "Pedro Santos (SENAR)", xp: 4800, level: 5, isUser: false },
+        { name: "Camila Ribeiro", xp: 3200, level: 4, isUser: false },
+        { name: "Thiago Silva", xp: 1500, level: 2, isUser: false },
+        { name: "Aline Costa", xp: 800, level: 1, isUser: false }
+      ];
+
+      // Pegar nome atual do usuário para o ranking
+      let currentUserName = "VOCÊ";
+      if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        currentUserName = tg.initDataUnsafe.user.first_name.toUpperCase();
+      }
+
+      // Adiciona o usuário atual à disputa
+      competitors.push({
+        name: currentUserName,
+        xp: userState.xp,
+        level: userState.level,
+        isUser: true
+      });
+
+      // Ordenar por XP decrescente
+      competitors.sort((a, b) => b.xp - a.xp);
+
+      competitors.forEach((c, idx) => {
+        const item = document.createElement('div');
+        item.className = `flex items-center justify-between p-3.5 transition-all ${c.isUser ? 'bg-gold/10 border border-gold/30 rounded-xl my-1' : ''}`;
+        
+        let rankBadge = `${idx + 1}`;
+        if (idx === 0) rankBadge = "🥇";
+        else if (idx === 1) rankBadge = "🥈";
+        else if (idx === 2) rankBadge = "🥉";
+
+        item.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="w-6 text-center font-bold text-sm text-gold">${rankBadge}</span>
+            <div>
+              <p class="text-xs font-bold leading-none ${c.isUser ? 'text-gold' : 'text-white'}">${c.name}</p>
+              <span class="text-[9px] text-textgray">Nível ${c.level}</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-extrabold text-white">${c.xp} XP</span>
+          </div>
+        `;
+        listContainer.appendChild(item);
+      });
+    }
+  </script>
+</body>
+</html>
