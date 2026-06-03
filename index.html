@@ -150,7 +150,7 @@
       </div>
     </section>
 
-    <!-- SCREEN 2: SIMULADOS -->
+    <!-- SCREEN 2: SIMULADOS (Módulo Único sem Acordeão) -->
     <section id="screen-simulados" class="hidden space-y-4">
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-bold text-white">Simulados Disponíveis</h2>
@@ -162,13 +162,7 @@
         <div class="p-4 bg-white/5 border-b border-white/5">
           <h4 class="font-bold text-sm text-white">Módulo 1 – Técnicas e Sistemas de Produção Agropecuária</h4>
           <p class="text-[11px] text-textgray mt-0.5" id="mod-1-status">0 de 15 concluídos</p>
-          
-          <!-- Botão para Iniciar Simulado Geral integrado com 15 questões -->
-          <button onclick="startGeneralQuiz()" class="w-full mt-3 bg-gradient-to-r from-gold to-yellow-600 hover:from-yellow-600 hover:to-gold text-darkbg font-bold py-3 px-4 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-lg">
-            <span>🚀 Iniciar Simulado Geral (15 Questões)</span>
-          </button>
         </div>
-        
         <div class="p-4 space-y-3 divide-y divide-white/5" id="theme-list-container">
           <div id="theme-T1" class="flex items-center justify-between py-2.5"></div>
           <div id="theme-T2" class="flex items-center justify-between py-2.5"></div>
@@ -276,342 +270,355 @@
     const QUESTIONS_DB = {
       "TEMA_1": [
         {
-          "pergunta": "John Davis e Ray Goldberg, em 1957, cunharam pioneiramente um conceito que integra o encadeamento das atividades econômicas rurais. Como ficou conhecida essa definição sob a ótica de sistemas integrados?",
+          "pergunta": "O agronegócio pode ser compreendido como um encadeamento de atividades econômicas. Qual alternativa indica os autores que, em 1957, cunharam pioneiramente esse conceito sob a ótica de um 'sistema integrado'?",
           "opcoes": {
-            "A": "Subsistência camponesa verticalizada.",
-            "B": "Agronegócio (ou Agribusiness).",
-            "C": "Cooperativismo agroecológico fechado.",
-            "D": "Monopólio agrário governamental.",
-            "E": "Sistemas agroalimentares de subsistência."
+            "A": "Thomas Malthus e David Ricardo.",
+            "B": "John Davis e Ray Goldberg.",
+            "C": "Karl Marx e Friedrich Engels.",
+            "D": "Adam Smith e David Hume.",
+            "E": "John Maynard Keynes e Milton Friedman."
           },
           "correta": "B",
-          "explicacao": "O conceito pioneiro de Davis e Goldberg consolidou o termo agronegócio (agribusiness), demonstrando que a agropecuária comercial não opera isolada, mas integrada com fornecedores de insumos e indústrias de beneficiamento.",
-          "pagina": "página 23 do PDF do SENAR"
+          "explicacao": "O conceito de agronegócio foi estabelecido por John Davis e Ray Goldberg, em 1957, definindo as atividades do setor de forma encadeada como um 'sistema integrado'.",
+          "pagina": "página 29 do PDF do SENAR"
         },
         {
-          "pergunta": "O segmento 'antes da porteira' desempenha um papel fundamental na cadeia do agronegócio. Qual das seguintes atividades pertence a esse segmento?",
+          "pergunta": "Qual segmento do complexo agroindustrial brasileiro envolve as transações comerciais ligadas ao fornecimento de fertilizantes, sementes e defensivos?",
           "opcoes": {
-            "A": "Colheita mecanizada de soja.",
-            "B": "Industrialização de farelo de trigo.",
-            "C": "Comercialização de grãos em bolsas de valores.",
-            "D": "Fabricação e fornecimento de fertilizantes, sementes e defensivos.",
-            "E": "Transporte de grãos até o porto de exportação."
+            "A": "Segmento antes da porteira.",
+            "B": "Segmento dentro da porteira.",
+            "C": "Segmento depois da porteira.",
+            "D": "Distribuição logística internacional.",
+            "E": "Refino secundário de subprodutos."
           },
-          "correta": "D",
-          "explicacao": "O segmento 'antes da porteira' compreende o fornecimento de insumos, máquinas, sementes, fertilizantes e defensivos que viabilizam a produção agropecuária.",
+          "correta": "A",
+          "explicacao": "O segmento 'antes da porteira' engloba as indústrias fornecedoras de insumos, máquinas, sementes e corretivos para os produtores.",
           "pagina": "página 25 do PDF do SENAR"
         },
         {
-          "pergunta": "Dentro das cadeias produtivas do agronegócio, o segmento 'dentro da porteira' refere-se especificamente a qual etapa do processo?",
+          "pergunta": "No modelo clássico de análise do agronegócio, as atividades conduzidas estritamente no campo, como plantio e colheita, pertencem a qual segmento?",
           "opcoes": {
-            "A": "Pesquisa científica em biotecnologia laboratorial.",
-            "B": "Processamento industrial de carnes em frigoríficos.",
-            "C": "Atividade de produção agropecuária propriamente dita na propriedade.",
-            "D": "Venda de máquinas agrícolas pelas concessionárias.",
-            "E": "Distribuição e logística internacional de commodities."
+            "A": "Antes da porteira.",
+            "B": "Dentro da porteira.",
+            "C": "Depois da porteira.",
+            "D": "Fomento financeiro cooperativo.",
+            "E": "Setor secundário industrial."
           },
-          "correta": "C",
-          "explicacao": "O segmento 'dentro da porteira' envolve a produção primária, ou seja, o cultivo das plantas e a criação dos animais dentro das propriedades rurais.",
+          "correta": "B",
+          "explicacao": "O segmento 'dentro da porteira' compreende a produção primária agrícola e pecuária desenvolvida diretamente nas propriedades rurais.",
           "pagina": "página 28 do PDF do SENAR"
         },
         {
-          "pergunta": "Qual instituição realiza o cálculo oficial do PIB do agronegócio brasileiro em parceria contínua com a Confederação da Agricultura e Pecuária do Brasil (CNA)?",
+          "pergunta": "O cálculo do PIB do agronegócio brasileiro é elaborado periodicamente por qual instituição técnica em parceria com a CNA?",
           "opcoes": {
             "A": "Embrapa Territorial.",
             "B": "CEPEA (Centro de Estudos Avançados em Economia Aplicada - USP).",
-            "C": "IBGE - Coordenação de Contas Nacionais.",
+            "C": "IBGE.",
             "D": "Ministério da Agricultura e Pecuária (MAPA).",
             "E": "Banco Central do Brasil."
           },
           "correta": "B",
-          "explicacao": "O PIB do agronegócio brasileiro é mensurado pelo CEPEA/USP em convênio de análise de dados com a CNA.",
+          "explicacao": "O PIB do agronegócio é monitorado mensalmente e anualmente através de pesquisas do CEPEA/USP em cooperação com a CNA.",
           "pagina": "página 31 do PDF do SENAR"
         },
         {
-          "pergunta": "As atividades de beneficiamento, industrialização, embalagem e distribuição de alimentos processados pertencem a qual segmento do agronegócio?",
+          "pergunta": "O processamento industrial, escoamento logístico e exportação de commodities pertencem a qual segmento clássico da cadeia do agronegócio?",
           "opcoes": {
             "A": "Antes da porteira.",
             "B": "Dentro da porteira.",
             "C": "Depois da porteira.",
             "D": "Fomento financeiro rural.",
-            "E": "Cooperativismo primário básico."
+            "E": "Biotecnologia laboratorial."
           },
           "correta": "C",
-          "explicacao": "O segmento 'depois da porteira' engloba o processamento industrial, a transformação dos alimentos, a logística, o varejo e a entrega ao consumidor final.",
+          "explicacao": "O segmento 'depois da porteira' engloba o processamento industrial, a transformação dos alimentos, a logística e a exportação final.",
           "pagina": "página 35 do PDF do SENAR"
         }
       ],
       "TEMA_2": [
         {
-          "pergunta": "Qual prática agrícola é amplamente adotada visando mitigar a degradação física do solo e conservar a umidade por meio do não revolvimento da terra com arados?",
+          "pergunta": "Em 1797, o economista inglês Thomas Malthus formulou uma teoria sobre a capacidade de suprimento alimentar global. Qual era a premissa dessa tese, superada posteriormente pelo avanço tecnológico do campo?",
           "opcoes": {
-            "A": "Monocultura de soja contínua.",
-            "B": "Aração profunda anual.",
-            "C": "Queimada preventiva de restolhos.",
-            "D": "Sistema de Plantio Direto (SPD).",
-            "E": "Gradagem intensiva pós-colheita."
+            "A": "A população mundial cresceria em progressão aritmética, superando a oferta de terras agrícolas.",
+            "B": "A produção de alimentos cresceria em progressão geométrica, gerando excedentes de commodities.",
+            "C": "O agronegócio operaria de forma encadeada sob a ótica de um sistema industrial fechado.",
+            "D": "A população mundial cresceria em progressão geométrica, enquanto a produção de alimentos cresceria em progressão aritmética, tornando impossível alimentar a humanidade.",
+            "E": "O melhoramento genético vegetal estabilizaria de forma definitiva as taxas de natalidade global."
           },
           "correta": "D",
-          "explicacao": "O Sistema de Plantio Direto (SPD) baseia-se em três pilares básicos: ausência de revolvimento prévio do solo, cobertura vegetal perene e rotação programada de culturas.",
+          "explicacao": "Thomas Malthus afirmou em 1797 que a produção de alimentos crescia de forma aritmética, enquanto a população expandia-se geometricamente. Sua visão pessimista foi superada pelo avanço científico das máquinas, fertilizantes e genética, que otimizaram a produção vegetal.",
+          "pagina": "página 37 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O Sistema de Plantio Direto (SPD) baseia-se em três princípios básicos para conservação do solo. Qual alternativa apresenta um desses princípios?",
+          "opcoes": {
+            "A": "Aração profunda anual.",
+            "B": "Monocultura repetitiva.",
+            "C": "Revolvimento mecânico intensivo.",
+            "D": "Rotação programada de culturas.",
+            "E": "Queima dos restos culturais."
+          },
+          "correta": "D",
+          "explicacao": "Os três pilares do SPD são: o não revolvimento do solo, a cobertura permanente (palhada) e a rotação de culturas.",
           "pagina": "página 45 do PDF do SENAR"
         },
         {
-          "pergunta": "A Integração Lavoura-Pecuária-Floresta (iLPF) visa otimizar o uso da terra. Qual o principal benefício ambiental direto deste sistema integrado?",
+          "pergunta": "Qual sistema integrado visa otimizar o uso da terra consorciando componentes agrícolas, pecuários e florestais em uma mesma área?",
           "opcoes": {
-            "A": "Redução do ciclo biológico de pragas aéreas.",
-            "B": "Eliminação total do uso de herbicidas seletivos.",
-            "C": "Recuperação de pastagens degradadas e intensivo sequestro de carbono.",
-            "D": "Aumento estático do teor de argila do solo.",
-            "E": "Indução química de chuvas em épocas secas."
+            "A": "Monocultura intensiva irrigada.",
+            "B": "Integração Lavoura-Pecuária-Floresta (iLPF).",
+            "C": "Silvicultura homogênea de rotação rápida.",
+            "D": "Cultivo hidropônico em estufas.",
+            "E": "Sistemas de pastagem extensiva tradicional."
           },
-          "correta": "C",
-          "explicacao": "A iLPF recupera o solo degradado pela pecuária, diversifica as fontes de renda do produtor e estoca carbono através do plantio de árvores.",
+          "correta": "B",
+          "explicacao": "O sistema iLPF consorcia os componentes agrícola, pecuário e florestal, trazendo sinergias biológicas e melhorando a conservação e o sequestro de carbono.",
           "pagina": "página 48 do PDF do SENAR"
         },
         {
-          "pergunta": "Qual dos seguintes sistemas de produção agrícola foca estritamente na ausência do uso de adubos químicos solúveis sintéticos e de pesticidas no manejo vegetal?",
+          "pergunta": "Qual grupo vegetal é amplamente utilizado na prática da adubação verde devido à simbiose com bactérias fixadoras de nitrogênio?",
           "opcoes": {
-            "A": "Agricultura Orgânica.",
-            "B": "Hidroponia intensiva.",
-            "C": "Agricultura de precisão por taxa variável.",
-            "D": "Monocultura de grãos transgênicos.",
-            "E": "Silvicultura de rotação curta."
+            "A": "Gramíneas forrageiras.",
+            "B": "Crucíferas e brássicas.",
+            "C": "Leguminosas.",
+            "D": "Plantas aquáticas espontâneas.",
+            "E": "Coníferas lenhosas."
           },
-          "correta": "A",
-          "explicacao": "A agricultura orgânica proíbe insumos químicos sintéticos e transgênicos, focando na biologia do solo e no controle ecológico de pragas.",
-          "pagina": "página 52 do PDF do SENAR"
+          "correta": "C",
+          "explicacao": "As leguminosas possuem simbiose com bactérias fixadoras de nitrogênio, enriquecendo o solo com matéria orgânica e nitrogênio biodisponível.",
+          "pagina": "página 60 do PDF do SENAR"
         },
         {
-          "pergunta": "O plantio em curvas de nível é uma prática recomendada para evitar qual tipo de degradação ambiental nas encostas?",
+          "pergunta": "Qual dos seguintes sistemas de produção agrícola proíbe estritamente o uso de adubos químicos altamente solúveis e agrotóxicos?",
           "opcoes": {
-            "A": "Compactação subsuperficial por tratores.",
-            "B": "Erosão hídrica e perda de nutrientes do solo por lixiviação.",
-            "C": "Alcalinização acelerada de minerais solúveis.",
-            "D": "Perda de água por transpiração estomática extrema.",
-            "E": "Esgotamento biológico de nematóides benéficos."
+            "A": "Agricultura de Precisão.",
+            "B": "Agricultura Orgânica.",
+            "C": "Cultivo hidropônico comercial.",
+            "D": "Monocultura de grãos transgênicos.",
+            "E": "Silvicultura de ciclo rápido."
           },
           "correta": "B",
-          "explicacao": "As curvas de nível quebram a velocidade da água da chuva que escorre pela superfície do terreno, reduzindo drasticamente a força erosiva e conservando o solo.",
-          "pagina": "página 56 do PDF do SENAR"
-        },
-        {
-          "pergunta": "O uso de adubação verde apoia-se principalmente no cultivo de plantas que adicionam matéria orgânica e nitrogênio ao solo. Qual grupo botânico é o mais utilizado para esse fim?",
-          "opcoes": {
-            "A": "Gramíneas forrageiras de crescimento cespitoso.",
-            "B": "Crucíferas e brássicas de raízes profundas.",
-            "C": "Cactáceas adaptadas ao estresse hídrico.",
-            "D": "Plantas medicinais espontâneas.",
-            "E": "Leguminosas (como crotalária e feijão-de-porco)."
-          },
-          "correta": "E",
-          "explicacao": "As leguminosas fixam o nitrogênio atmosférico em simbiose com bactérias e, ao serem incorporadas, liberam grande quantidade de N e matéria orgânica no solo.",
-          "pagina": "página 60 do PDF do SENAR"
+          "explicacao": "A agricultura orgânica baseia-se na sustentabilidade biológica, proibindo defensivos agrícolas químicos e fertilizantes sintéticos solúveis.",
+          "pagina": "página 52 do PDF do SENAR"
         }
       ],
       "TEMA_3": [
         {
-          "pergunta": "As plantas vasculares possuem tecidos especializados para a translocação de água e nutrientes. Qual tecido transporta seiva elaborada (açúcares derivados da fotossíntese)?",
+          "pergunta": "A principal característica biofísica que unifica os organismos pertencentes ao Reino Vegetal é a autotrofia por meio da fotossíntese. Com base nos fundamentos fisiológicos descritos no material, como se define esse processo?",
           "opcoes": {
-            "A": "Xilema primário.",
-            "B": "Córtex medular.",
-            "C": "Floema.",
-            "D": "Esclerênquima lignificado.",
-            "E": "Parênquima aquífero."
+            "A": "A oxidação bioquímica de compostos carbonados na mitocôndria para a liberação de ATP e CO2.",
+            "B": "A conversão de energia luminosa, por meio da atuação da clorofila, em energia química, com produção de carboidratos a partir de dióxido de carbono (CO2) e água.",
+            "C": "A absorção radicular passiva de macro e micronutrientes minerais dissolvidos na seiva bruta.",
+            "D": "O mecanismo de reprodução vegetativa assexuada conduzido por tecidos meristemáticos totipotentes.",
+            "E": "A transformação de energia mecânica derivada do vento em energia potencial osmótica para o alongamento celular."
           },
-          "correta": "C",
-          "explicacao": "O floema é o tecido condutor responsável por distribuir a seiva elaborada (compostos orgânicos originados nas folhas pela fotossíntese) para os demais órgãos das plantas.",
+          "correta": "B",
+          "explicacao": "A fotossíntese é o motor energético do Reino Vegetal. Através dos pigmentos de clorofila contidos nos cloroplastos, as plantas capturam os fótons da luz solar e utilizam essa energia para fixar o CO2 atmosférico e clivar a molécula de água, sintetizando esqueletos de carbono (carboidratos) e liberando oxigênio (O2).",
           "pagina": "página 70 do PDF do SENAR"
         },
         {
-          "pergunta": "Qual estrutura celular foliar é diretamente responsável pelo controle das trocas gasosas (entrada de CO2) e perda de água por transpiração?",
+          "pergunta": "Qual tecido vegetal é especializado na translocação de água e sais minerais absorvidos do solo (seiva bruta) até as folhas?",
           "opcoes": {
-            "A": "Tricomas glandulares.",
-            "B": "Estômatos.",
-            "C": "Cutícula cerosa.",
-            "D": "Plasmodesmos epidérmicos.",
-            "E": "Parênquima paliçádico."
+            "A": "Floema.",
+            "B": "Xilema (ou lenho).",
+            "C": "Córtex medular.",
+            "D": "Parênquima paliçádico.",
+            "E": "Esclerênquima lignificado."
           },
           "correta": "B",
-          "explicacao": "Os estômatos são aberturas microscópicas na epiderme da folha que se abrem e fecham regulando a entrada de gás carbônico e a saída de vapor de água.",
+          "explicacao": "O xilema (lenho) é o tecido condutor responsável por distribuir a seiva bruta (água e minerais) no sentido ascendente das raízes até as copas.",
+          "pagina": "página 71 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual estrutura microscópica presente na epiderme foliar controla ativamente a transpiração das plantas e as trocas gasosas necessárias para a fotossíntese?",
+          "opcoes": {
+            "A": "Cutícula de cera.",
+            "B": "Tricomas glandulares.",
+            "C": "Estômatos.",
+            "D": "Plasmodesmos.",
+            "E": "Paredes celulósicas."
+          },
+          "correta": "C",
+          "explicacao": "Os estômatos realizam a transpiração e as trocas de CO2 e O2 regulando a abertura e fechamento de seu poro estomático (ostíolo).",
           "pagina": "página 74 do PDF do SENAR"
         },
         {
-          "pergunta": "O xilema (ou vasos lenhosos) é o tecido vegetal de condução especializado no transporte de qual tipo de substância?",
+          "pergunta": "Como se denomina o sistema radicular típico de plantas monocotiledôneas (como milho, trigo e gramíneas) que não possui uma raiz principal dominante?",
           "opcoes": {
-            "A": "Seiva bruta (água e sais minerais absorvidos do solo).",
-            "B": "Amidos digeridos das reservas de raízes tuberosas.",
-            "C": "Glicose elaborada no parênquima foliar.",
-            "D": "Hormônios puros em estado gasoso.",
-            "E": "Látex protetor contra insetos sugadores."
+            "A": "Sistema radicular pivotante.",
+            "B": "Sistema radicular fasciculado (em cabeleira).",
+            "C": "Raízes tuberosas profundas.",
+            "D": "Raízes do tipo pneumatóforo.",
+            "E": "Haustórios sugadores."
           },
-          "correta": "A",
-          "explicacao": "O xilema conduz água e minerais da raiz até as folhas. Esse transporte é impulsionado principalmente pela transpiração foliar.",
-          "pagina": "página 77 do PDF do SENAR"
-        },
-        {
-          "pergunta": "Qual tipo de sistema radicular é característico e predominante nas plantas classificadas como monocotiledôneas (como milho, arroz e cana)?",
-          "opcoes": {
-            "A": "Sistema pivotante com raiz principal profunda.",
-            "B": "Raízes tuberosas ricas em lipídios.",
-            "C": "Raízes aéreas do tipo pneumatóforo.",
-            "D": "Sistema fasciculado (também chamado de raiz em cabeleira).",
-            "E": "Haustórios parasitários superficiais."
-          },
-          "correta": "D",
-          "explicacao": "As monocotiledôneas têm raízes fasciculadas, sem raiz central dominante, formando um emaranhado denso e superficial que ajuda na fixação e absorção rápida.",
+          "correta": "B",
+          "explicacao": "O sistema fasciculado caracteriza-se por um emaranhado denso de raízes finas e superficiais com origem comum, sem dominância de uma raiz pivotante.",
           "pagina": "página 82 do PDF do SENAR"
         },
         {
-          "pergunta": "No processo de fotossíntese, qual organela celular é responsável por abrigar as moléculas de clorofila e capturar a energia luminosa?",
+          "pergunta": "Qual organela celular das plantas abriga as moléculas de clorofila responsáveis pelo início da fase fotoquímica da fotossíntese?",
           "opcoes": {
-            "A": "Mitocôndria celular.",
-            "B": "Cloroplasto.",
-            "C": "Complexo de Golgi.",
-            "D": "Vacúolo de suco celular.",
-            "E": "Ribossomo rugoso."
+            "A": "Mitocôndria.",
+            "B": "Complexo de Golgi.",
+            "C": "Cloroplasto.",
+            "D": "Ribossomo rugoso.",
+            "E": "Lisossomo digestivo."
           },
-          "correta": "B",
-          "explicacao": "Os cloroplastos contêm os pigmentos fotossintetizantes (clorofilas) que absorvem comprimentos de onda de luz para produzir carboidratos.",
+          "correta": "C",
+          "explicacao": "A fase fotoquímica e bioquímica da fotossíntese ocorre integralmente nos cloroplastos, organelas que abrigam os pigmentos de clorofila.",
           "pagina": "página 85 do PDF do SENAR"
         }
       ],
       "TEMA_4": [
         {
-          "pergunta": "De acordo com os princípios da nutrição mineral de plantas, especificamente em relação à Lei do Mínimo de Liebig, pode-se afirmar que:",
+          "pergunta": "Os elementos minerais considerados essenciais para o metabolismo vegetal são classificados em função da exigência quantitativa da cultura. Qual alternativa agrupa exclusivamente macronutrientes minerais?",
           "opcoes": {
-            "A": "A produtividade depende da concentração do macronutriente abundante.",
-            "B": "O desenvolvimento vegetal limita-se pelo elemento essencial em menor proporção.",
-            "C": "Os micronutrientes tornam-se dispensáveis em solos ricos em nitrogênio.",
-            "D": "A dosagem de fertilizantes orgânicos neutraliza todas as restrições minerais.",
-            "E": "A água supre integralmente as canências de ferro e potássio das folhas."
+            "A": "Ferro (Fe), Manganês (Mn), Boro (B), Cobre (Cu), Zinco (Zn), Molibdênio (Mo), Cloro (Cl) e Níquel (Ni).",
+            "B": "Nitrogênio (N), Fósforo (P), Potássio (K), Cálcio (Ca), Magnésio (Mg) e Enxofre (S).",
+            "C": "Carbono (C), Oxigênio (O), Hidrogênio (H), Nitrogênio (N) e Fósforo (P).",
+            "D": "Zinco (Zn), Cobre (Cu), Manganês (Mn), Ferro (Fe), Boro (B), Molibdênio (Mo) e Alumínio (Al).",
+            "E": "Cálcio (Ca), Magnésio (Mg), Enxofre (S), Ferro (Fe), Manganês (Mn) e Zinco (Zn)."
           },
           "correta": "B",
-          "explicacao": "A Lei do Mínimo postula que o crescimento vegetal é prejudicado e restringido diretamente pela carência do elemento que apresentar menor adequação ideal no solo.",
+          "explicacao": "Os macronutrientes minerais são exigidos em larga escala pelos tecidos vegetais, atuando em funções estruturais e energéticas. São eles: N, P, K, Ca, Mg e S. O carbono, oxigênio e hidrogênio são elementos estruturais orgânicos fornecidos pelo ar e pela água (não minerais).",
           "pagina": "página 94 do PDF do SENAR"
         },
         {
-          "pergunta": "Qual macronutriente primário é altamente exigido no desenvolvimento vegetativo inicial para estimular o crescimento de folhas e alongamento celular do caule?",
+          "pergunta": "Qual princípio postula que a produtividade das culturas agrícolas é limitada pelo nutriente que estiver em menor proporção no solo em relação às demandas vegetais?",
+          "opcoes": {
+            "A": "Lei dos Rendimentos Decrescentes.",
+            "B": "Lei do Mínimo de Liebig.",
+            "C": "Lei da Ação de Massas.",
+            "D": "Princípio da Conservação de Nutrientes.",
+            "E": "Lei da Diluição de Tecidos."
+          },
+          "correta": "B",
+          "explicacao": "A Lei do Mínimo estabelece que mesmo com todos os nutrientes em abundância, o rendimento é limitado pelo nutriente que estiver em menor disponibilidade.",
+          "pagina": "página 95 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual macronutriente atua diretamente no estímulo do crescimento inicial de folhas e ramificações devido ao papel estrutural de síntese proteica?",
           "opcoes": {
             "A": "Nitrogênio (N).",
-            "B": "Cobre (Cu).",
+            "B": "Zinco (Zn).",
             "C": "Boro (B).",
             "D": "Cálcio (Ca).",
-            "E": "Zinco (Zn)."
+            "E": "Ferro (Fe)."
           },
           "correta": "A",
-          "explicacao": "O Nitrogênio é essencial na composição de aminoácidos, proteínas e clorofila, estimulando fortemente o desenvolvimento de folhas e tecidos verdes.",
+          "explicacao": "O nitrogênio estimula o crescimento vegetativo vigoroso de folhas e brotos, por ser constituinte primário de proteínas e clorofila.",
           "pagina": "página 97 do PDF do SENAR"
         },
         {
-          "pergunta": "A prática da calagem é essencial para a correção de solos ácidos tropicais. Qual é o seu principal objetivo do ponto de vista químico?",
+          "pergunta": "A prática da calagem é amplamente realizada para neutralizar solos ácidos tropicais. Qual o seu principal objetivo do ponto de vista da química do solo?",
           "opcoes": {
-            "A": "Aumentar a textura arenosa do solo de plantio.",
-            "B": "Reduzir o pH do solo para níveis inferiores a 4.",
-            "C": "Elevar o pH do solo e neutralizar a toxidez do alumínio.",
-            "D": "Substituir totalmente a necessidade de adubação nitrogenada.",
-            "E": "Acelerar a compactação superficial da lavoura."
+            "A": "Reduzir o teor de areia total.",
+            "B": "Elevar o pH e neutralizar a toxidez do alumínio ativo.",
+            "C": "Aumentar a acidez latente.",
+            "D": "Substituir a necessidade de adubo fosfatado.",
+            "E": "Eliminar os argilominerais nativos."
           },
-          "correta": "C",
-          "explicacao": "A calagem fornece cálcio e magnésio, neutraliza os íons tóxicos de Alumínio e eleva o pH, aumentando a disponibilidade e absorção de outros nutrientes.",
+          "correta": "B",
+          "explicacao": "O corretivo de acidez (calcário) fornece Cálcio e Magnésio, eleva o pH e neutraliza o Alumínio tóxico (Al3+), aumentando a disponibilidade de nutrientes.",
           "pagina": "página 101 do PDF do SENAR"
         },
         {
-          "pergunta": "O Fósforo (P) desempenha papel vital em qual das seguintes funções metabólicas gerais nas fases iniciais das plantas?",
+          "pergunta": "O Fósforo (P) desempenha papel vital em quais funções principais nos estágios iniciais de crescimento das culturas agrícolas?",
           "opcoes": {
-            "A": "Regulação estomática exclusiva.",
-            "B": "Transferência de energia via ATP e desenvolvimento radicular.",
-            "C": "Síntese foliar de açúcares simples.",
-            "D": "Preenchimento de sementes.",
-            "E": "Elevação da resistência mecânica da casca dos frutos."
+            "A": "Regulação mecânica de estômatos.",
+            "B": "Transferência de energia via ATP e desenvolvimento do sistema radicular.",
+            "C": "Síntese celular foliar de óleos aromáticos.",
+            "D": "Enrijecimento direto da epiderme lenhosa.",
+            "E": "Substituição completa do magnésio da clorofila."
           },
           "correta": "B",
-          "explicacao": "O Fósforo faz parte dos ácidos nucleicos e ATP (energia celular), estimulando o crescimento das raízes e o estabelecimento rápido da cultura.",
+          "explicacao": "O fósforo é crucial no metabolismo energético (ATP), no crescimento do sistema radicular e no estabelecimento inicial das plantas.",
           "pagina": "página 105 do PDF do SENAR"
-        },
-        {
-          "pergunta": "Qual dos seguintes elements minerais é classificado como micronutriente, embora seja indispensável em quantidades mínimas?",
-          "opcoes": {
-            "A": "Potássio (K).",
-            "B": "Magnésio (Mg).",
-            "C": "Enxofre (S).",
-            "D": "Zinco (Zn).",
-            "E": "Fósforo (P)."
-          },
-          "correta": "D",
-          "explicacao": "O Zinco é um micronutriente necessário em pequenas dosagens, atuando principalmente na regulação enzimática do crescimento vegetal.",
-          "pagina": "página 109 do PDF do SENAR"
         }
       ],
       "TEMA_5": [
         {
-          "pergunta": "Qual metodologia de irrigação oferece os maiores níveis de eficiência na conservação de recursos hídricos ao gotejar água de forma pontual perto do colo da planta?",
+          "pergunta": "A agricultura irrigada desempenha papel central na verticalização da produção no agronegócio. De acordo com os dados estatísticos nacionais apresentados na página 113, qual é a relação de produtividade física observada entre a agricultura irrigada e a tradicional de sequeiro?",
           "opcoes": {
-            "A": "Irrigação por gotejamento localizado.",
-            "B": "Inundação aberta de arrozal.",
-            "C": "Aspersão mecânica por aspersores móveis.",
-            "D": "Sulcos paralelos de declive acentuado.",
-            "E": "Pivô central de grande fluxo."
+            "A": "A agricultura irrigada é cerca de 1,5 vez mais produtiva na colheita volumétrica de grãos.",
+            "B": "A agricultura irrigada atinge o patamar exato de 2 vezes o rendimento da lavoura de sequeiro.",
+            "C": "A agricultura irrigada chega a ser 3 vezes mais produtiva que a agricultura tradicional.",
+            "D": "A agricultura irrigada expande o rendimento biológico em até 5 vezes a capacidade do lote.",
+            "E": "Não são registradas diferenças estatísticas significativas de produtividade entre os dois modelos sazonais."
           },
-          "correta": "A",
-          "explicacao": "O gotejamento direciona recursos diretamente à raiz reduzindo perdas por deriva do vento e evaporação, permitindo eficiência operacional superior a 90%.",
+          "correta": "C",
+          "explicacao": "A estabilização hídrica fornecida pela irrigação maximiza a eficiência fotossintética e nutricional das plantas, elevando a produtividade física em até 3 vezes e o ganho econômico monetário na comercialização das safras em até 7 vezes.",
           "pagina": "página 113 do PDF do SENAR"
         },
         {
-          "pergunta": "A salinização do solo é um problema frequente em áreas irrigadas de regiões áridas. Como evitar esse problema de forma técnica preventiva?",
+          "pergunta": "Qual dos métodos de irrigação apresenta maior economia e eficiência hídrica ao aplicar água de forma pontual diretamente na zona das raízes das plantas?",
           "opcoes": {
-            "A": "Interrompendo a irrigação à noite.",
-            "B": "Instalando um sistema eficiente de drenagem agrícola no solo.",
-            "C": "Adicionando excesso de gesso mineral agrícola.",
-            "D": "Aumentando a frequência de aração mecânica profunda.",
-            "E": "Aplicando biofertilizantes de base orgânica."
+            "A": "Irrigação por inundação de talhões.",
+            "B": "Infiltração por sulcos.",
+            "C": "Irrigação por gotejamento localizado.",
+            "D": "Pivô central com aspersores de alta vazão.",
+            "E": "Aspersão convencional móvel."
+          },
+          "correta": "C",
+          "explicacao": "O gotejamento localizado tem baixas perdas por evaporação e deriva, permitindo eficiências hídricas superiores a 90% na zona radicular.",
+          "pagina": "página 115 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Em áreas de climas áridos e semiáridos, a drenagem do solo é um componente essencial na agricultura irrigada para evitar qual grave problema ecológico?",
+          "opcoes": {
+            "A": "Compactação superficial por chuva.",
+            "B": "Salinização progressiva do solo cultivável.",
+            "C": "Lixiviação extrema de microrganismos benéficos.",
+            "D": "Alcalinização alcalina pura do subsolo.",
+            "E": "Desidratação de raízes secundárias."
           },
           "correta": "B",
-          "explicacao": "A drenagem permite a lixiviação (lavagem) do excesso de sais solúveis da região radicular, evitando o acúmulo salino prejudicial.",
+          "explicacao": "A drenagem permite regular o lençol freático e escoar o excesso de água salina, prevenindo o acúmulo de sais na superfície (salinização).",
           "pagina": "página 116 do PDF do SENAR"
         },
         {
-          "pergunta": "O sistema de irrigação por Pivô Central enquadra-se em qual método de aplicação de água?",
+          "pergunta": "O sistema de Pivô Central enquadra-se metodologicamente em qual dos grandes métodos de irrigação agrícola?",
           "opcoes": {
-            "A": "Método de infiltração por inundação.",
-            "B": "Irrigação por gotejamento.",
-            "C": "Método por aspersão.",
-            "D": "Irrigação por sulcos.",
-            "E": "Subirrigação freática."
+            "A": "Irrigação localizada por microaspersão.",
+            "B": "Método por aspersão.",
+            "C": "Irrigação de superfície por inundação.",
+            "D": "Subirrigação freática permanente.",
+            "E": "Método de infiltração por canais."
           },
-          "correta": "C",
-          "explicacao": "O pivô central distribui água simulando chuva artificial por meio de aspersores, classificando-se no método de aspersão mecânica.",
+          "correta": "B",
+          "explicacao": "O pivô central atua no método de aspersão mecânica rotativa, simulando uma chuva artificial sobre a área cultivada circular.",
           "pagina": "página 119 do PDF do SENAR"
         },
         {
-          "pergunta": "Qual a principal limitação do método de irrigação por infiltração em sulcos de superfície?",
-          "opcoes": {
-            "A": "Baixa eficiência de aplicação de água e alta perda por percolação profunda.",
-            "B": "Custos elétricos elevados para bombeamento de alta pressão.",
-            "C": "Obstrução constante dos emissores por argila.",
-            "D": "Sensibilidade extrema à ação direta do vento.",
-            "E": "Necessidade constante de mão de obra de manutenção robótica."
-          },
-          "correta": "A",
-          "explicacao": "A irrigação por sulcos apresenta alta perda por escoamento superficial e infiltração excessiva na cabeceira, reduzindo a uniformidade de molhamento.",
-          "pagina": "página 122 do PDF do SENAR"
-        },
-        {
-          "pergunta": "Qual parâmetro de solo determina a capacidade máxima de retenção de água aproveitável pelas plantas após o escoamento do excesso pela gravidade?",
+          "pergunta": "Qual termo caracteriza a quantidade de umidade de solo retida após o término do escoamento rápido da água pela gravidade?",
           "opcoes": {
             "A": "Ponto de murcha permanente.",
-            "B": "Porosidade total de ar livre.",
-            "C": "Velocidade de infiltração básica.",
-            "D": "Índice de saturação do solo.",
-            "E": "Capacidade de campo."
+            "B": "Saturação hídrica completa.",
+            "C": "Capacidade de campo.",
+            "D": "Porosidade drenável de ar.",
+            "E": "Água higroscópica indisponível."
           },
-          "correta": "E",
-          "explicacao": "A Capacidade de Campo é o limite superior de água útil contida nos microporos do solo após a drenagem rápida da gravidade acabar.",
+          "correta": "C",
+          "explicacao": "A Capacidade de Campo (CC) é o limite superior de água útil armazenada nos microporos do solo contra a força gravitacional.",
           "pagina": "página 125 do PDF do SENAR"
         }
       ],
       "TEMA_6": [
         {
-          "pergunta": "A introdução da cultura da soja no Cerrado foi viabilizada pelo uso de inoculantes microbianos. Qual gênero de bactérias desempenha a Fixação Biológica de Nitrogênio (FBN) nessa leguminosa?",
+          "pergunta": "A cotonicultura brasileira passou por profundas transformações estruturais e geográficas ao longo das últimas décadas. Conforme o contexto histórico apresentado na página 131, qual praga causou prejuízos devastadores nos anos 1980 e qual estado consolidou-se como o polo produtor na região do Cerrado a partir dos anos 2000?",
+          "opcoes": {
+            "A": "O ataque generalizado da praga do 'bicudo-do-algodoeiro' na década de 1980 e o estabelecimento definitivo da cultura no estado do Mato Grosso a partir dos anos 2000.",
+            "B": "A infestation epidêmica da lagarta-do-cartucho nos anos 1980 e a consequente migração do cinturão produtivo para o semiárido do Rio Grande do Sul.",
+            "C": "O surto fitossanitário do pulgão-das-folhas em 1980 seguido pela transferência da atividade para áreas litorâneas da Região Nordeste.",
+            "D": "A introdução acidental do ácaro-rajado por colônias portuguesas e a posterior concentração industrial no estado do Maranhão.",
+            "E": "O declínio produtivo por nematóides de galha na década de 1980 aliado à realocação das lavouras para zonas úmidas do bioma Pampas."
+          },
+          "correta": "A",
+          "explicacao": "O aparecimento do inseto coleóptero 'bicudo-do-algodoeiro' (Anthonomus grandis) na década de 1980 devastou a cotonicultura tradicional do país. A partir dos anos 2000, o cultivo ressurgiu com alto nível tecnológico nas áreas de Cerrado do Mato Grosso, favorecido pela topografia plana e regime climático regular.",
+          "pagina": "página 131 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Bactérias simbióticas de qual gênero biológico são amplamente inoculadas nas sementes de soja para a Fixação Biológica de Nitrogênio (FBN)?",
           "opcoes": {
             "A": "Bradyrhizobium.",
             "B": "Lactobacillus.",
@@ -620,238 +627,238 @@
             "E": "Bacillus."
           },
           "correta": "A",
-          "explicacao": "Bactérias simbióticas do gênero Bradyrhizobium associam-se às raízes e convertem nitrogênio gasoso (N2) em formas químicas prontamente utilizáveis pelas plantas.",
-          "pagina": "página 131 do PDF do SENAR"
+          "explicacao": "Bactérias do gênero Bradyrhizobium fixam nitrogênio gasoso (N2) em simbiose com as raízes de leguminosas, dispensando fertilizantes químicos de N na cultura da soja.",
+          "pagina": "página 132 do PDF do SENAR"
         },
         {
-          "pergunta": "A cultura do milho é amplamente utilizada para silagem e produção de grãos. Qual o seu centro de origem botânico conhecido historicamente?",
+          "pergunta": "Do ponto de vista biogeográfico e histórico das principais culturas, qual a origem biológica e centro de domesticação do milho?",
           "opcoes": {
-            "A": "Ásia Central e China.",
-            "B": "Leste Europeu e Rússia.",
+            "A": "Leste Europeu e Ásia Central.",
+            "B": "Litoral Leste do Mediterrâneo.",
             "C": "América Central e México.",
-            "D": "Norte da África.",
-            "E": "Cerrado Brasileiro."
+            "D": "Pampas argentinos e uruguaios.",
+            "E": "Florestas úmidas da bacia amazônica."
           },
           "correta": "C",
-          "explicacao": "O milho é nativo da América Central (México). Ele foi domesticado a partir do teosinto pelos povos indígenas há milhares de anos.",
+          "explicacao": "O milho é originário do México (América Central) e foi domesticado a partir do capim silvestre teosinto de forma contínua por povos ancestrais.",
           "pagina": "página 134 do PDF do SENAR"
         },
         {
-          "pergunta": "Na cultura do café, qual tipo botânico é conhecido por possuir maior teor de cafeína, rusticidade contra pragas e ser amplamente cultivado no Espírito Santo e Rondônia?",
+          "pergunta": "Qual espécie botânica de café caracteriza-se por apresentar maior rusticidade contra doenças foliares e adaptação a altitudes mais baixas no Espírito Santo e Rondônia?",
           "opcoes": {
-            "A": "Café Arábica.",
-            "B": "Café Conilon (ou Robusta).",
-            "C": "Café Bourbon Amarelo.",
+            "A": "Coffea arabica.",
+            "B": "Coffea canephora (Conilon / Robusta).",
+            "C": "Café Bourbon.",
             "D": "Café Geisha.",
-            "E": "Café Liberica."
+            "E": "Café Liberica de folha larga."
           },
           "correta": "B",
-          "explicacao": "O Coffea canephora (Conilon/Robusta) adapta-se melhor a climas quentes e altitudes baixas, contendo cerca do dobro de cafeína do café Arábica.",
+          "explicacao": "O café robusto (Conilon/canephora) apresenta maior rusticidade e adaptação a climas quentes de planície do que o café arábica.",
           "pagina": "página 138 do PDF do SENAR"
         },
         {
-          "pergunta": "O ciclo vegetativo da cana-de-açúcar é influenciado pela época de plantio. Qual subproduto de sua industrialização é amplamente usado para cogeração de energia térmica nas usinas?",
+          "pergunta": "A agroindústria da cana-de-açúcar utiliza qual resíduo fibroso pós-moagem para a queima em usinas visando a cogeração de eletricidade limpa?",
           "opcoes": {
-            "A": "Vinhaça concentrada.",
-            "B": "Melado residual.",
-            "C": "Torta de filtro orgânica.",
-            "D": "Bagaço de cana.",
-            "E": "Levedura seca."
+            "A": "Vinhaça ácida diluída.",
+            "B": "Torta de filtro calcinada.",
+            "C": "Bagaço de cana.",
+            "D": "Palhada seca triturada de solo.",
+            "E": "Mel residual centrifugado."
           },
-          "correta": "D",
-          "explicacao": "O bagaço fibroso gerado na moagem da cana é queimado em caldeiras de alta pressão para gerar vapor e energia elétrica limpa.",
+          "correta": "C",
+          "explicacao": "O bagaço celulósico da cana é intensamente queimado em caldeiras para geração de energia de cogeração elétrica e vapor térmico.",
           "pagina": "página 142 do PDF do SENAR"
-        },
-        {
-          "pergunta": "A cultura do algodão exige monitoramento constante contra pragas. Qual é a principal praga de importância econômica que gerou prejuízos históricos na cotonicultura brasileira?",
-          "opcoes": {
-            "A": "Bicudo-do-algodoeiro.",
-            "B": "Pulgão-do-algodão.",
-            "C": "Mosca-branca.",
-            "D": "Lagarta-do-cartucho.",
-            "E": "Ácaro-rajado."
-          },
-          "correta": "A",
-          "explicacao": "O coleóptero Bicudo (Anthonomus grandis) ataca os botões florais do algodão, inviabilizando a colheita e exigindo monitoramento intensivo na safra.",
-          "pagina": "página 146 do PDF do SENAR"
         }
       ],
       "TEMA_7": [
         {
-          "pergunta": "Qual das cadeias da pecuária nacional destaca-se pelo elevado índice de automação tecnológica e liderança de volume exportado com contratos integrados?",
+          "pergunta": "A atividade leiteira desempenha papel fundamental na fixação do homem no campo e na geração de renda nos agrossistemas brasileiros. De acordo com as estatísticas setoriais apresentadas na página 208, qual posição o Brasil ocupa no ranking mundial de produção de leite e qual foi a sua produção volumétrica líquida?",
           "opcoes": {
-            "A": "Bubalinocultura extensiva para queijo.",
-            "B": "Cunicultura especializada de peles.",
-            "C": "Avicultura de corte.",
-            "D": "Caprinocultura rústica do semiárido.",
-            "E": "Apicultura silvestre sedentária."
+            "A": "3º lugar mundial, registrando a marca de 50 bilhões de litros anuais.",
+            "B": "6º lugar no ranking mundial de produção de leite, com 38 bilhões de litros.",
+            "C": "2º lugar mundial, apresentando o patamar estável de 45 bilhões de litros.",
+            "D": "10º lugar no ranking mundial, computando a entrega de 25 bilhões de litros.",
+            "E": "1º lugar mundial, isolado na liderança com a marca de 60 bilhões de litros."
           },
-          "correta": "C",
-          "explicacao": "A avicultura de corte brasileira está no topo de eficiência global, apoiada em sistemas eficientes de integração vertical, controle de sanidade e genética apurada.",
+          "correta": "B",
+          "explicacao": "O material do SENAR, citando dados de Ximenes (2021), aponta a expressiva relevância da bacia leiteira nacional. O Brasil consolidou-se na 6ª posição do ranking global, atingindo a marca de 38 bilhões de litros de leite produzidos, demonstrando capilaridade ao estar presente em quase todos os municípios do país.",
           "pagina": "página 208 do PDF do SENAR"
         },
         {
-          "pergunta": "Qual raça bovina de origem indiana (Zebuína) é amplamente predominante no rebanho de corte brasileiro devido à sua alta rusticidade, pele escura e adaptabilidade térmica?",
+          "pergunta": "Na avicultura nacional, qual segmento produtivo opera sob intenso modelo de integração vertical cooperativa com elevados índices de automação?",
           "opcoes": {
-            "A": "Angus.",
+            "A": "Caprinocultura leiteira.",
+            "B": "Cunicultura comercial de pele.",
+            "C": "Avicultura de corte.",
+            "D": "Apicultura silvestre de transição.",
+            "E": "Piscicultura ornamental."
+          },
+          "correta": "C",
+          "explicacao": "A avicultura de corte opera de forma verticalizada com galpões climatizados, cooperativas integradas de sementes/rações e plantas industriais modernas.",
+          "pagina": "página 209 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual raça bovina de origem zebuína (indiana) predomina no rebanho nacional de corte pela alta rusticidade, capacidade de caminhada e tolerância ao calor?",
+          "opcoes": {
+            "A": "Angus britânico.",
             "B": "Nelore.",
-            "C": "Hereford.",
-            "D": "Limousin.",
-            "E": "Caracu."
+            "C": "Hereford carvoeiro.",
+            "D": "Limousin francês.",
+            "E": "Caracu nativo."
           },
           "correta": "B",
-          "explicacao": "A raça Nelore representa a maior parte do rebanho de corte nacional devido à excelente tolerância ao calor, resistência a parasitas e adaptabilidade.",
+          "explicacao": "A raça Nelore representa cerca de 80% do plantel bovino de corte pela alta tolerância climática às regiões de pastagens tropicais brasileiras.",
           "pagina": "página 211 do PDF do SENAR"
         },
         {
-          "pergunta": "Na pecuária de leite nacional, qual estado brasileiro destaca-se historicamente como o maior produtor de leite do país em volume comercializado?",
+          "pergunta": "Qual unidade federativa brasileira destaca-se historicamente como o maior polo produtor e bacia leiteira regional do país em volume comercializado?",
           "opcoes": {
             "A": "Minas Gerais.",
             "B": "Mato Grosso do Sul.",
-            "C": "Piauí.",
+            "C": "Amazonas.",
             "D": "São Paulo.",
-            "E": "Amazonas."
+            "E": "Piauí."
           },
           "correta": "A",
-          "explicacao": "Minas Gerais é o maior polo de bacia leiteira do Brasil, amparado tanto por pequenas propriedades de base familiar quanto por grandes sistemas altamente tecnificados.",
+          "explicacao": "Minas Gerais lidera a produção nacional de leite pela ampla malha de propriedades cooperativas, relevo e bacias de recolhimento de leite estruturadas.",
           "pagina": "página 214 do PDF do SENAR"
         },
         {
-          "pergunta": "O Brasil é um dos maiores exportadores mundiais de carne suína de qualidade. Qual região brasileira concentra os maiores polos produtores e cooperativas dessa cadeia?",
+          "pergunta": "Qual região brasileira detém a maior concentração de granjas modernas de suínos associadas a grandes cooperativas industriais integradas?",
           "opcoes": {
             "A": "Região Norte.",
             "B": "Região Nordeste.",
             "C": "Região Sul.",
             "D": "Região Sudeste.",
-            "E": "Área de Transição Amazônica."
+            "E": "Área de Preservação Amazônica."
           },
           "correta": "C",
-          "explicacao": "A Região Sul concentra a suinocultura brasileira devido à infraestrutura cooperativa consolidada, proximidade de fábricas de ração e forte integração vertical.",
+          "explicacao": "A Região Sul concentra a suinocultura industrial moderna amparada no sistema cooperado integrado com fábricas de sementes e ração animal.",
           "pagina": "página 218 do PDF do SENAR"
-        },
-        {
-          "pergunta": "Qual fator de manejo é considerado o mais impactante no bem-estar e na produtividade das aves de postura modernas em granjas industriais?",
-          "opcoes": {
-            "A": "Uso de rações de coloração escura.",
-            "B": "Linhagens rústicas não vacinadas.",
-            "C": "Isolamento total de água fresca.",
-            "D": "Ambiência e controle térmico dos galpões de alojamento.",
-            "E": "Substituição completa do cálcio dietético por silício."
-          },
-          "correta": "D",
-          "explicacao": "As aves de postura são sensíveis ao calor. O controle de temperatura por climatização em galpões evita mortalidade e quebra de postura.",
-          "pagina": "página 222 do PDF do SENAR"
         }
       ],
       "TEMA_8": [
         {
-          "pergunta": "Na fisiologia gástrica de herbívoros poligástricos, qual região do estômago atua primariamente como câmara de fermentação biológica e abrigo bacteriano?",
+          "pergunta": "No âmbito das ciências zootécnicas, o entendimento das interações estruturais do organismo ampara a otimização dos índices produtivos dos plantéis. Conforme o texto introdutório da página 226, qual é a importância prática de se dominar os conhecimentos complementares de anatomia e fisiologia na produção animal?",
           "opcoes": {
-            "A": "Duodeno proximal.",
-            "B": "Rúmen.",
-            "C": "Omaso.",
-            "D": "Abomaso.",
-            "E": "Esofágico."
+            "A": "Conhecer a organização das partes do corpo dos animais é fundamental para compreender como elas funcionam, possibilitando o aprimoramento do manejo e do trato zootécnico diário.",
+            "B": "A anatomia atua restrita ao estudo do comportamento etológico animal, ao passo que a fisiologia mapeia a procedência botânica e física dos ingredientes da ração.",
+            "C": "Ambas constituem disciplinas biomédicas teóricas de interesse exclusivo na medicina humana, desprovidas de aplicabilidade na gestão agropecuária de campo.",
+            "D": "O domínio dessas ciências serve exclusivamente como ferramenta diagnóstica para a identificação precoce de patologias parasitárias terminais no lote.",
+            "E": "Constituem termos sinônimos idênticos na biologia animal, cujo escopo de investigação científica restringe-se aos hormônios do trato reprodutivo."
           },
-          "correta": "B",
-          "explicacao": "O rúmen constitui uma imensa câmara de fermentação anaeróbica que abriga microrganismos essenciais para a digestão enzimática de fibras celulósicas vegetais.",
+          "correta": "A",
+          "explicacao": "A anatomia (estudo das estruturas e formas) e a fisiologia (estudo das funções orgânicas) possuem íntima correlação biológica. Compreender a correta disposição dos órgãos e tecidos é o pré-requisito básico para entender o seu funcionamento e o metabolismo animal, balizando de forma eficiente as tomadas de decisão sobre manejo, bem-estar e ambiência.",
           "pagina": "página 226 do PDF do SENAR"
         },
         {
-          "pergunta": "Qual compartimento gástrico dos ruminantes é considerado o 'estômago verdadeiro' ou glandular, responsável pela digestão enzimática ácida e proteólise?",
+          "pergunta": "No aparelho digestório de ruminantes, qual estrutura constitui a maior câmara biológica e funciona como um vasto tanque fermentativo anaeróbico de fibras vegetais?",
           "opcoes": {
-            "A": "Retículo.",
-            "B": "Rúmen.",
+            "A": "Abomaso químico.",
+            "B": "Rúmen (ou pança).",
+            "C": "Omaso folhoso.",
+            "D": "Duodeno proximal.",
+            "E": "Esofágico."
+          },
+          "correta": "B",
+          "explicacao": "O rúmen é o compartimento fermentativo de ruminantes onde bactérias, fungos e protozoários quebram a celulose dos alimentos volumosos.",
+          "pagina": "página 227 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual dos compartimentos estomacais de bovinos e caprinos atua como o estômago verdadeiro, de ação química ácida e enzimática (proteolítica)?",
+          "opcoes": {
+            "A": "Retículo de favos.",
+            "B": "Rúmen bacteriano.",
             "C": "Abomaso.",
             "D": "Omaso.",
-            "E": "Ceco."
+            "E": "Ceco distal."
           },
           "correta": "C",
-          "explicacao": "O abomaso secreta ácido clorídrico e enzimas digestivas, realizando a digestão química e enzimática no trato digestório dos ruminantes.",
+          "explicacao": "O abomaso é o estômago glandular verdadeiro, correspondente ao de monogástricos, secretando suco gástrico ácido e pepsinogênio enzimático.",
           "pagina": "página 229 do PDF do SENAR"
         },
         {
-          "pergunta": "Qual hormônio de ação neuroendócrina é diretamente responsável pelo estímulo da contração das células mioepiteliais mamárias, promovendo a descida do leite?",
+          "pergunta": "Qual hormônio atua contraindo ativamente os alvéolos mamários na presença de estímulos adequados, provocando a descida efetiva do leite na ordenha?",
           "opcoes": {
             "A": "Ocitocina.",
-            "B": "Adrenalina.",
-            "C": "Cortisol.",
-            "D": "Insulina.",
-            "E": "Estrogênio."
+            "B": "Adrenalina de estresse.",
+            "C": "Cortisol livre.",
+            "D": "Progesterona.",
+            "E": "Insulina hepática."
           },
           "correta": "A",
-          "explicacao": "A ocitocina é liberada em resposta a estímulos positivos de ordenha, atuando nas células mioepiteliais da glândula mamária para ejeção do leite.",
+          "explicacao": "A ocitocina atua nas células mioepiteliais da glândula mamária promovendo a ejeção ativa de leite sob estímulo de toque e manejo amigável.",
           "pagina": "página 232 do PDF do SENAR"
         },
         {
-          "pergunta": "Nos animais com estômago simples (monogástricos), como suínos, onde ocorre a maior parte da absorção química dos nutrientes digestíveis?",
+          "pergunta": "Nos animais monogástricos (suínos e cães, por exemplo), qual estrutura anatômica realiza o papel principal de absorção dos nutrientes digeridos?",
           "opcoes": {
-            "A": "Esôfago superior.",
-            "B": "Intestino delgado (duodeno, jejuno e íleo).",
-            "C": "Ceco e cólon ascendente.",
-            "D": "Pâncreas exócrino.",
-            "E": "Glândulas salivares."
+            "A": "Moela ou proventrículo muscular.",
+            "B": "Intestino delgado (através das vilosidades).",
+            "C": "Ceco digestivo posterior.",
+            "D": "Pâncreas digestivo exócrino.",
+            "E": "Vaso reticular biliar."
           },
           "correta": "B",
-          "explicacao": "O intestino delgado possui vilosidades e microvilosidades que ampliam a superfície de contato facilitando a absorção de nutrientes.",
+          "explicacao": "As microvilosidades do intestino delgado absorvem açúcares simples, aminoácidos e lipídios digeridos pela ação mecânica e biliar.",
           "pagina": "página 235 do PDF do SENAR"
-        },
-        {
-          "pergunta": "O coração dos mamíferos domésticos de interesse pecuário possui quantas câmaras internas separadas por septos musculares?",
-          "opcoes": {
-            "A": "Duas câmaras (um átrio e um ventrículo).",
-            "B": "Três câmaras (dois átrios e um ventrículo).",
-            "C": "Duas câmaras simétricas.",
-            "D": "Quatro câmaras distintas (dois átrios e dois ventrículos).",
-            "E": "Cinco câmaras cardíacas de contração assíncrona."
-          },
-          "correta": "D",
-          "explicacao": "O coração dos mamíferos possui 4 câmaras (2 átrios e 2 ventrículos), o que impede a mistura de sangue venoso e arterial.",
-          "pagina": "página 239 do PDF do SENAR"
         }
       ],
       "TEMA_9": [
         {
-          "pergunta": "No cálculo nutricional técnico de animais monogástricos e ruminantes, a sigla NDT expressa qual parâmetro fundamental de energia disponível de um volumoso ou concentrado?",
+          "pergunta": "O planejamento econômico de sistemas pecuários intensivos exige um controle rigoroso dos fatores que impactam a rentabilidade do agrossistema. Conforme as informações apresentadas na página 233, qual é a relação direta entre a alimentação, o manejo e as matrizes de custos de produção?",
           "opcoes": {
-            "A": "Nível Degradável do Trato.",
-            "B": "Nutrientes Digestíveis Totais.",
-            "C": "Nitrato de Deposição Térmica.",
-            "D": "Núcleo de Defesa Tecidual.",
-            "E": "Nutrição de Desenvolvimento Tardio."
+            "A": "A alimentação e o manejo representam os menores custos na planilha de despesas da propriedade animal.",
+            "B": "A alimentação e o manejo são as bases da produção de carne, leite, ovos e lã, pois são eles que compreendem os maiores custos.",
+            "C": "A alimentação atua como uma variável de custo irrelevante, sendo as intervenções mecânicas de manejo o único gargalo financeiro real.",
+            "D": "Alimentação e manejo representam custos fixos imutáveis que não interferem nos índices de margem líquida e rentabilidade do lote.",
+            "E": "A alimentação constitui um gargalo financeiro restrito à avicultura de corte, sendo uma variável nula para grandes ruminantes."
           },
           "correta": "B",
-          "explicacao": "Nutrientes Digestíveis Totais (NDT) expressam a equivalência energética agregada do ingrediente com base na digestibilidade de suas frações orgânicas.",
+          "explicacao": "O material didático do SENAR ressalta que a alimentação e o manejo funcionam como os pilares de sustentação de todas as cadeias de produção animal (carne, leite, lã e ovos). Por responderem pelas maiores fatias e percentuais na planilha de custos operacionais totais, o sucesso financeiro da atividade está atrelado à otimização desses dois eixos.",
           "pagina": "página 233 do PDF do SENAR"
         },
         {
-          "pergunta": "Qual elemento nutricional atua como principal fonte de energia de rápida fermentação ruminal para vacas leiteiras em dietas ricas em concentrados?",
+          "pergunta": "Qual indicador mensura o valor energético agregado de um ingrediente alimentar de base seca com base na digestibilidade total observada de suas frações?",
           "opcoes": {
-            "A": "Amido (presente em grãos como o Milho moído).",
-            "B": "Fibra em detergente ácido (FDA).",
-            "C": "Lignina lenhosa insolúvel.",
-            "D": "Proteína verdadeira de folhas secas.",
-            "E": "Minerais calcários puros."
+            "A": "Nível de Carbono Livre.",
+            "B": "Nutrientes Digestíveis Totais (NDT).",
+            "C": "Nitrato de Deposição.",
+            "D": "Índice de Acidez Fibrosa.",
+            "E": "Teor Energético Bruto."
+          },
+          "correta": "B",
+          "explicacao": "NDT (Nutrientes Digestíveis Totais) exprime a energia metabolizável agregada contida na ração com base na fração digestível dos nutrientes.",
+          "pagina": "página 234 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Dietas ricas em carboidratos não estruturais fornecem energia rápida para ruminantes de leite. Qual ingrediente representa essa fonte energética concentrada?",
+          "opcoes": {
+            "A": "Amido (como grãos de milho moídos).",
+            "B": "Lignina lenhosa insolúvel.",
+            "C": "Celulose fibrosa de feno.",
+            "D": "Ureia química granulada.",
+            "E": "Carbonato de cálcio puro."
           },
           "correta": "A",
-          "explicacao": "O amido do milho é rapidamente digerido pelos microrganismos ruminais, gerando propionato, principal precursor de glicose no ruminante.",
+          "explicacao": "O amido do milho moído é degradado rapidamente por bactérias amilolíticas do rúmen, gerando ácidos graxos voláteis (como propionato).",
           "pagina": "página 236 do PDF do SENAR"
         },
         {
-          "pergunta": "A ureia pecuária é frequentemente adicionada à alimentação de bovinos durante a seca. Quimicamente, ela atua no rúmen como fonte direta de:",
+          "pergunta": "A ureia agropecuária atua no rúmen do gado como um aditivo alimentar econômico fornecendo diretamente qual composto para o rebanho?",
           "opcoes": {
-            "A": "Proteína verdadeira de bypass intestinal.",
-            "B": "Aminoácidos essenciais insolúveis em água.",
-            "C": "Nitrogênio Não Proteico (NNP) para síntese microbiana.",
-            "D": "Lipídios e ácidos graxos insaturados.",
-            "E": "Fósforo reativo de rápida absorção."
+            "A": "Proteína verdadeira solúvel.",
+            "B": "Aminoácidos livres protegidos.",
+            "C": "Nitrogênio Não Proteico (NNP) para bactérias.",
+            "D": "Gordura estrutural inerte gástrica.",
+            "E": "Fósforo cálcico biodisponível."
           },
           "correta": "C",
-          "explicacao": "A ureia fornece nitrogênio que as bactérias usam para sintetizar proteína microbiana de alto valor biológico para o animal.",
+          "explicacao": "A ureia reage no rúmen fornecendo amônia e nitrogênio inorgânico (NNP) para as bactérias produzirem sua própria proteína microbiana.",
           "pagina": "página 239 do PDF do SENAR"
         },
         {
-          "pergunta": "Alimentos considerados volumosos agrícolas são caracteristicamente identificados por apresentarem teores de Fibra em Detergente Neutro (FDN) superiores a:",
+          "pergunta": "Para ser considerado volumoso na nutrição animal pecuária, o ingrediente de base seca deve apresentar teor de Fibra em Detergente Neutro (FDN) superior a:",
           "opcoes": {
             "A": "5%",
             "B": "18%",
@@ -860,356 +867,343 @@
             "E": "8%"
           },
           "correta": "B",
-          "explicacao": "Os volumosos caracterizam-se por apresentar mais de 18% de fibra bruta em sua constituição seca, regulando o rúmen.",
+          "explicacao": "Os alimentos volumosos possuem teores elevados de fibra (acima de 18% na matéria seca), necessários para a ruminação e saúde gástrica.",
           "pagina": "página 242 do PDF do SENAR"
-        },
-        {
-          "pergunta": "Qual a importância metabólica essencial do fornecimento balanceado de microminerais (como cobalto, cobre e zinco) na dieta do rebanho?",
-          "opcoes": {
-            "A": "Fornecimento de calorias de rápida digestão.",
-            "B": "Armazenamento direto de água na gordura.",
-            "C": "Substituição de proteínas vegetais.",
-            "D": "Ativação enzimática, cofatores metabólicos e suporte imunológico.",
-            "E": "Acelerar a descamação epidérmica."
-          },
-          "correta": "D",
-          "explicacao": "Os microminerais atuam como cofatores enzimáticos e catalisadores em reações bioquímicas de crescimento, reprodução e imunidade.",
-          "pagina": "página 245 do PDF do SENAR"
         }
       ],
       "TEMA_10": [
         {
-          "pergunta": "Qual prática de manejo de pasto preconiza dividir a gleba produtiva em piquetes independentes, alternando períodos de pastejo rápido com janelas de repouso?",
+          "pergunta": "O aproveitamento de pastagens tropicais consolida-se como a base bioeconômica da pecuária de ruminantes no território nacional. Conforme o texto de introdução da página 247, qual é a principal característica diferencial que torna esse sistema uma opção técnica vantajosa?",
           "opcoes": {
-            "A": "Pastejo rotacionado intensivo.",
-            "B": "Lotação extensiva estática.",
-            "C": "Queima anual para brotação livre.",
-            "D": "Pastejo contínuo livre de divisórias.",
-            "E": "Diferimento estacional fixo."
+            "A": "É o sistema que permite maior margem de flexibilidade na idealização e no planejamento dos sistemas de produção animal.",
+            "B": "Caracteriza-se por registrar os menores índices de produtividade volumétrica líquida, compensando unicamente pelo apelo de sustentabilidade.",
+            "C": "Constitui um regime de exploração zootécnica exclusivo para bovinos de corte, sendo biologicamente inaplicável às demais espécies de ruminantes.",
+            "D": "Representa um modelo autônomo que dispensa por completo a obrigatoriedade do fornecimento de suplementação mineral no cocho.",
+            "E": "Configura-se como o modelo de maior custo imediato por quilo de carcaça e de maior complexidade operacional mecânica disponível."
           },
           "correta": "A",
-          "explicacao": "O pastejo rotacionado propicia melhor aproveitamento da pastagem, respeitando os ciclos de recuperação fisiológica e rebrota foliar da espécie forrageira utilizada.",
+          "explicacao": "O material técnico do SENAR estabelece que a produção animal em pastagens destaca-se por sua versatilidade e adaptação. Por permitir alto grau de customização e flexibilidade no planejamento e desenho do agrossistema, o pecuarista consegue ajustar as metas de ganho de peso ou produção de leite à estacionalidade climática local e à sua capacidade de investimento de capital.",
           "pagina": "página 247 do PDF do SENAR"
         },
         {
-          "pergunta": "Qual gênero de capim tropical é amplamente difundido no Brasil pela alta rusticidade, tolerância a solos ácidos e excelente adaptabilidade aos biomas tropicais?",
+          "pergunta": "No manejo rotacionado intensivo, a divisão das áreas de pastagens em piquetes é realizada com qual finalidade técnica de sustentabilidade?",
+          "opcoes": {
+            "A": "Induzir o crescimento arbóreo exógeno.",
+            "B": "Garantir o repouso fisiológico e recuperação do capim após o pastejo rápido.",
+            "C": "Diminuir o volume de água exigido por aspersão.",
+            "D": "Eliminar o fornecimento de adubação mineral total.",
+            "E": "Restringir o acesso dos animais a ninhos secos."
+          },
+          "correta": "B",
+          "explicacao": "A rotação com períodos de descanso de piquetes permite ao capim acumular carboidratos de reserva em suas raízes e restabelecer folhas novas vigorosas.",
+          "pagina": "página 248 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual gênero de capim tropical consolidou a pecuária nacional em áreas de Cerrado de baixa fertilidade e solos arenosos ácidos?",
           "opcoes": {
             "A": "Panicum.",
             "B": "Brachiaria (ou Urochloa).",
-            "C": "Medicago.",
-            "D": "Cynodon.",
-            "E": "Pennisetum."
+            "C": "Medicago alfalfa.",
+            "D": "Cynodon tifton.",
+            "E": "Pennisetum napier."
           },
           "correta": "B",
-          "explicacao": "As espécies de braquiárias adaptaram-se muito bem aos solos ácidos de baixa fertilidade típicos das áreas brasileiras de Cerrado.",
+          "explicacao": "As espécies de Brachiaria adaptaram-se com sucesso aos solos tropicais de Cerrado, apresentando ótima tolerância à acidez do alumínio e baixos teores de nutrientes.",
           "pagina": "página 250 do PDF do SENAR"
         },
         {
-          "pergunta": "No manejo de pastagens rotacionadas, o que significa o conceito técnico denominado 'altura de entrada' no piquete?",
+          "pergunta": "No pastejo rotacionado, a chamada 'altura de entrada' ideal de animais no piquete visa atingir qual balanço zootécnico favorável?",
           "opcoes": {
-            "A": "A altura do solo antes de ser gradeado mecanicamente.",
-            "B": "A medida física máxima do piquete em relação ao nível do mar.",
-            "C": "A altura ideal da forragem que maximiza o consumo de folhas sem comprometer a rebrota.",
-            "D": "O limite de altura das cercas eletrificadas.",
-            "E": "A medida de alongamento da raiz."
+            "A": "Capim com sementes maduras ricas em lipídios.",
+            "B": "Máxima densidade de raiz profunda arenosa.",
+            "C": "Excelente densidade foliar verde de alta digestibilidade sem excesso de talos fibrosos.",
+            "D": "Capim rente ao nível do solo úmido.",
+            "E": "Estágio de floração completa do lote."
           },
           "correta": "C",
-          "explicacao": "A altura de entrada indica o momento fisiológico ideal de colocar os animais no lote, aliando alta digestibilidade de folhas e bom rendimento.",
+          "explicacao": "Colocar animais na altura de entrada ideal garante folhas verdes novas de alta digestibilidade e evita a perda de aproveitamento alimentar pelo acúmulo de talos fibrosos.",
           "pagina": "página 253 do PDF do SENAR"
         },
         {
-          "pergunta": "Qual prática de fomento de pastagem é recomendada para reverter o quadro de degradação severa que perdeu a capacidade de suporte animal?",
+          "pergunta": "Para recuperar uma pastagem severamente degradada pelo superpastejo, quais intervenções técnicas do solo devem ser adotadas prioritariamente?",
           "opcoes": {
-            "A": "Adubação corretiva (geralmente fósforo), correção de acidez e controle de invasoras.",
-            "B": "Aumento temporário da lotação animal em 4 vezes.",
-            "C": "Eliminação definitiva de toda a cerca.",
-            "D": "Irrigação contínua por inundação.",
-            "E": "Aplicação de adubo potássico puro sem corrigir pH."
+            "A": "Análise química, correção de pH (calagem), adubação corretiva (fósforo) e controle de pragas.",
+            "B": "Aumento repentino da lotação animal por 60 dias.",
+            "C": "Aração profunda repetida sem adubar e sem corrigir.",
+            "D": "Inundação total de água por inundação por sulco.",
+            "E": "Apenas roçada manual estéril de talos secos."
           },
           "correta": "A",
-          "explicacao": "Para recuperar pastos, deve-se realizar a reposição de nutrientes limitantes (fósforo e calagem) e o controle de plantas daninhas invasoras.",
+          "explicacao": "A recuperação do solo degradado exige análise química de terra, calagem corretiva, adubação de reposição e controle de pragas invasoras.",
           "pagina": "página 256 do PDF do SENAR"
-        },
-        {
-          "pergunta": "O Capim-Mombaça pertence a qual gênero botânico de alta produtividade, vigor foliar e elevada exigência de fertilidade de solo?",
-          "opcoes": {
-            "A": "Brachiaria.",
-            "B": "Cynodon.",
-            "C": "Paspalum.",
-            "D": "Panicum (Megathyrsus).",
-            "E": "Lolium."
-          },
-          "correta": "D",
-          "explicacao": "O capim-Mombaça (Panicum maximum) destaca-se pelo elevado potencial produtivo de matéria seca de alta qualidade, exigindo solos de boa fertilidade.",
-          "pagina": "página 259 do PDF do SENAR"
         }
       ],
       "TEMA_11": [
         {
-          "pergunta": "Em programas de melhoramento animal, qual parâmetro exprime a proporção de variância fenotípica devida a efeitos puramente aditivos nos genitores selecionados?",
+          "pergunta": "A sustentabilidade e a eficiência bioeconômica das cadeias pecuárias modernas apoiam-se na seleção direcionada de caracteres de interesse econômico. Conforme as diretrizes introduzidas na página 256, qual é o objetivo central do melhoramento genético nos sistemas de produção animal?",
           "opcoes": {
-            "A": "Índice de Heterose.",
-            "B": "Endogamia.",
-            "C": "Herdabilidade.",
-            "D": "Epistasia de dominância.",
-            "E": "Pleiotropia simples."
+            "A": "Incrementar de forma indiscriminada o volume populacional bruto de cabeças alojadas na propriedade, independentemente do padrão qualitativo.",
+            "B": "Melhorar o índice produtivo do rebanho por meio de animais considerados superiores.",
+            "C": "Reduzir as planilhas de custos fixos operacionais por meio da eliminação total da necessidade de aplicação de manejos sanitários e profilaxia.",
+            "D": "Padronizar de forma rígida todos os indivíduos pertencentes a uma mesma linhagem, anulando a influência de características edafoclimáticas locais.",
+            "E": "Promover a substituição integral do manejo nutricional do rebanho pela fixação de alelos dominantes de alta conversão alimentar."
           },
-          "correta": "C",
-          "explicacao": "A herdabilidade indica o grau em que as características observadas no rebanho são influenciadas pela variação genética herdável de seus reprodutores.",
+          "correta": "B",
+          "explicacao": "De acordo com a introdução do Tema 11, o objetivo primordial do melhoramento genético aplicado à pecuária comercial é maximizar a eficiência de conversão biológica e os índices zootécnicos globais (como produção de quilos de carne por hectare ou litros de leite por lactação). Isso é alcançado identificando e multiplicando os indivíduos portadores de mérito genético superior dentro da população contemporânea.",
           "pagina": "página 256 do PDF do SENAR"
         },
         {
-          "pergunta": "A Diferença Esperada na Progenia (DEP) é um indicador crucial em catálogos de touros. O que ela representa na prática pecuária?",
+          "pergunta": "O coeficiente de herdabilidade exprime qual proporção das características fenotípicas observadas no rebanho animal?",
           "opcoes": {
-            "A": "O preço final do sêmen congelado.",
-            "B": "A estimativa do potencial de transmissão genética do reprodutor para seus filhos.",
-            "C": "A taxa de fertilidade média do touro.",
-            "D": "A quantidade de doses produzidas ao mês.",
-            "E": "O grau de parentesco consanguíneo."
+            "A": "Fração devida à radiação térmica do ambiente de pasto.",
+            "B": "Proporção da variação fenotípica total explicada por efeitos genéticos aditivos de transmissão.",
+            "C": "Percentual de mortes infantis evitadas por vacina.",
+            "D": "Margem de ganho financeiro obtido por sêmen importado.",
+            "E": "Saturação de consanguinidade fechada de lotes."
           },
           "correta": "B",
-          "explicacao": "A DEP estima a diferença de desempenho que os filhos de um determinado reprodutor terão em relação à média de uma base de comparação comum.",
+          "explicacao": "A herdabilidade indica qual fração da variabilidade observada se deve à herança genética dos reprodutores, prevendo ganhos pela seleção artificial.",
+          "pagina": "página 257 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A Diferença Esperada na Progênia (DEP) constitui uma estimativa de qual fator em catálogos de reprodutores de gado de corte?",
+          "opcoes": {
+            "A": "Custo de comercialização por ampola de sêmen.",
+            "B": "Potencial médio de transmissão genética que o touro passará aos filhos para uma dada característica.",
+            "C": "Número de coberturas bem-sucedidas em campo limpo.",
+            "D": "Grau de parentesco endogâmico com o rebanho.",
+            "E": "Tamanho ideal do pasto de confinamento."
+          },
+          "correta": "B",
+          "explicacao": "A DEP estima a superioridade genotípica que o touro transmite à progênie (filhos) em relação à base comparativa do programa de melhoramento.",
           "pagina": "página 260 do PDF do SENAR"
         },
         {
-          "pergunta": "O cruzamento industrial entre raças taurinas (europeias) e zebuínas visa explorar qual fenômeno genético de vigor zootécnico nas crias F1?",
+          "pergunta": "Qual fenômeno genético de superioridade produtiva e de vigor físico ocorre ao cruzar raças taurinas europeias com zebuínas?",
           "opcoes": {
             "A": "Heterose (ou vigor híbrido).",
-            "B": "Mutação gênica induzida.",
-            "C": "Endogamia corretiva.",
-            "D": "Lixiviação fenotípica.",
-            "E": "Fixação de recessividade."
+            "B": "Endogamia induzida estéril.",
+            "C": "Dominância recessiva simples.",
+            "D": "Pleiotropia recessiva.",
+            "E": "Epistasia de pelagem de carcaça."
           },
           "correta": "A",
-          "explicacao": "A heterose baseia-se na complementação de genes de raças distintas, conferindo ganho de robustez física e desempenho superior.",
+          "explicacao": "A heterose (vigor híbrido) confere alto vigor físico e adaptabilidade nos filhos de cruzamentos de linhagens ou raças distintas.",
           "pagina": "página 263 do PDF do SENAR"
         },
         {
-          "pergunta": "Qual das seguintes características possui baixa herdabilidade, dependendo muito mais de manejo sanitário e nutricional do que de seleção genética direta?",
+          "pergunta": "Qual tecnologia permite programar a data e o horário da inseminação artificial de fêmeas sem a necessidade de observação visual diária de cio?",
           "opcoes": {
-            "A": "Ganho de peso médio.",
-            "B": "Rendimento de carcaça.",
-            "C": "Eficiência reprodutiva (como taxa de prenhez).",
-            "D": "Comprimento das costelas e espessura de gordura.",
-            "E": "Padrão de cor da pelagem."
+            "A": "Clonagem celular direta.",
+            "B": "Monta controlada de pasto.",
+            "C": "Inseminação Artificial em Tempo Fixo (IATF).",
+            "D": "Transferência manual simples de embrião.",
+            "E": "Ultrassonografia estéril precoce."
           },
           "correta": "C",
-          "explicacao": "Características reprodutivas têm baixa herdabilidade (geralmente <10%), dependendo maciçamente da nutrição, sanidade e conforto ambiental.",
-          "pagina": "página 266 do PDF do SENAR"
-        },
-        {
-          "pergunta": "No manejo reprodutivo moderno, o que caracteriza tecnicamente a técnica de Inseminação Artificial em Tempo Fixo (IATF)?",
-          "opcoes": {
-            "A": "Inseminação realizada apenas aos finais de semana.",
-            "B": "Uso de doses de sêmen sem controle.",
-            "C": "O uso de machos modificados geneticamente.",
-            "D": "A sincronização hormonal do ciclo de fêmeas para inseminação em horário agendado sem observação de cio.",
-            "E": "Introdução de óvulos já fertilizados."
-          },
-          "correta": "D",
-          "explicacao": "A IATF sincroniza a ovulação do rebanho por meio de hormônios exógenos, permitindo inseminar as fêmeas em data planejada sem depender de detecção visual de cio.",
+          "explicacao": "A IATF utiliza hormônios exógenos para sincronizar a ovulação, agendando a inseminação de lotes de matrizes simultaneamente.",
           "pagina": "página 269 do PDF do SENAR"
         }
       ],
       "TEMA_12": [
         {
-          "pergunta": "Na produção intensiva de suínos, qual etapa de criação demanda maior intervenção térmica e rígidas dietas de transição logo após a retirada da matriz lactante?",
+          "pergunta": "A avicultura de corte nacional expandiu seu volume de produção de forma acelerada, impulsionada por melhorias na eficiência zootécnica e pela competitividade de custos no varejo. Conforme os dados históricos expressos na página 277, qual foi a evolução do consumo per capita anual de carne de frango no Brasil entre o ano de 1973 e os dias atuais?",
           "opcoes": {
-            "A": "Gestação coletiva.",
-            "B": "Fase de Creche.",
-            "C": "Fase de Terminação.",
-            "D": "Quarentenário geral.",
-            "E": "Fase de Recria tardia."
+            "A": "Evoluiu de um patamar basal de 2 kg para a marca de 10 kg por habitante/ano.",
+            "B": "Passou de um patamar de cerca de 4 kg por habitante por ano para mais de 25 kg por habitante por ano atualmente.",
+            "C": "Apresentou um crescimento linear tímido, deslocando-se de 8 kg para atingir 15 kg por habitante/ano.",
+            "D": "Partiu de marcas marginais de 1 kg para estabilizar-se no teto fixo de 30 kg por habitante/ano.",
+            "E": "Registrou uma oscilação estacional ascendente, progredindo de 10 kg para 20 kg por habitante/ano."
           },
           "correta": "B",
-          "explicacao": "A fase de creche abriga leitões recém-desmamados que enfrentam estresse térmico e imunológico. Esta fase necessita de instalações higienizadas, secas e com controle de temperatura.",
+          "explicacao": "O material do SENAR resgata os indicadores históricos de consumo doméstico de proteína avícola. Em 1973, a ingestão individual situava-se em modestos 4 kg por habitante/ano. O avanço tecnológico das linhagens, a verticalização industrial e a popularização da carne de frango elevaram esse consumo para patamares superiores a 25 kg por habitante/ano na atualidade.",
           "pagina": "página 277 do PDF do SENAR"
         },
         {
-          "pergunta": "Qual a principal matéria-prima proteica utilizada na formulação de rações industriais para aves de corte no Brasil devido à excelente composição de aminoácidos?",
+          "pergunta": "Na suinocultura tecnificada comercial, qual a etapa mais desafiadora do ciclo de criação que exige aquecimento térmico controlado imediatamente pós-desmame?",
           "opcoes": {
-            "A": "Farelo de arroz desengordurado.",
-            "B": "Farinha de osso de peixe.",
+            "A": "Gestação coletiva de baias.",
+            "B": "Fase de Creche.",
+            "C": "Fase de Terminação de lote.",
+            "D": "Quarentenário clínico de machos.",
+            "E": "Recria em campo aberto."
+          },
+          "correta": "B",
+          "explicacao": "A fase de creche de leitões recém-desmamados exige rígido controle de temperatura e manejo nutricional suave para evitar diarreias e quebras de crescimento.",
+          "pagina": "página 278 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual semente/grão processado é largamente empregado como principal base de proteína nas rações comerciais de aves e suínos no Brasil?",
+          "opcoes": {
+            "A": "Farelo de arroz seco.",
+            "B": "Polpa cítrica peletizada.",
             "C": "Farelo de soja.",
-            "D": "Silagem de milho úmido.",
-            "E": "Sorghum granífero."
+            "D": "Sorghum forrageiro.",
+            "E": "Trigo moído."
           },
           "correta": "C",
-          "explicacao": "O farelo de soja atua como ingrediente proteico majoritário nas rações avícolas pela alta concentração proteica e ótima digestibilidade dos aminoácidos.",
+          "explicacao": "O farelo de soja é a fonte proteica por excelência da nutrição de monogástricos, graças à excelente densidade de aminoácidos digestíveis.",
           "pagina": "página 280 do PDF do SENAR"
         },
         {
-          "pergunta": "Na avicultura de postura (ovos comerciais), qual o principal objetivo fisiológico do manejo do programa de luz artificial adotado nas granjas?",
+          "pergunta": "Na criação comercial de galinhas poedeiras de postura, o uso do programa de iluminação artificial tem como papel principal qual estímulo neurofisiológico?",
           "opcoes": {
-            "A": "Permitir que as aves enxerguem a ração à noite.",
-            "B": "Estimular os fotorreceptores e a glândula pineal para manter a constância de ovulação.",
-            "C": "Acelerar o ganho de gordura corporal.",
-            "D": "Substituir a necessidade de aquecimento artificial.",
-            "E": "Evitar o estresse de ruídos externos."
+            "A": "Garantir a visão noturna dos ninhos.",
+            "B": "Estimular fotorreceptores e a glândula pineal para manter a regularidade de postura de ovos.",
+            "C": "Aumentar o consumo de gordura corporal profunda.",
+            "D": "Substituir o aquecimento elétrico nos galpões.",
+            "E": "Reduzir o estresse de ruídos mecânicos."
           },
           "correta": "B",
-          "explicacao": "A luz artificial mimetiza o fotoperíodo, atuando nos fotorreceptores das aves para estimular os hormônios de postura e manter a taxa de ovos regular.",
+          "explicacao": "A luz artificial regula o fotoperíodo, atuando hormonalmente nas galinhas para estabilizar e prolongar a taxa de produção de ovos.",
           "pagina": "página 283 do PDF do SENAR"
         },
         {
-          "pergunta": "O chamado 'vazio sanitário' nas instalações de granjas avícolas tecnificadas consiste tecnicamente em:",
+          "pergunta": "Qual prática profilática obrigatória consiste no intervalo vazio mínimo de instalações entre a saída e entrada de novos lotes de animais para desinfecção?",
           "opcoes": {
-            "A": "Período mínimo obrigatório sem animais nas instalações para desinfecção e redução de patógenos.",
-            "B": "Ausência de ração nos comedouros por 48 horas.",
-            "C": "Deixar o galpão sem cobertura de telhado.",
-            "D": "Lavar os comedouros utilizando apenas água quente.",
-            "E": "Falta de ventiladores nos dias frios."
+            "A": "Vazio sanitário.",
+            "B": "Vazio hídrico semanal.",
+            "C": "Quarentena alimentar.",
+            "D": "Substituição de cercas.",
+            "E": "Limpeza a seco periódica."
           },
           "correta": "A",
-          "explicacao": "O vazio sanitário consiste no tempo recomendado em que o aviário fica desabitado entre saídas e entradas de lotes para quebras de ciclos de patógenos.",
+          "explicacao": "O vazio sanitário dura de 10 a 14 dias em avicultura e suinocultura, servindo para desinfetar o ambiente e quebrar o ciclo biológico de patógenos.",
           "pagina": "página 286 do PDF do SENAR"
-        },
-        {
-          "pergunta": "Qual das seguintes enfermidades de aves de caráter emergencial exige rígida barreira sanitária em portos e aeroportos para resguardar o status de exportação brasileiro?",
-          "opcoes": {
-            "A": "Coccidiose aviária.",
-            "B": "Bronquite infecciosa.",
-            "C": "Sarna de patas.",
-            "D": "Peito seco.",
-            "E": "Influenza Aviária de Alta Patogenicidade (IAAP)."
-          },
-          "correta": "E",
-          "explicacao": "A IAAP é altamente contagiosa e provoca perdas econômicas gigantescas no comércio externo se ingressar nas criações comerciais nacionais.",
-          "pagina": "página 289 do PDF do SENAR"
         }
       ],
       "TEMA_13": [
         {
-          "pergunta": "Bovinos em confinamento para acabamento final recebem altas proporções de rações concentradas. Qual o objetivo dessa transição dietética?",
+          "pergunta": "A atividade leiteira no Brasil apresenta forte capilaridade e interface com a agricultura de base familiar ao longo do território nacional. Conforme o panorama contextualizado na página 304, qual é o papel social dessa atividade e qual o grande gargalo estrutural enfrentado na atualidade?",
           "opcoes": {
-            "A": "Prevenir a ocorrência de timpanismo ruminal.",
-            "B": "Prolongar o tempo do animal na fazenda.",
-            "C": "Acelerar ganho de peso e deposição de gordura na carcaça.",
-            "D": "Aumentar a atividade ruminal física.",
-            "E": "Favorecer a mastigação e salivação constante."
+            "A": "O leite configura-se como uma commodity de luxo restrita ao abastecimento de nichos de alta renda; sendo o desafio central elevar as margens de lucro via tabelamento artificial de preços.",
+            "B": "O leite tem importante papel social, pois garante renda mensal, emprega diversas famílias e contribui para minimizar o êxodo rural. Com mão de obra escassa e em idade avançada, o desafio é manter o negócio do leite em longo prazo.",
+            "C": "A atividade consolidou-se sob a governança exclusiva de megacorporações agroindustriais multinacionais; figurando como desafio a contenção de importações de leite em pó do Mercosul.",
+            "D": "A cadeia produtiva apresenta baixo impacto na retenção de postos de trabalho diretos no campo; restando como desafio a mecanização integral e substituição do operador por ordenha robótica.",
+            "E": "O complexo leiteiro exibe baixa relevância na fixação de famílias na zona rural; concentrando o desafio na expansão horizontal da área de pastagens."
           },
-          "correta": "C",
-          "explicacao": "O aumento na oferta de concentrados (grãos/energia rápida) otimiza os ganhos diários de carcaça e assegura a cobertura de gordura demandada pelos frigoríficos.",
+          "correta": "B",
+          "explicacao": "O material técnico do SENAR destaca o impacto socioeconômico da pecuária de leite como geradora de fluxo de caixa mensal previsível e emprego no campo, atuando como um freio demográfico contra o êxodo rural. Contudo, a apostila alerta para o grave desafio da transição geracional: a escassez de mão de obra qualificada associada ao envelhecimento dos produtores atuais ameaça a sustentabilidade e a continuidade das propriedades leiteiras no longo prazo.",
           "pagina": "página 304 do PDF do SENAR"
         },
         {
-          "pergunta": "Na bovinocultura de leite, qual o período seco recomendado que uma vaca deve permanecer sem ordenha antes do próximo parto planejado?",
+          "pergunta": "Bovinos em confinamento intensivo na fase final de acabamento recebem rações concentradas para atender a qual meta zootécnica essencial?",
           "opcoes": {
-            "A": "15 dias.",
-            "B": "60 dias.",
-            "C": "120 dias.",
-            "D": "Não deve haver período seco.",
+            "A": "Minimizar a microrflora ruminal nativa.",
+            "B": "Prolongar o ciclo do boi na propriedade por mais de um ano.",
+            "C": "Acelerar ganho de peso diário e promover a correta deposição de gordura na carcaça.",
+            "D": "Estimular a mastigação contínua de fibras longas.",
+            "E": "Aumentar a textura óssea do traseiro bovino."
+          },
+          "correta": "C",
+          "explicacao": "O uso de concentrados (milho/energia rápida) acelera o ganho de peso e promove a deposição rápida e uniforme de gordura de cobertura de carcaça demandada pelo frigorífico.",
+          "pagina": "página 305 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Na bovinocultura de leite comercial, qual a duração recomendada de período seco que as vacas devem passar antes do próximo parto planejado?",
+          "opcoes": {
+            "A": "15 dias em lactação.",
+            "B": "60 dias sem ordenha.",
+            "C": "120 dias em isolamento seco.",
+            "D": "Não se deve efetuar secagem das vacas.",
             "E": "5 dias de repouso mamário."
           },
           "correta": "B",
-          "explicacao": "O período seco (de aproximadamente 60 dias) é crucial para o descanso de células mamárias secretoras e restabelecimento nutricional para a lactação seguinte.",
+          "explicacao": "O período seco de 60 dias (8 semanas) é fundamental para a regeneração celular do tecido mamário e reposição de reservas para a próxima lactação.",
           "pagina": "página 308 do PDF do SENAR"
         },
         {
-          "pergunta": "O estresse térmico em vacas de alta produção leiteira prejudica os índices da atividade. Qual sintoma físico e visível indica que os animais estão sob estresse térmico excessivo?",
+          "pergunta": "Qual sinal físico e visível de comportamento indica que vacas leiteiras de alta produção entraram em severo estresse térmico no lote?",
           "opcoes": {
-            "A": "Aumento nítido da taxa respiratória (ofego), busca por sombra e salivação intensa.",
-            "B": "Busca voluntária por deitar-se ao sol.",
-            "C": "Aumento repentino do consumo de rações secas.",
-            "D": "Comportamento de brincadeira agressiva.",
-            "E": "Arrepiamento de pelos mamários."
+            "A": "Ofego intenso com boca aberta (taxa respiratória elevada), busca ativa por sombra e salivação excessiva.",
+            "B": "Deitar-se voluntariamente sob o sol do meio-dia.",
+            "C": "Aumento do consumo diário de feno seco.",
+            "D": "Agressividade no pasto rotacionado.",
+            "E": "Arrepiamento generalizado de pelos de cobertura."
           },
           "correta": "A",
-          "explicacao": "Vacas sob estresse ativam mecanismos de dissipação de calor como ofego e sudorese, reduzindo a ruminação e diminuindo a ingestão voluntária de ração.",
+          "explicacao": "Bovinos sob estresse térmico ativam resfriamento evaporativo pulmonar (ofego), babam, diminuem a ingestão e derrubam drasticamente a produção de leite.",
           "pagina": "página 311 do PDF do SENAR"
         },
         {
-          "pergunta": "Qual sistema de confinamento de leite utiliza galpões cobertos com cama coletiva de maravalha ou serragem que passa por processo de compostagem aeróbica ativa?",
+          "pergunta": "Qual sistema moderno de confinamento leiteiro utiliza galpões cobertos com cama de maravalha sob processo controlado de compostagem biológica ativa?",
           "opcoes": {
-            "A": "Tie Stall.",
-            "B": "Free Stall.",
+            "A": "Tie Stall com baias estreitas.",
+            "B": "Free Stall com separadores de concreto.",
             "C": "Compost Barn.",
-            "D": "Piquete rotacionado aberto.",
-            "E": "Confinamento em gaiolas."
+            "D": "Piquete aberto rotacionado adubado.",
+            "E": "Gaiolas suspensas aéreas."
           },
           "correta": "C",
-          "explicacao": "O Compost Barn usa compostagem ativa de dejetos sob a cama, gerando calor controlado de fundo que mantém o leito confortável e seco.",
+          "explicacao": "O Compost Barn usa compostagem ativa de dejetos sob cama de serragem, fornecendo calor controlado e mantendo a superfície seca e muito confortável.",
           "pagina": "página 315 do PDF do SENAR"
-        },
-        {
-          "pergunta": "No manejo de novilhas de recria de corte, qual meta de peso vivo mínimo em relação ao peso adulto é recomendada para liberação ao primeiro acasalamento reprodutivo?",
-          "opcoes": {
-            "A": "Cerca de 30% do peso vivo adulto.",
-            "B": "Exatamente 85% de peso.",
-            "C": "Pelo menos 40% com escore de gordura baixo.",
-            "D": "Em torno de 60% a 65% do peso vivo adulto da raça.",
-            "E": "O peso no desmame precoce."
-          },
-          "correta": "D",
-          "explicacao": "Atingir 60-65% do peso vivo adulto garante que a novilha tenha atingido puberdade corporal e desenvolvimento pélvico adequado para suportar a gestação.",
-          "pagina": "página 318 do PDF do SENAR"
         }
       ],
       "TEMA_14": [
         {
-          "pergunta": "Qual termo caracteriza a tecnologia que permite aplicar de forma georreferenciada corretivos de solo com vazões variadas ajustadas em tempo real pelas coordenadas do GPS?",
+          "pergunta": "A modernização dos agrossistemas exige a incorporação de ferramentas que permitam a superação do manejo convencional baseado em médias globais por talhão. Conforme os preceitos teóricos introduzidos na página 339, qual é a definição conceitual correta de Agricultura de Precisão (AP)?",
           "opcoes": {
-            "A": "VRT (Tecnologia de Taxa Variável).",
-            "B": "Barra de comando puramente mecânica.",
-            "C": "Mapeamento orbital analógico.",
-            "D": "Sensoriamento térmico inercial.",
-            "E": "Fração de amostragem aleatória simples."
+            "A": "É o uso exclusivo e isolado de maquinários pesados automatizados para semeadura e colheita mecânica, dispensando a necessidade de mapeamento espacial.",
+            "B": "Usa recursos mecânicos, eletrônicos e informáticos, como mapeamento dos fatores de produção, ferramentas de suporte à decisão e aplicação localizada de insumos, para fazer o gerenciamento localizado de sistemas agrícolas.",
+            "C": "Consiste na substituição integral e compulsória de toda a força de trabalho humano por robôs e inteligência artificial nas operações de campo.",
+            "D": "É a tática de manejo baseada no emprego de insumos de base orgânica e biológicos em áreas delimitadas de preservação permanente.",
+            "E": "É a metodologia que preconiza a aplicação de defensivos e fertilizantes em dose única uniforme e estática em toda a extensão da lavoura."
           },
-          "correta": "A",
-          "explicacao": "VRT (Variable Rate Technology) refere-se ao sistema de distribuição que altera as doses aplicadas no talhão conforme prescrições digitais prévias inseridas nos computadores das máquinas agrícolas.",
+          "correta": "B",
+          "explicacao": "O material didático do SENAR estabelece que a Agricultura de Precisão não se resume à aquisição de máquinas modernas, mas constitui uma filosofia de gestão. Utilizando a integração de recursos mecânicos, eletrônicos e de informática, a AP mapeia e identifica que a lavoura não é uniforme, permitindo a tomada de decisões cirúrgicas e a aplicação localizada de insumos (como corretivos e fertilizantes) na dose certa, no local correto e no momento adequado.",
           "pagina": "página 339 do PDF do SENAR"
         },
         {
-          "pergunta": "Qual o principal benefício do uso do sistema de piloto automático guiado por receptor de sinal de satélite (GNSS) nos tratores de plantio?",
+          "pergunta": "Qual tecnologia permite alterar dinamicamente e georreferenciadamente as doses de fertilizantes aplicadas com base em mapas digitais prévios de variabilidade?",
+          "opcoes": {
+            "A": "VRT (Tecnologia de Taxa Variável).",
+            "B": "Barra de comando analógica mecânica.",
+            "C": "Mapeamento orbital passivo estático.",
+            "D": "Pulverização de fluxo contínuo inercial.",
+            "E": "Amostragem manual de sementes simples."
+          },
+          "correta": "A",
+          "explicacao": "A tecnologia VRT (Variable Rate Technology) ajusta as doses aplicadas no talhão conforme mapas digitais georreferenciados criados por análises de solo.",
+          "pagina": "página 340 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual o principal benefício operacional imediato decorrente do uso de piloto automático auxiliado por georreferenciamento de satélite (GNSS) nos tratores?",
           "opcoes": {
             "A": "Aumentar a rotação de torque do motor.",
-            "B": "Redução drástica de sobreposição de passadas e fadiga operacional.",
-            "C": "Substituir o óleo lubrificante de engrenagens.",
-            "D": "Acelerar a germinação biológica.",
-            "E": "Controlar a deriva no bico."
+            "B": "Redução de sobreposições de passadas e redução da fadiga do operador.",
+            "C": "Trocar o óleo lubrificante de engrenagens de transmissão.",
+            "D": "Acelerar a germinação celular da semente tratada.",
+            "E": "Controlar a deriva de vento no bico pulverizador."
           },
           "correta": "B",
-          "explicacao": "O piloto automático elimina o erro humano de repetição lateral de passadas de aplicação de adubo ou semente, otimizando o uso do talhão.",
+          "explicacao": "O piloto automático elimina o erro humano de sobreposição lateral de passadas de aplicação de adubo ou semeadura, otimizando o combustível e os recursos.",
           "pagina": "página 342 do PDF do SENAR"
         },
         {
-          "pergunta": "Os sensores óticos terrestres instalados em barras de pulverizadores são amplamente utilizados para qual finalidade específica em campo?",
+          "pergunta": "Os sensores óticos terrestres instalados em barras de pulverizadores são amplamente empregados para qual finalidade técnica nas lavouras?",
           "opcoes": {
-            "A": "Medir o teor de argila superficial.",
-            "B": "Mapear a umidade do ar.",
+            "A": "Estimar o teor de areia total.",
+            "B": "Medir a umidade do ar instantânea.",
             "C": "Detecção e aplicação localizada de herbicidas em tempo real nas plantas daninhas.",
-            "D": "Contar o número exato de lagartas.",
-            "E": "Verificar a presença de pedras."
+            "D": "Contar o número exato de lagartas por folha.",
+            "E": "Verificar pedras na rota."
           },
           "correta": "C",
-          "explicacao": "Os sensores medem a reflexão de clorofila ativa no solo e acionam apenas as válvulas e bicos de pulverização diretamente sob os alvos identificados.",
+          "explicacao": "Esses sensores identificam a presença de clorofila ativa de ervas invasoras e acionam o bico de pulverização apenas onde há alvo, reduzindo o desperdício de herbicida.",
           "pagina": "página 345 do PDF do SENAR"
         },
         {
-          "pergunta": "Na Agricultura de Precisão, o que representa um 'mapa de produtividade' gerado por sensores embarcados na colheitadeira?",
+          "pergunta": "Na Agricultura de Precisão, o que representa gerencialmente um 'mapa de produtividade' gerado por sensores nas colheitadeiras?",
           "opcoes": {
-            "A": "A variação espacial do rendimento físico da colheita em cada coordenada do talhão.",
-            "B": "A previsão de preços de grãos no dia.",
-            "C": "O número de manutenções feitas na colheitadeira.",
+            "A": "A variação espacial do rendimento físico da colheita em cada ponto do talhão.",
+            "B": "A previsão do mercado de preços futuros de grãos.",
+            "C": "O registro de manutenções feitas na máquina.",
             "D": "A quantidade de adubo aplicada na semeadura.",
-            "E": "O roteiro dos caminhões de grão."
+            "E": "O roteiro de entrega de grãos dos caminhões."
           },
           "correta": "A",
-          "explicacao": "O mapa de produtividade indica o rendimento físico em kg/ha obtido em cada microzona, destacando a variabilidade do rendimento real da lavoura.",
+          "explicacao": "O mapa de produtividade indica o rendimento físico em kg/ha obtido em cada ponto, destacando a variabilidade do rendimento real da lavoura.",
           "pagina": "página 348 do PDF do SENAR"
-        },
-        {
-          "pergunta": "O uso de drones (VANTs) na agricultura de precisão apoia-se no imageamento multiespectral para estimar qual índice de vigor vegetal?",
-          "opcoes": {
-            "A": "Índice de acidez potencial.",
-            "B": "PH foliar dinâmico.",
-            "C": "Profundidade de raízes.",
-            "D": "Índice de Vegetação por Diferença Normalizada (NDVI).",
-            "E": "Índice de saturação de cálcio."
-          },
-          "correta": "D",
-          "explicacao": "O NDVI exprime a atividade fotossintética relativa da cultura através de relações matemáticas de bandas de reflexão multiespectral, auxiliando na verificação de estresse.",
-          "pagina": "página 351 do PDF do SENAR"
         }
       ],
       "TEMA_15": [
@@ -1227,52 +1221,52 @@
           "pagina": "página 354 do PDF do SENAR"
         },
         {
-          "pergunta": "No planejamento financeiro e contábil da fazenda, como são classificados os custos operacionais que não variam diretamente em função do volume físico colhido?",
+          "pergunta": "No planejamento financeiro de empresas agropecuárias, como são classificados os custos fixos operacionais na planilha de contas?",
           "opcoes": {
-            "A": "Custos variáveis de safra.",
-            "B": "Custos fixos.",
-            "C": "Margem de contribuição.",
-            "D": "Margem líquida de lucro.",
-            "E": "Despesas estacionais."
+            "A": "Custos diretamente associados à colheita.",
+            "B": "Custos que ocorrem na estrutura operacional mesmo que não haja produção ativa.",
+            "C": "Impostos de comercialização direta.",
+            "D": "Comissões pagas aos corretores.",
+            "E": "Insumos consumidos na adubação vegetal."
           },
           "correta": "B",
-          "explicacao": "Os custos fixos (como depreciação de máquinas e salários permanentes) ocorrem na estrutura operacional mesmo na ausência de produção.",
+          "explicacao": "Os custos fixos (como depreciação de máquinas e folha permanente) incidem sobre a empresa de forma constante, sem flutuação proporcional ao volume produzido.",
           "pagina": "página 357 do PDF do SENAR"
         },
         {
-          "pergunta": "O cálculo da depreciação de máquinas agrícolas é essencial para mensurar a perda de valor dos ativos. Como se define esse conceito econômico?",
+          "pergunta": "O cálculo da depreciação contábil de bens móveis e máquinas agrícolas serve para mensurar qual fator econômico na fazenda?",
           "opcoes": {
-            "A": "A perda do valor do bem decorrente do desgaste físico pelo uso ou pela obsolescência tecnológica ao longo do tempo.",
-            "B": "A taxa de juros cobrada por financiamentos.",
-            "C": "O aumento do valor venal do maquinário seminovo.",
-            "D": "O imposto estadual cobrado sobre utilitários.",
-            "E": "A quebra mecânica súbita."
+            "A": "O decréscimo anual de valor de mercado decorrente de desgaste ou obsolescência.",
+            "B": "A taxa de juros bancários acumulados no período.",
+            "C": "A inflação média de venda de fertilizantes.",
+            "D": "O valor de revenda garantido por concessionárias.",
+            "E": "O prêmio de seguro contratado de frotas."
           },
           "correta": "A",
-          "explicacao": "A depreciação computa o decréscimo anual de valor de máquinas e benfeitorias pelo uso produtivo ou passagem do tempo.",
+          "explicacao": "A depreciação contabiliza a perda de valor útil dos bens de capital (máquinas, edifícios) devido ao uso produtivo ou obsolescência no tempo.",
           "pagina": "página 360 do PDF do SENAR"
         },
         {
-          "pergunta": "Na administração de empresas rurais, o demonstrativo de 'fluxo de caixa' é utilizado em qual finalidade gerencial?",
+          "pergunta": "Na administração rural estruturada, o 'fluxo de caixa' é utilizado principalmente para qual finalidade gerencial?",
           "opcoes": {
-            "A": "Calcular o teor de umidade de grãos.",
-            "B": "Estimar a produtividade de leite da próxima estação.",
-            "C": "Controlar as entradas e saídas de recursos financeiros para garantir a liquidez do negócio.",
-            "D": "Definir a escala de férias dos tratoristas.",
-            "E": "Calcular o imposto territorial rural."
+            "A": "Estimar a produtividade física total de feno da safra.",
+            "B": "Monitorar a umidade de silos de grãos.",
+            "C": "Controlar as entradas e saídas de recursos financeiros para assegurar liquidez.",
+            "D": "Definir a escala de trabalho semanal dos tratoristas.",
+            "E": "Estimar o imposto territorial rural anual."
           },
           "correta": "C",
-          "explicacao": "O demonstrativo de fluxo de caixa controla os recebimentos e desembolsos em determinado período de tempo, assegurando a liquidez imediata da empresa agrícola.",
+          "explicacao": "O fluxo de caixa monitora as transações financeiras (entradas e saídas de dinheiro), permitindo prever a disponibilidade financeira imediata para honrar pagamentos.",
           "pagina": "página 363 do PDF do SENAR"
         },
         {
-          "pergunta": "Um canal de escoamento direto de venda do produtor rural ao consumidor final (feiras locais, por exemplo) caracteriza uma estrutura de comercialização de qual nível?",
+          "pergunta": "A venda direta da produção do produtor rural diretamente ao consumidor final (ex: feiras de alimentos) caracteriza qual nível de canal de distribuição?",
           "opcoes": {
             "A": "Nível zero (ou canal direto).",
-            "B": "Nível um com atacadistas.",
-            "C": "Nível dois com distribuidores.",
-            "D": "Canal cooperativo de grande porte.",
-            "E": "Distribuição integrada de monopólio."
+            "B": "Nível um com intermediários locais.",
+            "C": "Nível dois com exportadores integrados.",
+            "D": "Canal de comercialização de base multinacional.",
+            "E": "Distribuição de monopólio fechado."
           },
           "correta": "A",
           "explicacao": "O canal de nível zero (ou venda direta) ocorre sem intermediários, permitindo que o produtor capture integralmente as margens de valor final da venda de seus produtos.",
@@ -1447,7 +1441,7 @@
       }
     }
 
-    // Renderização simplificada com Módulo Único Dinâmico
+    // Renderização simplificada com Módulo Único Dinâmico e "5 Questões" descritivo
     function renderThemes() {
       const themesList = ["TEMA_1", "TEMA_2", "TEMA_3", "TEMA_4", "TEMA_5", "TEMA_6", "TEMA_7", "TEMA_8", "TEMA_9", "TEMA_10", "TEMA_11", "TEMA_12", "TEMA_13", "TEMA_14", "TEMA_15"];
 
@@ -1461,10 +1455,10 @@
         el.innerHTML = `
           <div class="flex-1 pr-3">
             <p class="text-xs font-semibold text-white leading-snug">${TEMAS_INFO[themeId].nome}</p>
-            <span class="text-[10px] text-textgray">5 Questões Disponíveis</span>
+            <span class="text-[10px] text-textgray">5 Questões</span>
           </div>
           <div class="flex items-center gap-2">
-            ${isCompleted ? `<span class="text-[11px] text-gold font-bold bg-gold/10 px-2 py-1 rounded border border-gold/20">${score}/10</span>` : ''}
+            ${isCompleted ? `<span class="text-[11px] text-gold font-bold bg-gold/10 px-2 py-1 rounded border border-gold/20">Nota: ${score}/10</span>` : ''}
             <button onclick="startQuiz('${themeId}')" class="text-xs bg-gold hover:bg-yellow-600 text-darkbg font-bold px-3 py-1.5 rounded-xl transition">
               ${isCompleted ? 'Refazer' : 'Iniciar'}
             </button>
@@ -1571,37 +1565,7 @@
     // ================= LÓGICA DO SIMULADO (QUIZ) =================
     let activeQuizState = null;
 
-    // Simulado Geral: Reúne 15 questões (a primeira questão de cada um dos 15 temas)
-    function startGeneralQuiz() {
-      showToast("Preparando Simulado Geral...", "info");
-      
-      const generalQuestions = [];
-      const themesList = ["TEMA_1", "TEMA_2", "TEMA_3", "TEMA_4", "TEMA_5", "TEMA_6", "TEMA_7", "TEMA_8", "TEMA_9", "TEMA_10", "TEMA_11", "TEMA_12", "TEMA_13", "TEMA_14", "TEMA_15"];
-      
-      themesList.forEach(tId => {
-        const list = QUESTIONS_DB[tId];
-        if (list && list.length > 0) {
-          // Copia profunda da primeira questão de cada tema (a questão real)
-          const qCopy = JSON.parse(JSON.stringify(list[0]));
-          qCopy.originThemeId = tId; 
-          generalQuestions.push(qCopy);
-        }
-      });
-
-      activeQuizState = {
-        themeId: "GERAL",
-        questions: generalQuestions,
-        currentIndex: 0,
-        hits: 0,
-        answered: false
-      };
-
-      document.getElementById('quiz-theme-tag').innerText = "Simulado Geral - 15 Temas";
-      switchScreen('quiz');
-      renderQuestion();
-    }
-
-    // Simulado por Tema: Executa exatamente 1 questão (a principal) do tema selecionado
+    // Inicialização do Quiz filtrando apenas para 1 questão por tema (exibe "Questão 1 de 1")
     function startQuiz(themeId) {
       const list = QUESTIONS_DB[themeId];
       if (!list || list.length === 0) {
@@ -1613,7 +1577,7 @@
       
       activeQuizState = {
         themeId: themeId,
-        questions: [JSON.parse(JSON.stringify(list[0]))], 
+        questions: [JSON.parse(JSON.stringify(list[0]))], // Executa apenas a 1ª questão
         currentIndex: 0,
         hits: 0,
         answered: false
@@ -1663,8 +1627,6 @@
       const correctKey = question.correta;
       const isCorrect = keySelected === correctKey;
 
-      const currentThemeLabel = question.originThemeId ? TEMAS_INFO[question.originThemeId].nome : TEMAS_INFO[qState.themeId].nome;
-
       if (isCorrect) {
         qState.hits++;
         showToast("Você acertou! 🌟 +100 XP", "success");
@@ -1683,9 +1645,8 @@
         document.getElementById('quiz-feedback-status').innerText = "A alternativa correta era: " + correctKey;
         document.getElementById('quiz-feedback-status').className = "font-extrabold text-sm uppercase text-wrong";
 
-        // Salvar erro no caderno de erros
         userState.mistakes.push({
-          theme: currentThemeLabel,
+          theme: TEMAS_INFO[qState.themeId].nome,
           question: question.pergunta,
           yourAnswer: keySelected + ") " + question.opcoes[keySelected],
           correctAnswer: correctKey + ") " + question.opcoes[correctKey],
@@ -1739,19 +1700,12 @@
       userState.totalHits += qState.hits;
       userState.totalQuestions += qState.questions.length;
 
-      if (themeId === "GERAL") {
-        // Salva pontuação do Simulado Geral e marca progresso integral em todos os temas caso obtenha nota satisfatória
-        userState.completedThemes = ["TEMA_1", "TEMA_2", "TEMA_3", "TEMA_4", "TEMA_5", "TEMA_6", "TEMA_7", "TEMA_8", "TEMA_9", "TEMA_10", "TEMA_11", "TEMA_12", "TEMA_13", "TEMA_14", "TEMA_15"];
-        userState.completedThemes.forEach(t => {
-          userState.scores[t] = score;
-        });
-      } else {
-        if (!userState.completedThemes.includes(themeId)) {
-          userState.completedThemes.push(themeId);
-        }
-        if (userState.scores[themeId] === undefined || score > userState.scores[themeId]) {
-          userState.scores[themeId] = score;
-        }
+      if (!userState.completedThemes.includes(themeId)) {
+        userState.completedThemes.push(themeId);
+      }
+
+      if (userState.scores[themeId] === undefined || score > userState.scores[themeId]) {
+        userState.scores[themeId] = score;
       }
 
       saveState();
