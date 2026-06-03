@@ -39,14 +39,6 @@
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
-    .accordion-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out;
-    }
-    .accordion-active .accordion-content {
-      max-height: 500px;
-    }
   </style>
 </head>
 <body class="bg-darkbg text-white font-sans min-h-screen relative flex flex-col selection:bg-gold/30">
@@ -98,46 +90,38 @@
         </div>
       </div>
 
-      <!-- Desempenho por Áreas (Gráfico customizado nativo) -->
+      <!-- Desempenho por Áreas -->
       <div class="bg-cardbg p-4 rounded-2xl border border-white/5 space-y-4">
         <h3 class="text-xs font-bold text-textgray tracking-wider uppercase">Desempenho por Áreas</h3>
         <div class="grid grid-cols-8 gap-1.5 h-32 items-end pt-2 pb-1 bg-darkbg/50 rounded-xl px-2">
-          <!-- Coluna 1 -->
           <div class="flex flex-col items-center h-full justify-end">
             <div id="bar-agro" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
             <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Agro</span>
           </div>
-          <!-- Coluna 2 -->
           <div class="flex flex-col items-center h-full justify-end">
             <div id="bar-veg" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
             <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Veg</span>
           </div>
-          <!-- Coluna 3 -->
           <div class="flex flex-col items-center h-full justify-end">
             <div id="bar-agua" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
             <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Água</span>
           </div>
-          <!-- Coluna 4 -->
           <div class="flex flex-col items-center h-full justify-end">
             <div id="bar-cult" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
             <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Cult</span>
           </div>
-          <!-- Coluna 5 -->
           <div class="flex flex-col items-center h-full justify-end">
             <div id="bar-anim" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
             <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Anim</span>
           </div>
-          <!-- Coluna 6 -->
           <div class="flex flex-col items-center h-full justify-end">
             <div id="bar-gen" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
             <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Gen</span>
           </div>
-          <!-- Coluna 7 -->
           <div class="flex flex-col items-center h-full justify-end">
             <div id="bar-tech" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
             <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Tech</span>
           </div>
-          <!-- Coluna 8 -->
           <div class="flex flex-col items-center h-full justify-end">
             <div id="bar-bonus" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
             <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Bônus</span>
@@ -166,83 +150,39 @@
       </div>
     </section>
 
-    <!-- SCREEN 2: SIMULADOS -->
+    <!-- SCREEN 2: SIMULADOS (Módulo Único de Lista Simples) -->
     <section id="screen-simulados" class="hidden space-y-4">
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-bold text-white">Simulados Disponíveis</h2>
         <span class="text-xs bg-gold/10 text-gold px-2.5 py-1 rounded-full border border-gold/30 font-semibold uppercase tracking-wider">15 Temas</span>
       </div>
 
-      <!-- Módulos em Acordeão -->
-      <div class="space-y-3" id="accordion-container">
-        
-        <!-- MÓDULO I -->
-        <div class="bg-cardbg rounded-2xl border border-white/5 overflow-hidden transition-all duration-200" id="mod-1">
-          <button class="w-full flex items-center justify-between p-4 focus:outline-none" onclick="toggleAccordion('mod-1')">
-            <div class="text-left">
-              <h4 class="font-bold text-sm text-white">Módulo I: Gestão & Solo</h4>
-              <p class="text-[11px] text-textgray mt-0.5" id="mod-1-status">0 de 4 concluídos</p>
-            </div>
-            <span class="text-gold text-lg font-bold">➔</span>
-          </button>
-          <div class="accordion-content border-t border-white/5 bg-darkbg/30 px-4 py-2 space-y-3">
-            <div id="theme-T1" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
-            <div id="theme-T2" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
-            <div id="theme-T3" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
-            <div id="theme-T4" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+      <!-- Novo Painel de Módulo Único de Simulados -->
+      <div class="bg-cardbg rounded-2xl border border-white/5 overflow-hidden transition-all duration-200">
+        <div class="p-4 bg-white/5 border-b border-white/5 flex justify-between items-center">
+          <div>
+            <h4 class="font-bold text-sm text-white">Módulo 1: Todos os Temas</h4>
+            <p class="text-[11px] text-textgray mt-0.5" id="mod-1-status">0 de 15 concluídos</p>
           </div>
+          <span class="text-xs bg-gold/10 text-gold px-2.5 py-1 rounded-full border border-gold/30 font-semibold uppercase tracking-wider">SENAR</span>
         </div>
-
-        <!-- MÓDULO II -->
-        <div class="bg-cardbg rounded-2xl border border-white/5 overflow-hidden transition-all duration-200" id="mod-2">
-          <button class="w-full flex items-center justify-between p-4 focus:outline-none" onclick="toggleAccordion('mod-2')">
-            <div class="text-left">
-              <h4 class="font-bold text-sm text-white">Módulo II: Água & Culturas</h4>
-              <p class="text-[11px] text-textgray mt-0.5" id="mod-2-status">0 de 2 concluídos</p>
-            </div>
-            <span class="text-gold text-lg font-bold">➔</span>
-          </button>
-          <div class="accordion-content border-t border-white/5 bg-darkbg/30 px-4 py-2 space-y-3">
-            <div id="theme-T5" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
-            <div id="theme-T6" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
-          </div>
+        <div class="p-4 space-y-4" id="theme-list-container">
+          <div id="theme-T1" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          <div id="theme-T2" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          <div id="theme-T3" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          <div id="theme-T4" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          <div id="theme-T5" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          <div id="theme-T6" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          <div id="theme-T7" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          <div id="theme-T8" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          <div id="theme-T9" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          <div id="theme-T10" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          <div id="theme-T11" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          <div id="theme-T12" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          <div id="theme-T13" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          <div id="theme-T14" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
+          <div id="theme-T15" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
         </div>
-
-        <!-- MÓDULO III -->
-        <div class="bg-cardbg rounded-2xl border border-white/5 overflow-hidden transition-all duration-200" id="mod-3">
-          <button class="w-full flex items-center justify-between p-4 focus:outline-none" onclick="toggleAccordion('mod-3')">
-            <div class="text-left">
-              <h4 class="font-bold text-sm text-white">Módulo III: Produção Animal</h4>
-              <p class="text-[11px] text-textgray mt-0.5" id="mod-3-status">0 de 5 concluídos</p>
-            </div>
-            <span class="text-gold text-lg font-bold">➔</span>
-          </button>
-          <div class="accordion-content border-t border-white/5 bg-darkbg/30 px-4 py-2 space-y-3">
-            <div id="theme-T7" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
-            <div id="theme-T8" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
-            <div id="theme-T9" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
-            <div id="theme-T10" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
-            <div id="theme-T11" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
-          </div>
-        </div>
-
-        <!-- MÓDULO IV -->
-        <div class="bg-cardbg rounded-2xl border border-white/5 overflow-hidden transition-all duration-200" id="mod-4">
-          <button class="w-full flex items-center justify-between p-4 focus:outline-none" onclick="toggleAccordion('mod-4')">
-            <div class="text-left">
-              <h4 class="font-bold text-sm text-white">Módulo IV: Tecnologias & Bônus</h4>
-              <p class="text-[11px] text-textgray mt-0.5" id="mod-4-status">0 de 4 concluídos</p>
-            </div>
-            <span class="text-gold text-lg font-bold">➔</span>
-          </button>
-          <div class="accordion-content border-t border-white/5 bg-darkbg/30 px-4 py-2 space-y-3">
-            <div id="theme-T12" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
-            <div id="theme-T13" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
-            <div id="theme-T14" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
-            <div id="theme-T15" class="flex items-center justify-between py-2 border-b border-white/5 last:border-none"></div>
-          </div>
-        </div>
-
       </div>
     </section>
 
@@ -254,10 +194,7 @@
           Limpar Tudo
         </button>
       </div>
-
-      <div id="mistakes-list" class="space-y-3">
-        <!-- Injetado dinamicamente -->
-      </div>
+      <div id="mistakes-list" class="space-y-3"></div>
     </section>
 
     <!-- SCREEN 4: RANKING -->
@@ -266,13 +203,10 @@
         <h2 class="text-lg font-bold text-white">Ranking da Comunidade</h2>
         <span class="text-xs bg-gold/10 text-gold px-3 py-1.5 rounded-full border border-gold/20 font-semibold">Simulado Geral</span>
       </div>
-
-      <div id="ranking-list" class="bg-cardbg rounded-2xl border border-white/5 p-2 divide-y divide-white/5">
-        <!-- Injetado dinamicamente -->
-      </div>
+      <div id="ranking-list" class="bg-cardbg rounded-2xl border border-white/5 p-2 divide-y divide-white/5"></div>
     </section>
 
-    <!-- SCREEN 5: QUIZ INTERATIVO (Ocupa o container da mesma tela) -->
+    <!-- SCREEN 5: QUIZ INTERATIVO -->
     <section id="screen-quiz" class="hidden space-y-4">
       <div class="flex items-center justify-between">
         <span id="quiz-theme-tag" class="text-xs text-gold font-bold uppercase tracking-wider"></span>
@@ -282,7 +216,7 @@
       <!-- Barra de Progresso da Questão -->
       <div class="space-y-1">
         <div class="flex justify-between text-xs text-textgray">
-          <span id="quiz-question-number">Questão 1 de 1</span>
+          <span id="quiz-question-number">Questão 1 de 5</span>
           <span id="quiz-time-left">⏱️ Tempo Livre</span>
         </div>
         <div class="w-full h-1.5 bg-cardbg rounded-full overflow-hidden">
@@ -296,14 +230,12 @@
       </div>
 
       <!-- Alternativas de Opções -->
-      <div id="quiz-options-container" class="space-y-2">
-        <!-- Injetado dinamicamente -->
-      </div>
+      <div id="quiz-options-container" class="space-y-2"></div>
 
       <!-- Área de Feedback / Explicação -->
       <div id="quiz-feedback-box" class="hidden bg-cardbg p-5 rounded-2xl border border-white/5 space-y-2 animate-fade-in">
         <h4 id="quiz-feedback-status" class="font-extrabold text-sm uppercase"></h4>
-        <p id="quiz-explanation-text" class="text-xs text-textgray leading-relaxed"></p>
+        <p id="quiz-explanation-text" class="text-xs text-textgray leading-relaxed whitespace-pre-wrap"></p>
         <button id="quiz-next-btn" onclick="nextQuestion()" class="w-full mt-2 bg-gold hover:bg-yellow-600 text-darkbg font-bold py-3 rounded-xl transition duration-150 text-sm">
           Avançar
         </button>
@@ -312,7 +244,7 @@
 
   </main>
 
-  <!-- Navegação Inferior Fixa (Estilo Mobile App nativo) -->
+  <!-- Navegação Inferior Fixa -->
   <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-cardbg/95 backdrop-blur-md border-t border-white/5 py-3 px-6 flex justify-between items-center z-40 shadow-2xl rounded-t-2xl">
     <button onclick="switchScreen('dashboard')" id="nav-dashboard" class="flex flex-col items-center gap-1 group text-gold">
       <span class="text-xl">📊</span>
@@ -336,7 +268,7 @@
     </button>
   </nav>
 
-  <!-- BANCO DE QUESTÕES INTEGRADO -->
+  <!-- BANCO DE QUESTÕES INTEGRADO COM 15 TEMAS x 5 QUESTÕES -->
   <script>
     const QUESTIONS_DB = {
       "TEMA_1": [
@@ -350,7 +282,60 @@
             "E": "Sistemas agroalimentares de subsistência."
           },
           "correta": "B",
-          "explicacao": "O conceito pioneiro de Davis e Goldberg consolidou o termo agronegócio (agribusiness), demonstrando que a agropecuária comercial não opera isolada, mas integrada com fornecedores de insumos e indústrias de beneficiamento."
+          "explicacao": "O conceito pioneiro de Davis e Goldberg consolidou o termo agronegócio (agribusiness), demonstrando que a agropecuária comercial não opera de forma isolada, mas integrada com fornecedores de insumos e indústrias de beneficiamento.",
+          "pagina": "página 23 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual setor do agronegócio é responsável pelo fornecimento de defensivos agrícolas, fertilizantes, máquinas pesadas e sementes selecionadas para as fazendas?",
+          "opcoes": {
+            "A": "Segmento antes da porteira.",
+            "B": "Segmento dentro da porteira.",
+            "C": "Segmento depois da porteira.",
+            "D": "Distribuição logística de varejo.",
+            "E": "Indústria alimentícia de refino."
+          },
+          "correta": "A",
+          "explicacao": "O segmento 'antes da porteira' compreende toda a indústria de insumos, máquinas, biotecnologia e defensivos que preparam as condições para a produção no campo.",
+          "pagina": "página 25 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O complexo agroindustrial brasileiro é dividido em eixos complementares. O que se desenvolve estritamente no segmento denominado 'dentro da porteira'?",
+          "opcoes": {
+            "A": "A fabricação industrial de fertilizantes formulados.",
+            "B": "O transporte marítimo de commodities de grãos.",
+            "C": "A produção agropecuária propriamente dita.",
+            "D": "O refino e processamento de óleos vegetais.",
+            "E": "A comercialização de farelos em bolsas de valores."
+          },
+          "correta": "C",
+          "explicacao": "O segmento 'dentro da porteira' engloba o cultivo agrícola, a pecuária, o manejo sanitário, a colheita e todas as atividades físicas de manejo na fazenda.",
+          "pagina": "página 28 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual órgão/instituição calcula o PIB do agronegócio brasileiro em parceria de análise contínua com a Confederação da Agricultura e Pecuária do Brasil (CNA)?",
+          "opcoes": {
+            "A": "Embrapa Territorial.",
+            "B": "CEPEA (Centro de Estudos Avançados em Economia Aplicada - USP).",
+            "C": "IBGE - Coordenação de Contas Nacionais.",
+            "D": "Ministério do Desenvolvimento Agrário.",
+            "E": "Banco Central do Brasil."
+          },
+          "correta": "B",
+          "explicacao": "O CEPEA/USP calcula mensalmente e anualmente a participação do agronegócio no PIB nacional em convênio técnico exclusivo com a CNA.",
+          "pagina": "página 31 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O escoamento físico rodoviário, armazenamento portuário e a comercialização de grãos para exportação enquadram-se em qual segmento do agronegócio?",
+          "opcoes": {
+            "A": "Antes da porteira.",
+            "B": "Dentro da porteira.",
+            "C": "Segmento de fomento bancário.",
+            "D": "Depois da porteira.",
+            "E": "Setor cooperativo primário."
+          },
+          "correta": "D",
+          "explicacao": "O segmento 'depois da porteira' engloba as indústrias processadoras, os canais de distribuição, a logística de transporte terrestre e portuária e a exportação final.",
+          "pagina": "página 35 do PDF do SENAR"
         }
       ],
       "TEMA_2": [
@@ -364,7 +349,60 @@
             "E": "Gradagem intensiva pós-colheita."
           },
           "correta": "D",
-          "explicacao": "O Sistema de Plantio Direto (SPD) baseia-se em três pilares básicos: ausência de revolvimento prévio do solo, cobertura vegetal perene e rotação programada de culturas."
+          "explicacao": "O Sistema de Plantio Direto (SPD) baseia-se em três pilares básicos: ausência de revolvimento prévio do solo, cobertura vegetal perene e rotação programada de culturas.",
+          "pagina": "página 45 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A Integração Lavoura-Pecuária-Floresta (iLPF) visa otimizar o uso da terra. Qual o principal benefício ambiental direto deste sistema integrado?",
+          "opcoes": {
+            "A": "Redução do ciclo biológico de pragas aéreas.",
+            "B": "Eliminação total do uso de herbicidas seletivos.",
+            "C": "Recuperação de pastagens degradadas e intensivo sequestro de carbono.",
+            "D": "Aumento estático do teor de argila do solo.",
+            "E": "Indução química de chuvas em épocas secas."
+          },
+          "correta": "C",
+          "explicacao": "A iLPF recupera o solo degradado pela pecuária, diversifica as fontes de renda do produtor e estoca carbono de forma muito eficiente através do plantio de árvores.",
+          "pagina": "página 48 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual dos seguintes sistemas de produção agrícola foca estritamente na ausência do uso de adubos químicos solúveis sintéticos e de pesticidas no manejo vegetal?",
+          "opcoes": {
+            "A": "Agricultura Orgânica.",
+            "B": "Hidroponia intensiva.",
+            "C": "Agricultura de precisão por taxa variável.",
+            "D": "Monocultura de grãos transgênicos.",
+            "E": "Silvicultura de rotação curta."
+          },
+          "correta": "A",
+          "explicacao": "A agricultura orgânica proíbe insumos químicos sintéticos e transgênicos, focando na biologia do solo e no controle ecológico de pragas.",
+          "pagina": "página 52 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O plantio em curvas de nível é uma prática recomendada para evitar qual tipo de degradação ambiental nas encostas?",
+          "opcoes": {
+            "A": "Compactação subsuperficial por tratores.",
+            "B": "Erosão hídrica e perda de nutrientes do solo por lixiviação.",
+            "C": "Alcalinização acelerada de minerais solúveis.",
+            "D": "Perda de água por transpiração estomática extrema.",
+            "E": "Esgotamento biológico de nematóides benéficos."
+          },
+          "correta": "B",
+          "explicacao": "As curvas de nível quebram a velocidade da água da chuva que escorre pela superfície do terreno, reduzindo drasticamente a força erosiva e conservando o solo.",
+          "pagina": "página 56 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O uso de adubação verde apoia-se principalmente no cultivo de plantas que adicionam matéria orgânica e nitrogênio ao solo. Qual grupo botânico é o mais utilizado para esse fim?",
+          "opcoes": {
+            "A": "Gramíneas forrageiras de crescimento cespitoso.",
+            "B": "Crucíferas e brássicas de raízes profundas.",
+            "C": "Cactáceas adaptadas ao estresse hídrico.",
+            "D": "Plantas medicinais espontâneas.",
+            "E": "Leguminosas (como crotalária e feijão-de-porco)."
+          },
+          "correta": "E",
+          "explicacao": "As leguminosas fixam o nitrogênio atmosférico em simbiose com bactérias e, ao serem incorporadas ou roçadas, liberam grande quantidade de N e matéria orgânica no solo.",
+          "pagina": "página 60 do PDF do SENAR"
         }
       ],
       "TEMA_3": [
@@ -378,7 +416,60 @@
             "E": "Parênquima aquífero."
           },
           "correta": "C",
-          "explicacao": "O floema é o tecido condutor responsável por distribuir a seiva elaborada (compostos orgânicos originados nas folhas pela fotossíntese) para os demais órgãos das plantas."
+          "explicacao": "O floema é o tecido condutor responsável por distribuir a seiva elaborada (compostos orgânicos originados nas folhas pela fotossíntese) para os demais órgãos das plantas.",
+          "pagina": "página 70 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual estrutura celular foliar é diretamente responsável pelo controle das trocas gasosas (entrada de CO2) e perda de água por transpiração?",
+          "opcoes": {
+            "A": "Tricomas glandulares.",
+            "B": "Estômatos.",
+            "C": "Cutícula cerosa.",
+            "D": "Plasmodesmos epidérmicos.",
+            "E": "Parênquima paliçádico."
+          },
+          "correta": "B",
+          "explicacao": "Os estômatos são aberturas microscópicas na epiderme da folha que se abrem e fecham regulando a entrada de gás carbônico e a saída de vapor de água.",
+          "pagina": "página 74 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O xilema (ou vasos lenhosos) é o tecido vegetal de condução especializado no transporte de qual tipo de substância?",
+          "opcoes": {
+            "A": "Seiva bruta (água e sais minerais absorvidos do solo).",
+            "B": "Amidos digeridos das reservas de raízes tuberosas.",
+            "C": "Glicose elaborada no parênquima foliar.",
+            "D": "Hormônios puros em estado gasoso.",
+            "E": "Látex protetor contra insetos sugadores."
+          },
+          "correta": "A",
+          "explicacao": "O xilema conduz água e minerais da raiz até as folhas. Esse transporte é impulsionado principalmente pela transpiração foliar e pressão radicular.",
+          "pagina": "página 77 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual tipo de sistema radicular é característico e predominante nas plantas classificadas como monocotiledôneas (como milho, arroz e cana)?",
+          "opcoes": {
+            "A": "Sistema pivotante com raiz principal profunda.",
+            "B": "Raízes tuberosas ricas em lipídios.",
+            "C": "Raízes aéreas do tipo pneumatóforo.",
+            "D": "Sistema fasciculado (também chamado de raiz em cabeleira).",
+            "E": "Haustórios parasitários superficiais."
+          },
+          "correta": "D",
+          "explicacao": "As monocotiledôneas têm raízes fasciculadas, sem raiz central dominante, formando um emaranhado denso e superficial que ajuda na fixação e absorção rápida.",
+          "pagina": "página 82 do PDF do SENAR"
+        },
+        {
+          "pergunta": "No processo de fotossíntese, qual organela celular é responsável por abrigar as moléculas de clorofila e capturar a energia luminosa?",
+          "opcoes": {
+            "A": "Mitocôndria celular.",
+            "B": "Cloroplasto.",
+            "C": "Complexo de Golgi.",
+            "D": "Vacúolo de suco celular.",
+            "E": "Ribossomo rugoso."
+          },
+          "correta": "B",
+          "explicacao": "Os cloroplastos contêm os pigmentos fotossintetizantes (clorofilas) que absorvem comprimentos de onda de luz vermelha e azul para produzir carboidratos.",
+          "pagina": "página 85 do PDF do SENAR"
         }
       ],
       "TEMA_4": [
@@ -392,7 +483,60 @@
             "E": "A água supre integralmente as carências de ferro e potássio das folhas."
           },
           "correta": "B",
-          "explicacao": "A Lei do Mínimo postula que o crescimento vegetal é prejudicado e restringido diretamente pela carência do elemento que apresentar menor adequação ideal no solo."
+          "explicacao": "A Lei do Mínimo postula que o crescimento vegetal é prejudicado e restringido diretamente pela carência do elemento que apresentar menor adequação ideal no solo.",
+          "pagina": "página 94 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual macronutriente primário é altamente exigido no desenvolvimento vegetativo inicial para estimular o crescimento de folhas e alongamento celular do caule?",
+          "opcoes": {
+            "A": "Nitrogênio (N).",
+            "B": "Cobre (Cu).",
+            "C": "Boro (B).",
+            "D": "Cálcio (Ca).",
+            "E": "Zinco (Zn)."
+          },
+          "correta": "A",
+          "explicacao": "O Nitrogênio é essencial na composição de aminoácidos, proteínas e clorofila, estimulando fortemente o desenvolvimento de folhas e tecidos verdes.",
+          "pagina": "página 97 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A prática da calagem é essencial para a correção de solos ácidos tropicais. Qual é o seu principal objetivo do ponto de vista químico?",
+          "opcoes": {
+            "A": "Aumentar a textura arenosa do solo de plantio.",
+            "B": "Reduzir o pH do solo para níveis inferiores a 4.",
+            "C": "Elevar o pH do solo e neutralizar a toxidez do alumínio.",
+            "D": "Substituir totalmente a necessidade de adubação nitrogenada.",
+            "E": "Acelerar a compactação superficial da lavoura."
+          },
+          "correta": "C",
+          "explicacao": "A calagem fornece cálcio e magnésio, neutraliza os íons tóxicos de Alumínio e eleva o pH, aumentando a disponibilidade e absorção de outros nutrientes.",
+          "pagina": "página 101 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O Fósforo (P) desempenha papel vital em qual das seguintes funções metabólicas gerais nas fases iniciais das plantas?",
+          "opcoes": {
+            "A": "Regulação estomática exclusiva.",
+            "B": "Transferência de energia via ATP e desenvolvimento radicular.",
+            "C": "Síntese foliar de açúcares simples.",
+            "D": "Preenchimento puramente estético de sementes.",
+            "E": "Elevação da resistência mecânica da casca dos frutos."
+          },
+          "correta": "B",
+          "explicacao": "O Fósforo faz parte dos ácidos nucleicos e ATP (energia celular), estimulando o crescimento das raízes e o estabelecimento rápido da cultura.",
+          "pagina": "página 105 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual dos seguintes elementos minerais é classificado como micronutriente, embora seja indispensável em quantidades mínimas?",
+          "opcoes": {
+            "A": "Potássio (K).",
+            "B": "Magnésio (Mg).",
+            "C": "Enxofre (S).",
+            "D": "Zinco (Zn).",
+            "E": "Fósforo (P)."
+          },
+          "correta": "D",
+          "explicacao": "O Zinco (junto ao Boro, Cobre, Ferro, Manganês, etc.) é um micronutriente necessário em pequenas dosagens, atuando na regulação enzimática do crescimento.",
+          "pagina": "página 109 do PDF do SENAR"
         }
       ],
       "TEMA_5": [
@@ -406,7 +550,60 @@
             "E": "Pivô central de grande fluxo."
           },
           "correta": "A",
-          "explicacao": "O gotejamento direciona recursos diretamente à raiz reduzindo perdas e permitindo uma eficiência operacional de aplicação que ultrapassa 90%."
+          "explicacao": "O gotejamento direciona recursos diretamente à raiz reduzindo perdas por deriva do vento e evaporação, permitindo eficiência operacional superior a 90%.",
+          "pagina": "página 113 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A salinização do solo é um problema frequente em áreas irrigadas de regiões áridas. Como evitar esse problema de forma técnica preventiva?",
+          "opcoes": {
+            "A": "Interrompendo a irrigação à noite.",
+            "B": "Instalando um sistema eficiente de drenagem agrícola no solo.",
+            "C": "Adicionando excesso de gesso mineral agrícola.",
+            "D": "Aumentando a frequência de aração mecânica profunda.",
+            "E": "Aplicando biofertilizantes de base orgânica alcalina."
+          },
+          "correta": "B",
+          "explicacao": "A drenagem permite a lixiviação (lavagem) do excesso de sais solúveis da região radicular, evitando que o acúmulo de sais torne o solo improdutivo.",
+          "pagina": "página 116 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O sistema de irrigação por Pivô Central enquadra-se em qual método de aplicação de água?",
+          "opcoes": {
+            "A": "Método de infiltração por inundação.",
+            "B": "Irrigação por gotejamento.",
+            "C": "Método por aspersão.",
+            "D": "Irrigação por sulcos.",
+            "E": "Subirrigação freática."
+          },
+          "correta": "C",
+          "explicacao": "O pivô central distribui água simulando chuva artificial por meio de aspersores, classificando-se no método de aspersão mecânica rotativa.",
+          "pagina": "página 119 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual a principal limitação do método de irrigação por infiltração em sulcos de superfície?",
+          "opcoes": {
+            "A": "Baixa eficiência de aplicação de água e alta perda por percolação profunda.",
+            "B": "Custos elétricos elevados para bombeamento de alta pressão.",
+            "C": "Obstrução constante dos emissores microscópicos por argila.",
+            "D": "Sensibilidade extrema à ação direta do vento.",
+            "E": "Necessidade constante de mão de obra de manutenção robótica."
+          },
+          "correta": "A",
+          "explicacao": "A irrigação por sulcos (gravidade) apresenta alta perda por escoamento superficial e infiltração excessiva na cabeceira, reduzindo a uniformidade de molhamento.",
+          "pagina": "página 122 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual parâmetro de solo determina a capacidade máxima de retenção de água aproveitável pelas plantas após o escoamento do excesso pela gravidade?",
+          "opcoes": {
+            "A": "Ponto de murcha permanente.",
+            "B": "Porosidade total de ar livre.",
+            "C": "Velocidade de infiltração básica.",
+            "D": "Índice de saturação do solo.",
+            "E": "Capacidade de campo."
+          },
+          "correta": "E",
+          "explicacao": "A Capacidade de Campo é o limite superior de água útil contida nos microporos do solo após a drenagem rápida da gravidade acabar.",
+          "pagina": "página 125 do PDF do SENAR"
         }
       ],
       "TEMA_6": [
@@ -420,7 +617,60 @@
             "E": "Bacillus."
           },
           "correta": "A",
-          "explicacao": "Bactérias simbióticas do gênero Bradyrhizobium associam-se às raízes e convertem nitrogênio gasoso (N2) em formas químicas prontamente utilizáveis pelas plantas."
+          "explicacao": "Bactérias simbióticas do gênero Bradyrhizobium associam-se às raízes e convertem nitrogênio gasoso (N2) em formas químicas prontamente utilizáveis pelas plantas.",
+          "pagina": "página 131 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A cultura do milho é amplamente utilizada para silagem e produção de grãos. Qual o seu centro de origem botânico conhecido historicamente?",
+          "opcoes": {
+            "A": "Ásia Central e China.",
+            "B": "Leste Europeu e Rússia.",
+            "C": "América Central e México.",
+            "D": "Norte da África.",
+            "E": "Cerrado Brasileiro."
+          },
+          "correta": "C",
+          "explicacao": "O milho é nativo da América Central (México). Ele foi domesticado a partir do teosinto de forma artificial pelos povos indígenas há milhares de anos.",
+          "pagina": "página 134 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Na cultura do café, qual tipo botânico é conhecido por possuir maior teor de cafeína, rusticidade contra pragas e ser amplamente cultivado no Espírito Santo e Rondônia?",
+          "opcoes": {
+            "A": "Café Arábica.",
+            "B": "Café Conilon (ou Robusta).",
+            "C": "Café Bourbon Amarelo.",
+            "D": "Café Geisha.",
+            "E": "Café Liberica."
+          },
+          "correta": "B",
+          "explicacao": "O Coffea canephora (Conilon/Robusta) adapta-se melhor a climas quentes e altitudes baixas, contendo cerca do dobro de cafeína do café Arábica.",
+          "pagina": "página 138 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O ciclo vegetativo da cana-de-açúcar é influenciado pela época de plantio. Qual subproduto de sua industrialização é amplamente usado para cogeração de energia térmica nas usinas?",
+          "opcoes": {
+            "A": "Vinhaça concentrada.",
+            "B": "Melado residual.",
+            "C": "Torta de filtro orgânica.",
+            "D": "Bagaço de cana.",
+            "E": "Levedura seca."
+          },
+          "correta": "D",
+          "explicacao": "O bagaço fibroso gerado na moagem da cana é queimado em caldeiras de alta pressão para gerar vapor e energia elétrica limpa auto-suficiente.",
+          "pagina": "página 142 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A cultura do algodão exige monitoramento constante contra pragas. Qual é a principal praga de importância econômica que gerou prejuízos históricos na cotonicultura brasileira?",
+          "opcoes": {
+            "A": "Bicudo-do-algodoeiro.",
+            "B": "Pulgão-do-algodão.",
+            "C": "Mosca-branca.",
+            "D": "Lagarta-do-cartucho.",
+            "E": "Ácaro-rajado."
+          },
+          "correta": "A",
+          "explicacao": "O coleóptero Bicudo (Anthonomus grandis) ataca os botões florais do algodão, inviabilizando a colheita e exigindo monitoramento intensivo na safra.",
+          "pagina": "página 146 do PDF do SENAR"
         }
       ],
       "TEMA_7": [
@@ -434,7 +684,60 @@
             "E": "Apicultura silvestre sedentária."
           },
           "correta": "C",
-          "explicacao": "A avicultura de corte brasileira está no topo de eficiência global, apoiada em sistemas eficientes de integração vertical, controle de sanidade e genética apurada."
+          "explicacao": "A avicultura de corte brasileira está no topo de eficiência global, apoiada em sistemas eficientes de integração vertical, controle de sanidade e genética apurada.",
+          "pagina": "página 208 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual raça bovina de origem indiana (Zebuína) é amplamente predominante no rebanho de corte brasileiro devido à sua alta rusticidade, pele escura e adaptabilidade térmica?",
+          "opcoes": {
+            "A": "Angus.",
+            "B": "Nelore.",
+            "C": "Hereford.",
+            "D": "Limousin.",
+            "E": "Caracu."
+          },
+          "correta": "B",
+          "explicacao": "A raça Nelore representa a maior parte do rebanho de corte nacional devido à excelente tolerância ao calor, resistência a parasitas e agilidade de pastejo extensivo.",
+          "pagina": "página 211 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Na pecuária de leite nacional, qual estado brasileiro destaca-se historicamente como o maior produtor de leite do país em volume comercializado?",
+          "opcoes": {
+            "A": "Minas Gerais.",
+            "B": "Mato Grosso do Sul.",
+            "C": "Piauí.",
+            "D": "São Paulo.",
+            "E": "Amazonas."
+          },
+          "correta": "A",
+          "explicacao": "Minas Gerais é o maior polo de bacia leiteira do Brasil, amparado tanto por pequenas propriedades de base familiar quanto por grandes sistemas altamente tecnificados.",
+          "pagina": "página 214 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O Brasil é um dos maiores exportadores mundiais de carne suína de qualidade. Qual região brasileira concentra os maiores polos produtores e cooperativas dessa cadeia?",
+          "opcoes": {
+            "A": "Região Norte.",
+            "B": "Região Nordeste.",
+            "C": "Região Sul.",
+            "D": "Região Sudeste.",
+            "E": "Área de Transição Amazônica."
+          },
+          "correta": "C",
+          "explicacao": "A Região Sul concentra a suinocultura brasileira devido à infraestrutura cooperativa consolidada, proximidade de fábricas de ração e forte integração vertical.",
+          "pagina": "página 218 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual fator de manejo é considerado o mais impactante no bem-estar e na produtividade das aves de postura modernas em granjas industriais?",
+          "opcoes": {
+            "A": "Uso de rações de coloração escura.",
+            "B": "Linhagens rústicas não vacinadas.",
+            "C": "Isolamento total de água fresca.",
+            "D": "Ambiência e controle térmico dos galpões de alojamento.",
+            "E": "Substituição completa do cálcio dietético por silício."
+          },
+          "correta": "D",
+          "explicacao": "As aves de postura são sensíveis ao calor. O controle de temperatura por climatização em galpões de pressão negativa evita mortalidade e quebra de postura.",
+          "pagina": "página 222 do PDF do SENAR"
         }
       ],
       "TEMA_8": [
@@ -448,7 +751,60 @@
             "E": "Esofágico."
           },
           "correta": "B",
-          "explicacao": "O rúmen constitui uma imensa cuba de fermentação anaeróbica que abriga microrganismos essenciais para a digestão enzimática de fibras celulósicas."
+          "explicacao": "O rúmen constitui uma imensa câmara de fermentação anaeróbica que abriga microrganismos essenciais para a digestão enzimática de fibras celulósicas vegetais.",
+          "pagina": "página 226 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual compartimento gástrico dos ruminantes é considerado o 'estômago verdadeiro' ou glandular, responsável pela digestão enzimática ácida e proteólise?",
+          "opcoes": {
+            "A": "Retículo.",
+            "B": "Rúmen.",
+            "C": "Abomaso.",
+            "D": "Omaso.",
+            "E": "Ceco."
+          },
+          "correta": "C",
+          "explicacao": "O abomaso secreta ácido clorídrico e enzimas digestivas (como pepsina), quebrando as proteínas da ração e os próprios microrganismos oriundos do rúmen.",
+          "pagina": "página 229 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual hormônio de ação neuroendócrina é diretamente responsável pelo estímulo da contração das células mioepiteliais mamárias, promovendo a descida do leite?",
+          "opcoes": {
+            "A": "Ocitocina.",
+            "B": "Adrenalina.",
+            "C": "Cortisol.",
+            "D": "Insulina.",
+            "E": "Estrogênio."
+          },
+          "correta": "A",
+          "explicacao": "A ocitocina é liberada em resposta a estímulos positivos de ordenha. Por outro lado, o estresse libera adrenalina, bloqueando a descida do leite.",
+          "pagina": "página 232 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Nos animais com estômago simples (monogástricos), como suínos, onde ocorre a maior parte da absorção química dos nutrientes digestíveis?",
+          "opcoes": {
+            "A": "Esôfago superior.",
+            "B": "Intestino delgado (duodeno, jejuno e íleo).",
+            "C": "Ceco e cólon ascendente.",
+            "D": "Pâncreas exócrino.",
+            "E": "Glândulas salivares."
+          },
+          "correta": "B",
+          "explicacao": "O intestino delgado possui vilosidades e microvilosidades que ampliam a superfície de contato facilitando a absorção de açúcares simples, aminoácidos e lipídios.",
+          "pagina": "página 235 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O coração dos mamíferos domésticos de interesse pecuário possui quantas câmaras internas separadas por septos musculares?",
+          "opcoes": {
+            "A": "Duas câmaras (um átrio e um ventrículo).",
+            "B": "Três câmaras (dois átrios e um ventrículo).",
+            "C": "Duas câmaras simétricas e sem vasos.",
+            "D": "Quatro câmaras distintas (dois átrios e dois ventrículos).",
+            "E": "Cinco câmaras cardíacas de contração assíncrona."
+          },
+          "correta": "D",
+          "explicacao": "O coração possui 4 câmaras, o que impede a mistura de sangue venoso (pobre em oxigênio) com o sangue arterial (oxigenado vindo dos pulmões).",
+          "pagina": "página 239 do PDF do SENAR"
         }
       ],
       "TEMA_9": [
@@ -462,7 +818,60 @@
             "E": "Nutrição de Desenvolvimento Tardio."
           },
           "correta": "B",
-          "explicacao": "Nutrientes Digestíveis Totais (NDT) expressam a equivalência energética agregada do ingrediente com base na digestibilidade aparente do alimento analisado."
+          "explicacao": "Nutrientes Digestíveis Totais (NDT) expressam a equivalência energética agregada do ingrediente com base na digestibilidade aparente do alimento analisado.",
+          "pagina": "página 233 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual elemento nutricional atua como principal fonte de energia de rápida fermentação ruminal para vacas leiteiras em dietas ricas em concentrados?",
+          "opcoes": {
+            "A": "Amido (presente em grãos como o Milho moído).",
+            "B": "Fibra em detergente ácido (FDA).",
+            "C": "Lignina lenhosa insolúvel.",
+            "D": "Proteína verdadeira solúvel de folhas secas.",
+            "E": "Minerais calcários puros."
+          },
+          "correta": "A",
+          "explicacao": "O amido do milho é rapidamente digerido pelos microrganismos ruminais, gerando propionato, principal precursor de glicose no fígado das vacas leiteiras.",
+          "pagina": "página 236 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A ureia pecuária é frequentemente adicionada à alimentação de bovinos durante a seca. Quimicamente, ela atua no rúmen como fonte direta de:",
+          "opcoes": {
+            "A": "Proteína verdadeira de bypass intestinal.",
+            "B": "Aminoácidos essenciais insolúveis em água.",
+            "C": "Nitrogênio Não Proteico (NNP) para síntese microbiana.",
+            "D": "Lipídios e ácidos graxos insaturados.",
+            "E": "Fósforo reativo de rápida absorção."
+          },
+          "correta": "C",
+          "explicacao": "A ureia fornece nitrogênio que as bactérias do rúmen usam para construir suas próprias proteínas celulares (proteína microbiana), aproveitada no intestino do animal.",
+          "pagina": "página 239 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Alimentos considerados volumosos agrícolas são caracteristicamente identificados por apresentarem teores de Fibra em Detergente Neutro (FDN) superiores a:",
+          "opcoes": {
+            "A": "5%",
+            "B": "18%",
+            "C": "2%",
+            "D": "12%",
+            "E": "8%"
+          },
+          "correta": "B",
+          "explicacao": "Os alimentos volumosos (como pastos, silagem e feno) possuem mais de 18% de fibra bruta em sua composição mineral e auxiliam na motilidade digestiva ruminal.",
+          "pagina": "página 242 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual a importância metabólica essencial do fornecimento balanceado de microminerais (como cobalto, cobre e zinco) na dieta do rebanho?",
+          "opcoes": {
+            "A": "Fornecimento primário de calorias de rápida digestão.",
+            "B": "Armazenamento direto de água na massa gorda corporal.",
+            "C": "Substituição completa de proteínas de origem vegetal.",
+            "D": "Ativação enzimática, cofatores metabólicos e suporte imunológico.",
+            "E": "Acelerar a descamação epidérmica preventiva de ácaros."
+          },
+          "correta": "D",
+          "explicacao": "Os microminerais participam de reações metabólicas vitais como síntese de vitaminas (vitamina B12 pelo cobalto) e fortalecimento de cascos e da imunidade do animal.",
+          "pagina": "página 245 do PDF do SENAR"
         }
       ],
       "TEMA_10": [
@@ -476,7 +885,60 @@
             "E": "Diferimento estacional fixo."
           },
           "correta": "A",
-          "explicacao": "O pastejo rotacionado propicia melhor aproveitamento da pastagem, respeitando os ciclos de recuperação fisiológica e rebrota foliar da espécie forrageira utilizada."
+          "explicacao": "O pastejo rotacionado propicia melhor aproveitamento da pastagem, respeitando os ciclos de recuperação fisiológica e rebrota foliar da espécie forrageira utilizada.",
+          "pagina": "página 247 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual gênero de capim tropical é amplamente difundido no Brasil pela alta rusticidade, tolerância a solos ácidos e excelente adaptabilidade aos biomas tropicais?",
+          "opcoes": {
+            "A": "Panicum.",
+            "B": "Brachiaria (ou Urochloa).",
+            "C": "Medicago.",
+            "D": "Cynodon.",
+            "E": "Pennisetum."
+          },
+          "correta": "B",
+          "explicacao": "As braquiárias (como B. decumbens e B. brizantha) adaptaram-se muito bem aos solos tropicais de baixa fertilidade e acidez acentuada do Cerrado brasileiro.",
+          "pagina": "página 250 do PDF do SENAR"
+        },
+        {
+          "pergunta": "No manejo de pastagens rotacionadas, o que significa o conceito técnico denominado 'altura de entrada' no piquete?",
+          "opcoes": {
+            "A": "A altura do solo antes de ser gradeado mecanicamente.",
+            "B": "A medida física máxima do piquete em relação ao nível do mar.",
+            "C": "A altura ideal da forragem que maximiza o consumo de folhas sem comprometer a rebrota.",
+            "D": "O limite de altura das cercas eletrificadas do lote.",
+            "E": "A medida de alongamento da raiz do capim."
+          },
+          "correta": "C",
+          "explicacao": "A altura de entrada indica o momento ideal de colocar os animais no piquete, coincidindo com o máximo acúmulo de folhas verdes sem excesso de talos fibrosos.",
+          "pagina": "página 253 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual prática de fomento de pastagem é recomendada para reverter o quadro de degradação severa que perdeu a capacidade de suporte animal?",
+          "opcoes": {
+            "A": "Adubação corretiva (geralmente fósforo/potássio), correção de pH e controle de invasoras.",
+            "B": "Aumento temporário da lotação animal em 4 vezes.",
+            "C": "Eliminação definitiva de toda a cerca dos piquetes.",
+            "D": "Irrigação contínua por inundação por 30 dias.",
+            "E": "Aplicação de adubo potássico puro sem corrigir o pH."
+          },
+          "correta": "A",
+          "explicacao": "A recuperação de pastagens exige análise química prévia do solo, calagem para elevar o pH, adubação de reposição (especialmente de Fósforo) e controle de pragas.",
+          "pagina": "página 256 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O Capim-Mombaça pertence a qual gênero botânico de alta produtividade, vigor foliar e elevada exigência de fertilidade de solo?",
+          "opcoes": {
+            "A": "Brachiaria.",
+            "B": "Cynodon.",
+            "C": "Paspalum.",
+            "D": "Panicum (Megathyrsus).",
+            "E": "Lolium."
+          },
+          "correta": "D",
+          "explicacao": "O capim Mombaça (Panicum maximum) é uma forrageira de alto rendimento de folhas, exigente em fertilidade e manejo de adubação, indicada para pastejo rotacionado.",
+          "pagina": "página 259 do PDF do SENAR"
         }
       ],
       "TEMA_11": [
@@ -490,7 +952,60 @@
             "E": "Pleiotropia simples."
           },
           "correta": "C",
-          "explicacao": "A herdabilidade indica o grau em que as características observadas no rebanho são influenciadas pela variação genética herdável de seus reprodutores."
+          "explicacao": "A herdabilidade indica o grau em que as características observadas no rebanho são influenciadas pela variação genética herdável de seus reprodutores.",
+          "pagina": "página 256 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A Diferença Esperada na Progenia (DEP) é um indicador crucial em catálogos de touros. O que ela representa na prática pecuária?",
+          "opcoes": {
+            "A": "O preço final do sêmen congelado comercial.",
+            "B": "A estimativa do potencial de transmissão genética do reprodutor para seus filhos.",
+            "C": "A taxa de fertilidade média do touro em monta de campo.",
+            "D": "A quantidade de doses produzidas pelo touro ao mês.",
+            "E": "O grau de parentesco consanguíneo entre matrizes da fazenda."
+          },
+          "correta": "B",
+          "explicacao": "A DEP estima a superioridade genotípica média que um reprodutor transmite aos seus filhos para uma característica específica comparado ao rebanho de referência.",
+          "pagina": "página 260 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O cruzamento industrial entre raças taurinas (europeias) e zebuínas visa explorar qual fenômeno genético de vigor zootécnico nas crias F1?",
+          "opcoes": {
+            "A": "Heterose (ou vigor híbrido).",
+            "B": "Mutação gênica induzida.",
+            "C": "Endogamia corretiva.",
+            "D": "Lixiviação fenotípica pura.",
+            "E": "Fixação de recessividade simples."
+          },
+          "correta": "A",
+          "explicacao": "A heterose ocorre quando os filhos apresentam média de desempenho superior à média dos pais, combinando a rusticidade zebuína com a produtividade taurina.",
+          "pagina": "página 263 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual das seguintes características possui baixa herdabilidade, dependendo muito mais de manejo sanitário e nutricional do que de seleção genética direta?",
+          "opcoes": {
+            "A": "Ganho de peso médio diário.",
+            "B": "Rendimento de carcaça limpa.",
+            "C": "Eficiência reprodutiva (como taxa de prenhez).",
+            "D": "Comprimento das costelas e espessura de gordura.",
+            "E": "Padrão de cor da pelagem da raça."
+          },
+          "correta": "C",
+          "explicacao": "Características reprodutivas têm baixa herdabilidade (geralmente abaixo de 10%). Elas dependem principalmente do manejo nutricional e de saúde do rebanho.",
+          "pagina": "página 266 do PDF do SENAR"
+        },
+        {
+          "pergunta": "No manejo reprodutivo moderno, o que caracteriza tecnicamente a técnica de Inseminação Artificial em Tempo Fixo (IATF)?",
+          "opcoes": {
+            "A": "Inseminação manual realizada apenas aos finais de semana.",
+            "B": "Uso de doses de sêmen sem controle de descongelamento.",
+            "C": "O uso de machos modificados geneticamente para cobertura direta.",
+            "D": "A sincronização hormonal do ciclo de fêmeas para inseminação em horário agendado sem observação de cio.",
+            "E": "Introdução artificial de óvulos já fertilizados na trompa mamária."
+          },
+          "correta": "D",
+          "explicacao": "A IATF utiliza protocolos hormonais para programar a ovulação de vacas de corte ou leite, permitindo inseminar lotes inteiros no mesmo dia e otimizar a reprodução.",
+          "pagina": "página 269 do PDF do SENAR"
         }
       ],
       "TEMA_12": [
@@ -504,7 +1019,60 @@
             "E": "Fase de Recria tardia."
           },
           "correta": "B",
-          "explicacao": "A fase de creche abriga leitões recém-desmamados que enfrentam mudanças em suas dietas. Esta fase necessita de instalações limpas, aquecidas e secas."
+          "explicacao": "A fase de creche abriga leitões recém-desmamados que enfrentam estresse térmico e imunológico. Esta fase necessita de instalações higienizadas, secas e com controle de temperatura.",
+          "pagina": "página 277 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual a principal matéria-prima proteica utilizada na formulação de rações industriais para aves de corte no Brasil devido à excelente composição de aminoácidos?",
+          "opcoes": {
+            "A": "Farelo de arroz desengordurado.",
+            "B": "Farinha de osso de peixe calcinada.",
+            "C": "Farelo de soja.",
+            "D": "Silagem de milho úmido.",
+            "E": "Sorghum granífero puro."
+          },
+          "correta": "C",
+          "explicacao": "O farelo de soja é a principal fonte proteica na avicultura industrial devido à alta digestibilidade e rico perfil de aminoácidos essenciais (como a lisina).",
+          "pagina": "página 280 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Na avicultura de postura (ovos comerciais), qual o principal objetivo fisiológico do manejo do programa de luz artificial adotado nas granjas?",
+          "opcoes": {
+            "A": "Permitir que as aves enxerguem a ração à noite de forma decorativa.",
+            "B": "Estimular os fotorreceptores e a glândula pineal para manter a constância de ovulação.",
+            "C": "Acelerar o ganho de gordura corporal das aves descartadas.",
+            "D": "Substituir a necessidade de aquecimento artificial nos ninhos.",
+            "E": "Evitar o estresse de ruídos externos na granja."
+          },
+          "correta": "B",
+          "explicacao": "O controle de horas diárias de luz regula o ciclo reprodutivo de galinhas poedeiras, simulando dias longos para manter alta e estável a produção de ovos ao longo do ano.",
+          "pagina": "página 283 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O chamado 'vazio sanitário' nas instalações de granjas avícolas tecnificadas consiste tecnicamente em:",
+          "opcoes": {
+            "A": "Período mínimo obrigatório sem animais nas instalações para desinfecção e redução de patógenos.",
+            "B": "Ausência de ração nos comedouros por 48 horas semanais.",
+            "C": "Deixar o galpão sem cobertura de telhado por 30 dias na chuva.",
+            "D": "Lavar os comedouros utilizando apenas água quente sem cloro.",
+            "E": "Falta de ventiladores nos dias frios de inverno."
+          },
+          "correta": "A",
+          "explicacao": "O vazio sanitário dura geralmente de 10 a 14 dias entre lotes de aves. Esse repouso de alojamento quebra o ciclo biológico de vírus e bactérias nas instalações.",
+          "pagina": "página 286 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual das seguintes enfermidades de aves de caráter emergencial exige rígida barreira sanitária em portos e aeroportos para resguardar o status de exportação brasileiro?",
+          "opcoes": {
+            "A": "Coccidiose aviária intestinal.",
+            "B": "Bronquite infecciosa crônica.",
+            "C": "Sarna de patas amarela.",
+            "D": "Peito seco hereditário.",
+            "E": "Influenza Aviária de Alta Patogenicidade (IAAP)."
+          },
+          "correta": "E",
+          "explicacao": "A IAAP (Gripe Aviária) é uma zoonose altamente letal para as aves. O status sanitário livre dessa infecção em criações comerciais garante a manutenção do comércio exterior brasileiro.",
+          "pagina": "página 289 do PDF do SENAR"
         }
       ],
       "TEMA_13": [
@@ -518,7 +1086,60 @@
             "E": "Favorecer a mastigação e salivação constante."
           },
           "correta": "C",
-          "explicacao": "O aumento na oferta de concentrados (grãos/energia rápida) otimiza os ganhos diários de carcaça e assegura a cobertura de gordura demandada pelos frigoríficos."
+          "explicacao": "O aumento na oferta de concentrados (grãos/energia rápida) otimiza os ganhos diários de carcaça e assegura a cobertura de gordura demandada pelos frigoríficos.",
+          "pagina": "página 304 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Na bovinocultura de leite, qual o período seco recomendado que uma vaca deve permanecer sem ordenha antes do próximo parto planejado?",
+          "opcoes": {
+            "A": "15 dias.",
+            "B": "60 dias.",
+            "C": "120 dias.",
+            "D": "Não deve haver período seco.",
+            "E": "5 dias de repouso mamário."
+          },
+          "correta": "B",
+          "explicacao": "O período seco ideal de 60 dias (ou 8 semanas) é necessário para a regeneração do tecido secretor da glândula mamária e preparação nutricional para a nova lactação.",
+          "pagina": "página 308 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O estresse térmico em vacas de alta produção leiteira prejudica os índices da atividade. Qual sintoma físico e visível indica que os animais estão sob estresse térmico excessivo?",
+          "opcoes": {
+            "A": "Aumento nítido da taxa respiratória (ofego), busca por sombra e salivação intensa.",
+            "B": "Busca voluntária por deitar-se ao sol do meio-dia.",
+            "C": "Aumento repentino do consumo voluntário de rações secas.",
+            "D": "Comportamento de brincadeira agressiva no pasto.",
+            "E": "Arrepiamento de pelos mamários externos."
+          },
+          "correta": "A",
+          "explicacao": "Vacas sob estresse térmico ofegam para dissipar calor por evaporação pulmonar, reduzem a ingestão de alimento e procuram sombra, derrubando a produção de leite.",
+          "pagina": "página 311 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual sistema de confinamento de leite utiliza galpões cobertos com cama coletiva de maravalha ou serragem que passa por processo de compostagem aeróbica ativa?",
+          "opcoes": {
+            "A": "Tie Stall de baias estreitas.",
+            "B": "Free Stall com divisórias de concreto.",
+            "C": "Compost Barn.",
+            "D": "Piquete rotacionado aberto.",
+            "E": "Confinamento em gaiolas aéreas."
+          },
+          "correta": "C",
+          "explicacao": "O Compost Barn oferece alto bem-estar térmico e conforto de deitar para as vacas. A fermentação aeróbica da cama gera calor que mantém o local seco.",
+          "pagina": "página 315 do PDF do SENAR"
+        },
+        {
+          "pergunta": "No manejo de novilhas de recria de corte, qual meta de peso vivo mínimo em relação ao peso adulto é recomendada para liberação ao primeiro acasalamento reprodutivo?",
+          "opcoes": {
+            "A": "Cerca de 30% do peso vivo adulto médio.",
+            "B": "Exatamente 85% de peso adulto.",
+            "C": "Pelo menos 40% com escore de gordura baixo.",
+            "D": "Em torno de 60% a 65% do peso vivo adulto da raça.",
+            "E": "O peso no desmame precoce."
+          },
+          "correta": "D",
+          "explicacao": "Novilhas devem atingir de 60% a 65% do peso adulto para obter taxas satisfatórias de concepção na primeira estação de monta e evitar problemas ao parto.",
+          "pagina": "página 318 do PDF do SENAR"
         }
       ],
       "TEMA_14": [
@@ -532,7 +1153,60 @@
             "E": "Fração de amostragem aleatória simples."
           },
           "correta": "A",
-          "explicacao": "VRT (Variable Rate Technology) refere-se ao sistema de distribuição que altera as doses aplicadas no talhão conforme prescrições digitais prévias inseridas nos computadores das máquinas agrícolas."
+          "explicacao": "VRT (Variable Rate Technology) refere-se ao sistema de distribuição que altera as doses aplicadas no talhão conforme prescrições digitais prévias inseridas nos computadores das máquinas agrícolas.",
+          "pagina": "página 339 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual o principal benefício do uso do sistema de piloto automático guiado por receptor de sinal de satélite (GNSS) nos tratores de plantio?",
+          "opcoes": {
+            "A": "Aumentar a rotação máxima de torque do motor diesel.",
+            "B": "Redução drástica de sobreposição de passadas e fadiga operacional.",
+            "C": "Substituir o óleo lubrificante de transmissão de engrenagens.",
+            "D": "Acelerar a germinação biológica da semente tratada.",
+            "E": "Controlar a deriva de vento no bico pulverizador."
+          },
+          "correta": "B",
+          "explicacao": "O piloto automático mantém passadas paralelas milimétricas reduzindo as falhas de semente ou sobreposição de adubos, otimizando o rendimento do combustível e do operador.",
+          "pagina": "página 342 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Os sensores óticos terrestres instalados em barras de pulverizadores são amplamente utilizados para qual finalidade específica em campo limpo?",
+          "opcoes": {
+            "A": "Medir o teor de argila superficial do talhão.",
+            "B": "Mapear a umidade do ar ambiente à frente do trator.",
+            "C": "Detecção e aplicação localizada de herbicidas em tempo real nas plantas daninhas.",
+            "D": "Contar o número exato de lagartas por folha cultivada.",
+            "E": "Verificar a presença de pedras na rota de rodagem."
+          },
+          "correta": "C",
+          "explicacao": "Sistemas como o WeedSeeker identificam a presença de clorofila ativa de plantas daninhas no solo exposto e disparam o bico de pulverização apenas onde há alvo, reduzindo o uso de herbicidas.",
+          "pagina": "página 345 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Na Agricultura de Precisão, o que representa um 'mapa de produtividade' gerado por sensores embarcados na colheitadeira?",
+          "opcoes": {
+            "A": "A variação espacial do rendimento físico da colheita em cada coordenada do talhão.",
+            "B": "A previsão do mercado futuro de preços de grãos no dia.",
+            "C": "O número de manutenções feitas na máquina no ano.",
+            "D": "A quantidade de adubo aplicada no plantio passado.",
+            "E": "O roteiro de deslocamento dos caminhões de grão."
+          },
+          "correta": "A",
+          "explicacao": "Sensores de fluxo e umidade na colheitadeira medem os grãos em tempo real, gerando um mapa que destaca as zonas de alta, média e baixa produtividade do solo.",
+          "pagina": "página 348 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O uso de drones (VANTs) na agricultura de precisão apoia-se no imageamento multiespectral para estimar qual índice de vigor vegetal?",
+          "opcoes": {
+            "A": "Índice de acidez potencial do solo.",
+            "B": "PH foliar dinâmico.",
+            "C": "Profundidade de raízes absorventes.",
+            "D": "Índice de Vegetação por Diferença Normalizada (NDVI).",
+            "E": "Índice de saturação de cálcio vegetal."
+          },
+          "correta": "D",
+          "explicacao": "O NDVI avalia a saúde das plantas analisando a reflexão da luz vermelha e do infravermelho próximo, ajudando a identificar anomalias nutricionais ou ataques de pragas.",
+          "pagina": "página 351 do PDF do SENAR"
         }
       ],
       "TEMA_15": [
@@ -546,7 +1220,60 @@
             "E": "Histograma de Capabilidade."
           },
           "correta": "C",
-          "explicacao": "A matriz SWOT permite realizar um diagnóstico integrado, identificando os pontos fortes e fracos internos da propriedade e mapeando as ameaças e oportunidades do mercado externo."
+          "explicacao": "A matriz SWOT permite realizar um diagnóstico integrado, identificando os pontos fortes e fracos internos da propriedade e mapeando as ameaças e oportunidades do mercado externo.",
+          "pagina": "página 354 do PDF do SENAR"
+        },
+        {
+          "pergunta": "No planejamento financeiro e contábil da fazenda, como são classificados os custos operacionais que não variam diretamente em função do volume físico colhido?",
+          "opcoes": {
+            "A": "Custos variáveis de safra.",
+            "B": "Custos fixos.",
+            "C": "Margem de contribuição direta.",
+            "D": "Margem líquida de lucro rápido.",
+            "E": "Despesas estacionais adicionais."
+          },
+          "correta": "B",
+          "explicacao": "Os custos fixos (como depreciação de maquinário, impostos territoriais e folha de pagamento permanente) ocorrem independentemente da fazenda colher muito ou pouco.",
+          "pagina": "página 357 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O cálculo da depreciação de máquinas agrícolas é essencial para mensurar a perda de valor dos ativos. Como se define esse conceito econômico?",
+          "opcoes": {
+            "A": "A perda do valor do bem decorrente do desgaste físico pelo uso ou pela obsolescência tecnológica ao longo do tempo.",
+            "B": "A taxa de juros cobrada por financiamentos do Plano Safra.",
+            "C": "O aumento do valor venal do maquinário seminovo de revenda.",
+            "D": "O imposto estadual cobrado sobre a posse de utilitários agrícolas.",
+            "E": "A quebra mecânica súbita do implemento no primeiro dia."
+          },
+          "correta": "A",
+          "explicacao": "A depreciação distribui o custo de aquisição da máquina ao longo de sua vida útil, permitindo criar reservas financeiras para repor o ativo quando ele se esgotar.",
+          "pagina": "página 360 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Na administração de empresas rurais, o demonstrativo de 'fluxo de caixa' é utilizado principalmente para qual finalidade gerencial?",
+          "opcoes": {
+            "A": "Calcular o teor de umidade de grãos em estoque físico.",
+            "B": "Estimar a produtividade de leite da próxima estação.",
+            "C": "Controlar as entradas e saídas de recursos financeiros para garantir a liquidez do negócio.",
+            "D": "Definir a escala de férias dos tratoristas da fazenda.",
+            "E": "Calcular o imposto territorial rural do ano corrente."
+          },
+          "correta": "C",
+          "explicacao": "O fluxo de caixa monitora o saldo financeiro diário, semanal ou mensal, ajudando o gestor a planejar os pagamentos e evitar o endividamento na entressafra.",
+          "pagina": "página 363 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Um canal de escoamento direto de venda do produtor rural ao consumidor final (feiras locais, por exemplo) caracteriza uma estrutura de comercialização de qual nível?",
+          "opcoes": {
+            "A": "Nível zero (ou canal direto).",
+            "B": "Nível um com atacadistas.",
+            "C": "Nível dois com distribuidores internacionais.",
+            "D": "Canal cooperativo de grande porte.",
+            "E": "Distribuição integrada de monopólio."
+          },
+          "correta": "A",
+          "explicacao": "Os canais de nível zero ocorrem sem intermediários entre quem produz e quem consome, retendo melhor a margem financeira de venda para o produtor rural.",
+          "pagina": "página 366 do PDF do SENAR"
         }
       ]
     };
@@ -582,7 +1309,7 @@
       mistakes: [] // Máximo de 10 registros
     };
 
-    // Iniciar dados do SDK do Telegram ou simular dados de testes
+    // Iniciar dados do SDK do Telegram
     let tg = window.Telegram?.WebApp;
     if (tg) {
       tg.ready();
@@ -613,7 +1340,6 @@
       avatarElem.innerText = firstName.charAt(0).toUpperCase();
     }
 
-    // Carregar Estado do LocalStorage
     function loadState() {
       const local = localStorage.getItem('krona_analytics_state');
       if (local) {
@@ -625,12 +1351,10 @@
       }
     }
 
-    // Salvar Estado no LocalStorage
     function saveState() {
       localStorage.setItem('krona_analytics_state', JSON.stringify(userState));
     }
 
-    // Mostrar Notificação Toast na tela do app
     function showToast(message, type = 'info') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -657,7 +1381,6 @@
       }, 3000);
     }
 
-    // Sistema de Sequência (Streak)
     function checkStreak() {
       const todayStr = new Date().toISOString().split('T')[0];
       const lastActive = userState.lastActive;
@@ -681,7 +1404,6 @@
       saveState();
     }
 
-    // Gerenciador de Abas de Navegação
     function switchScreen(screenId) {
       if (activeQuizState) {
         if (!confirm("Tem certeza que deseja sair do simulado atual? Seu progresso nesta rodada será desconsiderado.")) {
@@ -690,7 +1412,6 @@
         activeQuizState = null;
       }
 
-      // Telas disponíveis
       const screens = ['dashboard', 'simulados', 'erros', 'ranking', 'quiz'];
       screens.forEach(s => {
         const el = document.getElementById(`screen-${s}`);
@@ -699,7 +1420,6 @@
       
       document.getElementById(`screen-${screenId}`).classList.remove('hidden');
 
-      // Botões de Navegação Inferior
       const navButtons = ['dashboard', 'simulados', 'erros', 'ranking'];
       navButtons.forEach(b => {
         const btn = document.getElementById(`nav-${b}`);
@@ -724,27 +1444,9 @@
       }
     }
 
-    // Alternar abertura dos Módulos em Acordeão
-    function toggleAccordion(moduleId) {
-      const mod = document.getElementById(moduleId);
-      const isOpen = mod.classList.contains('accordion-active');
-      
-      // Fechar outros acordeões para manter o layout compacto
-      document.querySelectorAll('#accordion-container > div').forEach(d => {
-        d.classList.remove('accordion-active');
-      });
-
-      if (!isOpen) {
-        mod.classList.add('accordion-active');
-      }
-    }
-
-    // Renderização dos Temas de acordo com a listagem oficial
+    // Renderização simplificada com Módulo Único Dinâmico
     function renderThemes() {
-      const mod1List = ["TEMA_1", "TEMA_2", "TEMA_3", "TEMA_4"];
-      const mod2List = ["TEMA_5", "TEMA_6"];
-      const mod3List = ["TEMA_7", "TEMA_8", "TEMA_9", "TEMA_10", "TEMA_11"];
-      const mod4List = ["TEMA_12", "TEMA_13", "TEMA_14", "TEMA_15"];
+      const themesList = ["TEMA_1", "TEMA_2", "TEMA_3", "TEMA_4", "TEMA_5", "TEMA_6", "TEMA_7", "TEMA_8", "TEMA_9", "TEMA_10", "TEMA_11", "TEMA_12", "TEMA_13", "TEMA_14", "TEMA_15"];
 
       const renderUnit = (themeId) => {
         const el = document.getElementById(`theme-${themeId}`);
@@ -752,14 +1454,15 @@
         
         const isCompleted = userState.completedThemes.includes(themeId);
         const score = userState.scores[themeId] !== undefined ? userState.scores[themeId] : null;
+        const numQuestions = QUESTIONS_DB[themeId] ? QUESTIONS_DB[themeId].length : 5;
         
         el.innerHTML = `
           <div class="flex-1 pr-3">
             <p class="text-xs font-semibold text-white leading-snug">${TEMAS_INFO[themeId].nome}</p>
-            <span class="text-[10px] text-textgray">1 Questão do Simulado</span>
+            <span class="text-[10px] text-textgray">${numQuestions} Questões do Simulado</span>
           </div>
           <div class="flex items-center gap-2">
-            ${isCompleted ? `<span class="text-[11px] text-gold font-bold bg-gold/10 px-2 py-1 rounded border border-gold/20">Aprovado (${score}/10)</span>` : ''}
+            ${isCompleted ? `<span class="text-[11px] text-gold font-bold bg-gold/10 px-2 py-1 rounded border border-gold/20">${score}/10</span>` : ''}
             <button onclick="startQuiz('${themeId}')" class="text-xs bg-gold hover:bg-yellow-600 text-darkbg font-bold px-3 py-1.5 rounded-xl transition">
               ${isCompleted ? 'Refazer' : 'Iniciar'}
             </button>
@@ -767,29 +1470,21 @@
         `;
       };
 
-      [...mod1List, ...mod2List, ...mod3List, ...mod4List].forEach(renderUnit);
+      themesList.forEach(renderUnit);
       
-      // Contagem de Conclusão nos Módulos
-      const countCompleted = (list) => list.filter(t => userState.completedThemes.includes(t)).length;
-      
-      document.getElementById('mod-1-status').innerText = `${countCompleted(mod1List)} de ${mod1List.length} concluídos`;
-      document.getElementById('mod-2-status').innerText = `${countCompleted(mod2List)} de ${mod2List.length} concluídos`;
-      document.getElementById('mod-3-status').innerText = `${countCompleted(mod3List)} de ${mod3List.length} concluídos`;
-      document.getElementById('mod-4-status').innerText = `${countCompleted(mod4List)} de ${mod4List.length} concluídos`;
+      const completedCount = themesList.filter(t => userState.completedThemes.includes(t)).length;
+      document.getElementById('mod-1-status').innerText = `${completedCount} de 15 concluídos`;
     }
 
-    // Atualização Geral da Interface do Dashboard
     function updateDashboardUI() {
       document.getElementById('stat-streak').innerText = userState.streak;
       document.getElementById('stat-hits').innerText = userState.totalHits;
       document.getElementById('stat-total').innerText = userState.totalQuestions;
       document.getElementById('info-xp').innerText = userState.xp;
 
-      // Cálculo de Aproveitamento %
       const rate = userState.totalQuestions > 0 ? Math.round((userState.totalHits / userState.totalQuestions) * 100) : 0;
       document.getElementById('stat-rate').innerText = `${rate}%`;
 
-      // Cálculo de Níveis (A cada 1000 XP)
       const level = Math.floor(userState.xp / 1000) + 1;
       userState.level = level;
       document.getElementById('user-level-label').innerText = `Nível ${level} • ${getRankTitle(level)}`;
@@ -801,13 +1496,11 @@
       document.getElementById('info-xp-needed').innerText = `Próximo Nível: ${xpNeeded} XP`;
       document.getElementById('xp-progress-bar').style.width = `${progressPercent}%`;
 
-      // Progresso dos Temas
       const completedCount = userState.completedThemes.length;
       document.getElementById('general-progress-txt').innerText = `${completedCount} / 15 Temas`;
       const generalPercent = Math.round((completedCount / 15) * 100);
       document.getElementById('general-progress-bar').style.width = `${generalPercent}%`;
 
-      // Cálculo de melhor nota global
       let maxScore = 0;
       Object.values(userState.scores).forEach(s => {
         if (s > maxScore) maxScore = s;
@@ -825,11 +1518,9 @@
       return "Estudante Novato";
     }
 
-    // Atualizar Gráfico Dinâmico por Áreas
     function updateChartUI() {
       const CATEGORIES = ["Agro", "Veg.", "Água", "Cult.", "Anim.", "Gen.", "Tech", "Bônus"];
       
-      // Mapeamento correspondente de categorias para cada tema
       const mapping = {
         "Agro": ["TEMA_1"],
         "Veg.": ["TEMA_2", "TEMA_3"],
@@ -864,7 +1555,6 @@
           }
         });
 
-        // Se o tema foi concluído, o aproveitamento reflete a nota (Ex: Nota 10 = 100% de barra preenchida)
         const percent = count > 0 ? Math.round((scoreSum / (count * 10)) * 100) : 0;
         const barEl = document.getElementById(ids[cat]);
         if (barEl) {
@@ -887,13 +1577,12 @@
       
       activeQuizState = {
         themeId: themeId,
-        questions: JSON.parse(JSON.stringify(list)), // Cópia limpa
+        questions: JSON.parse(JSON.stringify(list)),
         currentIndex: 0,
         hits: 0,
         answered: false
       };
 
-      // Carregar UI do Simulado
       document.getElementById('quiz-theme-tag').innerText = TEMAS_INFO[themeId].nome;
       switchScreen('quiz');
       renderQuestion();
@@ -911,7 +1600,6 @@
       container.innerHTML = '';
       document.getElementById('quiz-feedback-box').classList.add('hidden');
 
-      // Embaralhar opções visualmente mantendo rastreamento das chaves
       const keys = ["A", "B", "C", "D", "E"];
       keys.forEach(key => {
         const text = question.opcoes[key];
@@ -926,7 +1614,6 @@
         container.appendChild(btn);
       });
 
-      // Progresso da barra do simulado
       const progVal = ((qState.currentIndex) / qState.questions.length) * 100;
       document.getElementById('quiz-progress-bar').style.width = `${100 - progVal}%`;
     }
@@ -953,13 +1640,11 @@
         document.getElementById(`opt-${keySelected}`).classList.add('border-wrong', 'bg-wrong/10');
         document.getElementById(`opt-${keySelected}`).querySelector('span').classList.add('bg-wrong', 'text-white', 'border-wrong');
         
-        // Destacar alternativa correta
         document.getElementById(`opt-${correctKey}`).classList.add('border-correct', 'bg-correct/10');
         
         document.getElementById('quiz-feedback-status').innerText = "A alternativa correta era: " + correctKey;
         document.getElementById('quiz-feedback-status').className = "font-extrabold text-sm uppercase text-wrong";
 
-        // Salvar erro no caderno (Mantém apenas os últimos 10 erros)
         userState.mistakes.push({
           theme: TEMAS_INFO[qState.themeId].nome,
           question: question.pergunta,
@@ -970,18 +1655,21 @@
         });
 
         if (userState.mistakes.length > 10) {
-          userState.mistakes.shift(); // Remove o erro mais antigo
+          userState.mistakes.shift();
         }
       }
 
-      // Travar demais botões
       const keys = ["A", "B", "C", "D", "E"];
       keys.forEach(k => {
         document.getElementById(`opt-${k}`).disabled = true;
       });
 
-      // Mostrar a Caixa de Feedback / Explicação
-      document.getElementById('quiz-explanation-text').innerText = question.explicacao;
+      // Renderização da explicação do erro com o mapeamento dinâmico da página do PDF
+      let feedbackText = question.explicacao;
+      if (question.pagina) {
+        feedbackText += `\n\n📖 Consulte a ${question.pagina} do material didático.`;
+      }
+      document.getElementById('quiz-explanation-text').innerText = feedbackText;
       document.getElementById('quiz-feedback-box').classList.remove('hidden');
 
       if (qState.currentIndex === qState.questions.length - 1) {
@@ -1016,7 +1704,6 @@
         userState.completedThemes.push(themeId);
       }
 
-      // Manter a maior nota do tema
       if (userState.scores[themeId] === undefined || score > userState.scores[themeId]) {
         userState.scores[themeId] = score;
       }
@@ -1024,7 +1711,6 @@
       saveState();
       activeQuizState = null;
 
-      // Renderizar feedback final
       alert(`🎉 Simulado Concluído!\n\nNota: ${score.toFixed(1)}/10.0\nPontos Obtidos: +${earnedXp} XP`);
       
       renderThemes();
@@ -1054,7 +1740,6 @@
         return;
       }
 
-      // Exibe os erros na ordem do mais recente para o mais antigo
       [...userState.mistakes].reverse().forEach(item => {
         const div = document.createElement('div');
         div.className = "bg-cardbg p-4 rounded-2xl border border-white/5 space-y-3";
@@ -1090,7 +1775,6 @@
       const listContainer = document.getElementById('ranking-list');
       listContainer.innerHTML = '';
 
-      // Competidores simulados locais da plataforma
       const competitors = [
         { name: "Pedro Santos (SENAR)", xp: 4800, level: 5, isUser: false },
         { name: "Camila Ribeiro", xp: 3200, level: 4, isUser: false },
@@ -1098,13 +1782,11 @@
         { name: "Aline Costa", xp: 800, level: 1, isUser: false }
       ];
 
-      // Pegar nome atual do usuário para o ranking
       let currentUserName = "VOCÊ";
       if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
         currentUserName = tg.initDataUnsafe.user.first_name.toUpperCase();
       }
 
-      // Adiciona o usuário atual à disputa
       competitors.push({
         name: currentUserName,
         xp: userState.xp,
@@ -1112,7 +1794,6 @@
         isUser: true
       });
 
-      // Ordenar por XP decrescente
       competitors.sort((a, b) => b.xp - a.xp);
 
       competitors.forEach((c, idx) => {
