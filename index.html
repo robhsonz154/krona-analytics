@@ -223,6 +223,84 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .empty-ic{font-size:40px;margin-bottom:12px}
 .empty-tt{font-size:14px;font-weight:700;color:var(--tx2);margin-bottom:6px}
 .empty-sub{font-size:12px;color:var(--tx3)}
+
+/* ====== QUIZ SCREEN ====== */
+#quizScreen{position:fixed;inset:0;background:var(--bg);z-index:500;display:none;flex-direction:column;overflow:hidden;max-width:480px;left:50%;transform:translateX(-50%)}
+#quizScreen.active{display:flex}
+
+/* Quiz Header */
+.qhdr{background:var(--bg2);border-bottom:1px solid var(--bd);padding:12px 16px;flex-shrink:0}
+.qhdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.q-back{background:var(--sf);border:1px solid var(--bd);color:var(--tx2);font-size:12px;font-weight:700;padding:6px 12px;border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:5px}
+.q-back:active{background:var(--sf2)}
+.q-tema-nm{font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.q-timer{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:900;color:var(--txt);background:var(--sf);padding:5px 11px;border-radius:20px;border:1px solid var(--bd)}
+.q-timer.warn{color:var(--org);border-color:rgba(245,158,11,.3)}
+.q-timer.danger{color:var(--red);border-color:rgba(239,68,68,.3);animation:pulse .6s infinite alternate}
+@keyframes pulse{from{opacity:1}to{opacity:.6}}
+
+/* Progress bar quiz */
+.q-prog-row{display:flex;align-items:center;gap:10px}
+.q-prog-track{flex:1;background:var(--sf);border-radius:20px;height:5px;overflow:hidden}
+.q-prog-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--gold3),var(--gold));transition:width .4s ease}
+.q-prog-ct{font-size:11px;font-weight:800;color:var(--tx3);white-space:nowrap}
+.q-score-row{display:flex;gap:12px;margin-top:8px;justify-content:flex-end}
+.q-sc-item{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700}
+.q-sc-item.ok{color:var(--grn)}.q-sc-item.err{color:var(--red)}
+
+/* Question body */
+.q-body{flex:1;overflow-y:auto;padding:16px 14px 24px;-webkit-overflow-scrolling:touch}
+.q-num{font-size:9px;font-weight:800;color:var(--tx4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
+.q-txt{font-size:15px;font-weight:600;color:var(--txt);line-height:1.6;margin-bottom:20px;padding:14px;background:var(--sf);border-radius:var(--r);border:1px solid var(--bd)}
+
+/* Options */
+.q-opts{display:flex;flex-direction:column;gap:9px;margin-bottom:20px}
+.q-opt{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;border-radius:var(--r);border:1.5px solid var(--bd);background:var(--sf);cursor:pointer;transition:all .18s ease;user-select:none}
+.q-opt:active:not(.disabled){transform:scale(.985)}
+.q-opt:hover:not(.disabled):not(.correct):not(.wrong):not(.selected){border-color:var(--bd2);background:var(--sf2)}
+.q-opt.selected{border-color:var(--gold);background:var(--goldG2)}
+.q-opt.correct{border-color:var(--grn)!important;background:var(--grnG)!important;animation:bounceIn .35s ease}
+.q-opt.wrong{border-color:var(--red)!important;background:var(--redG)!important}
+.q-opt.disabled{cursor:default}
+@keyframes bounceIn{0%{transform:scale(.97)}60%{transform:scale(1.02)}100%{transform:scale(1)}}
+.q-opt-lt{width:28px;height:28px;border-radius:8px;background:var(--sf2);border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:var(--tx3);flex-shrink:0;transition:all .18s ease}
+.q-opt.selected .q-opt-lt{background:var(--goldG2);border-color:var(--gold);color:var(--gold)}
+.q-opt.correct .q-opt-lt{background:var(--grnG);border-color:var(--grn);color:var(--grn)}
+.q-opt.wrong   .q-opt-lt{background:var(--redG);border-color:var(--red);color:var(--red)}
+.q-opt-txt{font-size:13px;color:var(--tx2);line-height:1.5;flex:1;padding-top:3px}
+.q-opt.correct .q-opt-txt,.q-opt.wrong .q-opt-txt{color:var(--txt)}
+
+/* Feedback box */
+.q-fb{border-radius:var(--r);padding:13px 14px;margin-bottom:16px;display:none;animation:slideUp .25s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.q-fb.show{display:block}
+.q-fb.ok{background:var(--grnG);border:1px solid rgba(34,197,94,.2)}
+.q-fb.err{background:var(--redG);border:1px solid rgba(239,68,68,.2)}
+.q-fb-tt{font-size:13px;font-weight:800;margin-bottom:4px}
+.q-fb.ok .q-fb-tt{color:var(--grn)}.q-fb.err .q-fb-tt{color:var(--red)}
+.q-fb-ex{font-size:12px;color:var(--tx2);line-height:1.55}
+
+/* Next button */
+.q-next{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold3),var(--gold));color:var(--bg);font-size:14px;font-weight:900;border:none;border-radius:var(--r);cursor:pointer;display:none;letter-spacing:.2px;box-shadow:0 4px 16px rgba(212,168,75,.25)}
+.q-next.show{display:block}
+.q-next:active{transform:scale(.97)}
+
+/* RESULT SCREEN */
+.q-result{padding:24px 16px;text-align:center}
+.q-res-ic{font-size:64px;margin-bottom:12px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{transform:scale(0)}to{transform:scale(1)}}
+.q-res-tt{font-size:22px;font-weight:900;color:var(--txt);margin-bottom:6px}
+.q-res-nota{font-size:48px;font-weight:900;color:var(--gold);line-height:1;margin:16px 0 6px}
+.q-res-sub{font-size:13px;color:var(--tx3);margin-bottom:20px}
+.q-res-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px}
+.q-res-st{padding:14px 8px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);text-align:center}
+.q-res-sv{font-size:22px;font-weight:900}.q-res-sl{font-size:9px;color:var(--tx3);font-weight:700;text-transform:uppercase;margin-top:4px}
+.q-res-st:nth-child(1) .q-res-sv{color:var(--grn)}
+.q-res-st:nth-child(2) .q-res-sv{color:var(--red)}
+.q-res-st:nth-child(3) .q-res-sv{color:var(--gold)}
+.q-res-xp{background:var(--goldG2);border:1px solid rgba(212,168,75,.3);border-radius:var(--r);padding:14px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:900;color:var(--gold)}
+.btn-quiz-home{width:100%;padding:13px;background:var(--sf);border:1px solid var(--bd2);color:var(--txt);font-size:14px;font-weight:700;border-radius:var(--r);cursor:pointer;margin-top:8px}
+.btn-quiz-home:active{background:var(--sf2)}
 </style>
 </head>
 <body>
@@ -617,6 +695,26 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   <div id="perfilContent"></div>
 </div>
 
+<!-- QUIZ SCREEN (fullscreen overlay) -->
+<div id="quizScreen">
+  <div class="qhdr">
+    <div class="qhdr-top">
+      <button class="q-back" onclick="quitQuiz()">← Sair</button>
+      <div class="q-tema-nm" id="qTemaNm">Tema</div>
+      <div class="q-timer" id="qTimer">⏱ 5:00</div>
+    </div>
+    <div class="q-prog-row">
+      <div class="q-prog-track"><div class="q-prog-fill" id="qProgFill" style="width:0%"></div></div>
+      <div class="q-prog-ct" id="qProgCt">1/10</div>
+    </div>
+    <div class="q-score-row">
+      <span class="q-sc-item ok">✅ <span id="qAcertos">0</span></span>
+      <span class="q-sc-item err">❌ <span id="qErros">0</span></span>
+    </div>
+  </div>
+  <div class="q-body" id="qBody"></div>
+</div>
+
 <!-- BOTTOM NAV -->
 <div class="bnav">
   <div class="nav-i act" id="nHome" onclick="navTo('home')">
@@ -945,19 +1043,250 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 // ============================================================
-// START QUIZ
+// QUIZ ENGINE
 // ============================================================
+let QS = null; // active quiz state
+
 function startQuiz(temaId, temaNome){
-  const msg = `Iniciar simulado?\n\n📘 ${temaNome}\n\n✅ Você será redirecionado ao bot do Telegram.`;
-  tg.showConfirm(msg, (ok)=>{
+  const questions = QUESTIONS_DB[temaId];
+  if(!questions||!questions.length){ showToast('❌ Questões não encontradas!'); return; }
+
+  // Shuffle and pick up to 10 questions
+  const shuffled = [...questions].sort(()=>Math.random()-.5);
+  const qs = shuffled.slice(0, Math.min(10, shuffled.length));
+
+  QS = {
+    temaId, temaNome,
+    questions: qs,
+    idx: 0,
+    acertos: 0,
+    erros: 0,
+    answered: false,
+    timerSec: 5*60,
+    timerInterval: null,
+    sessionErrors: [],
+  };
+
+  bumpStreak();
+  openQuizScreen();
+  renderQuestion();
+  startTimer();
+}
+
+function openQuizScreen(){
+  const sc = document.getElementById('quizScreen');
+  sc.classList.add('active');
+  document.getElementById('qTemaNm').textContent = QS.temaNome;
+  document.getElementById('qAcertos').textContent = 0;
+  document.getElementById('qErros').textContent   = 0;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeQuizScreen(){
+  const sc = document.getElementById('quizScreen');
+  sc.classList.remove('active');
+  document.body.style.overflow = '';
+  if(QS?.timerInterval) clearInterval(QS.timerInterval);
+}
+
+function startTimer(){
+  if(QS.timerInterval) clearInterval(QS.timerInterval);
+  QS.timerSec = 5*60;
+  updateTimerDisplay();
+  QS.timerInterval = setInterval(()=>{
+    QS.timerSec--;
+    updateTimerDisplay();
+    if(QS.timerSec <= 0){
+      clearInterval(QS.timerInterval);
+      timeUp();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay(){
+  const m = Math.floor(QS.timerSec/60);
+  const s = QS.timerSec % 60;
+  const el = document.getElementById('qTimer');
+  el.textContent = `⏱ ${m}:${String(s).padStart(2,'0')}`;
+  el.className = 'q-timer' +
+    (QS.timerSec<=30?' danger': QS.timerSec<=60?' warn':'');
+}
+
+function timeUp(){
+  showToast('⏱ Tempo esgotado!');
+  setTimeout(()=>showResult(), 1000);
+}
+
+function renderQuestion(){
+  const q   = QS.questions[QS.idx];
+  const tot = QS.questions.length;
+  const pct = Math.round((QS.idx/tot)*100);
+
+  document.getElementById('qProgFill').style.width = pct + '%';
+  document.getElementById('qProgCt').textContent   = `${QS.idx+1}/${tot}`;
+  QS.answered = false;
+
+  const letters = ['A','B','C','D','E'];
+  const opts = q.opcoes || {};
+
+  const optsHtml = letters.filter(l=>opts[l]).map(l=>`
+    <div class="q-opt" id="opt${l}" onclick="selectOpt('${l}')">
+      <div class="q-opt-lt">${l}</div>
+      <div class="q-opt-txt">${opts[l]}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('qBody').innerHTML = `
+    <div class="q-num">Questão ${QS.idx+1} de ${tot}</div>
+    <div class="q-txt">${q.pergunta}</div>
+    <div class="q-opts">${optsHtml}</div>
+    <div class="q-fb" id="qFb">
+      <div class="q-fb-tt" id="qFbTt"></div>
+      <div class="q-fb-ex" id="qFbEx"></div>
+    </div>
+    <button class="q-next" id="qNext" onclick="nextQuestion()">
+      ${QS.idx+1 < tot ? 'Próxima questão →' : 'Ver resultado 🏁'}
+    </button>
+  `;
+
+  // Scroll to top of body
+  document.getElementById('qBody').scrollTop = 0;
+}
+
+function selectOpt(letter){
+  if(QS.answered) return;
+  QS.answered = true;
+
+  const q       = QS.questions[QS.idx];
+  const correta = q.correta;
+  const isOk    = letter === correta;
+
+  // Visual feedback on options
+  ['A','B','C','D','E'].forEach(l=>{
+    const el = document.getElementById('opt'+l);
+    if(!el) return;
+    el.classList.add('disabled');
+    if(l === correta) el.classList.add('correct');
+    else if(l === letter && !isOk) el.classList.add('wrong');
+  });
+
+  // Score
+  if(isOk){
+    QS.acertos++;
+    document.getElementById('qAcertos').textContent = QS.acertos;
+  } else {
+    QS.erros++;
+    document.getElementById('qErros').textContent = QS.erros;
+    // Save to error notebook
+    QS.sessionErrors.push({
+      temaId:   QS.temaId,
+      temaNome: QS.temaNome,
+      pergunta: q.pergunta,
+      correta:  `${correta}: ${q.opcoes[correta]}`,
+      data:     new Date().toISOString(),
+    });
+  }
+
+  // Feedback box
+  const fb   = document.getElementById('qFb');
+  const fbTt = document.getElementById('qFbTt');
+  const fbEx = document.getElementById('qFbEx');
+  fb.className = 'q-fb show ' + (isOk?'ok':'err');
+  fbTt.textContent = isOk ? '✅ Correto!' : `❌ Errado — Correta: ${correta}`;
+  fbEx.textContent = q.explicacao || '';
+
+  // Show next button
+  document.getElementById('qNext').classList.add('show');
+
+  // Haptic (Telegram)
+  try{
+    if(isOk) tg.HapticFeedback?.impactOccurred('light');
+    else     tg.HapticFeedback?.notificationOccurred('error');
+  }catch(e){}
+}
+
+function nextQuestion(){
+  QS.idx++;
+  if(QS.idx >= QS.questions.length){
+    clearInterval(QS.timerInterval);
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResult(){
+  clearInterval(QS.timerInterval);
+  const tot    = QS.questions.length;
+  const ac     = QS.acertos;
+  const er     = QS.erros + (tot - ac - QS.erros); // include unanswered as wrong
+  const pct    = Math.round(ac/tot*100);
+  const nota   = Math.round(ac/tot*10*10)/10;
+  const xpGain = ac*10 + (pct>=70?50:0);
+
+  let icon, msg;
+  if(pct>=90){ icon='🏆'; msg='Excelente! Domínio total!'; }
+  else if(pct>=70){ icon='🎉'; msg='Muito bem! Aprovado!'; }
+  else if(pct>=50){ icon='📚'; msg='Continue estudando!'; }
+  else { icon='💪'; msg='Não desanime, revise o tema!'; }
+
+  // Save progress
+  const prog = loadState(LS.progress, {acertos:0, questoes:0, byTema:{}});
+  if(!prog.byTema) prog.byTema = {};
+  const prev = prog.byTema[QS.temaId] || {acertos:0, total:0, done:false};
+  // Update only if this attempt is better
+  const newDone = pct >= 60;
+  prog.byTema[QS.temaId] = {
+    acertos: Math.max(prev.acertos, ac),
+    total:   tot,
+    done:    prev.done || newDone,
+    lastPct: pct,
+  };
+  prog.acertos  = (prog.acertos||0) + ac;
+  prog.questoes = (prog.questoes||0) + tot;
+  saveState(LS.progress, prog);
+
+  // Save errors
+  if(QS.sessionErrors.length){
+    const existing = loadState(LS.errors, []);
+    saveState(LS.errors, [...existing, ...QS.sessionErrors].slice(-50));
+  }
+
+  document.getElementById('qBody').innerHTML = `
+    <div class="q-result">
+      <div class="q-res-ic">${icon}</div>
+      <div class="q-res-tt">${msg}</div>
+      <div class="q-res-nota">${nota.toFixed(1)}</div>
+      <div class="q-res-sub">${pct}% de aproveitamento · ${ac}/${tot} acertos</div>
+      <div class="q-res-grid">
+        <div class="q-res-st"><div class="q-res-sv">${ac}</div><div class="q-res-sl">Acertos</div></div>
+        <div class="q-res-st"><div class="q-res-sv">${tot-ac}</div><div class="q-res-sl">Erros</div></div>
+        <div class="q-res-st"><div class="q-res-sv">${pct}%</div><div class="q-res-sl">Aproveit.</div></div>
+      </div>
+      <div class="q-res-xp">+${xpGain} XP ganhos! ✨</div>
+      <button class="q-next show" onclick="closeQuizScreen();updateUI();showToast('✅ Resultado salvo!')">
+        🏠 Voltar ao início
+      </button>
+      <button class="btn-quiz-home" onclick="restartQuiz()">🔄 Refazer simulado</button>
+    </div>
+  `;
+  document.getElementById('qProgFill').style.width = '100%';
+  document.getElementById('qProgCt').textContent = `${tot}/${tot}`;
+
+  // Hide timer
+  document.getElementById('qTimer').textContent = '✅ Concluído';
+  document.getElementById('qTimer').className = 'q-timer';
+}
+
+function restartQuiz(){
+  closeQuizScreen();
+  setTimeout(()=>startQuiz(QS.temaId, QS.temaNome), 150);
+}
+
+function quitQuiz(){
+  tg.showConfirm('Sair do simulado? O progresso desta sessão será perdido.', ok=>{
     if(!ok) return;
-    bumpStreak();
-    const payload = JSON.stringify({action:'start_quiz', tema_id:temaId});
-    showToast('🚀 Iniciando simulado...');
-    setTimeout(()=>{
-      try { tg.sendData(payload); }
-      catch(e){ showToast('⚠️ Abra pelo bot do Telegram!'); }
-    }, 600);
+    closeQuizScreen();
   });
 }
 
