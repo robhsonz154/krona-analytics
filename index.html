@@ -4,361 +4,1824 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>KRONA Analytics</title>
+  <!-- Tailwind CSS CDN para renderização ágil de estilos -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Telegram WebApp JS SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    * { user-select: none; -webkit-tap-highlight-color: transparent; }
-    ::-webkit-scrollbar { display: none; }
-  </style>
+  
   <script>
-    tailwind.config = { theme: { extend: { colors: { darkbg: '#060A13', cardbg: '#101B2E', gold: '#D4A84B', correct: '#4E9F3D', wrong: '#E05D5D', textgray: '#8F9CAE' } } } }
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            darkbg: '#060A13',
+            cardbg: '#101B2E',
+            gold: '#D4A84B',
+            correct: '#4E9F3D',
+            wrong: '#E05D5D',
+            textgray: '#8F9CAE'
+          }
+        }
+      }
+    }
   </script>
+  <style>
+    /* Ocultar barra de rolagem padrão para melhor visualização em dispositivos móveis */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+  </style>
 </head>
-<body class="bg-darkbg text-white font-sans min-h-screen flex flex-col">
+<body class="bg-darkbg text-white font-sans min-h-screen relative flex flex-col selection:bg-gold/30">
 
-  <!-- Toast -->
-  <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2 rounded-xl bg-cardbg text-gold text-sm"></div>
+  <!-- Container de Mensagens Flutuantes (Toast) -->
+  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 pointer-events-none w-full px-4"></div>
 
+  <!-- Main Viewport (Limitada a largura de smartphones padrão) -->
   <main class="w-full max-w-[480px] mx-auto flex-1 flex flex-col px-4 pt-4 pb-28 overflow-y-auto">
 
-    <!-- DASHBOARD (Painel) -->
+    <!-- SCREEN 1: DASHBOARD -->
     <section id="screen-dashboard" class="space-y-5">
-      <!-- Perfil -->
-      <div class="bg-cardbg p-4 rounded-2xl flex justify-between items-center">
-        <div class="flex gap-3 items-center">
-          <div id="user-avatar" class="w-12 h-12 rounded-full bg-gradient-to-tr from-gold to-yellow-600 flex items-center justify-center font-bold text-darkbg text-lg">?</div>
-          <div><h2 id="user-name" class="font-bold">Carregando...</h2><p id="user-level" class="text-xs text-gold">Nível 1 • Aprendiz</p></div>
+      <!-- Cabeçalho de Perfil -->
+      <div class="flex items-center justify-between bg-cardbg p-4 rounded-2xl border border-white/5 shadow-lg">
+        <div class="flex items-center gap-3">
+          <div id="user-avatar" class="w-12 h-12 rounded-full bg-gradient-to-tr from-gold to-yellow-600 flex items-center justify-center font-bold text-darkbg text-lg">
+            ?
+          </div>
+          <div>
+            <h2 id="user-name" class="font-bold text-base text-white">Carregando...</h2>
+            <p id="user-level-label" class="text-xs text-gold font-medium">Nível 1 • Aprendiz</p>
+          </div>
         </div>
-        <div class="bg-darkbg px-3 py-1 rounded-xl flex gap-1"><span class="text-xs text-textgray">🔥</span><span id="stat-streak" class="text-gold font-bold">1</span></div>
-      </div>
-      <!-- XP -->
-      <div class="bg-cardbg p-4 rounded-2xl space-y-2">
-        <div class="flex justify-between text-xs"><span>XP Total: <span id="info-xp" class="text-white">0</span></span><span id="info-xp-needed" class="text-gold">Próximo nível: 1000 XP</span></div>
-        <div class="h-2 bg-darkbg rounded-full overflow-hidden"><div id="xp-bar" class="h-full bg-gold w-0"></div></div>
-      </div>
-      <!-- Progresso Geral -->
-      <div class="bg-cardbg p-4 rounded-2xl space-y-2">
-        <div class="flex justify-between"><span class="text-xs font-bold">Progresso Geral</span><span id="progress-txt" class="text-gold font-bold">0/15</span></div>
-        <div class="h-2 bg-darkbg rounded-full"><div id="progress-bar" class="h-full bg-gold w-0"></div></div>
-      </div>
-      <!-- Gráfico -->
-      <div class="bg-cardbg p-4 rounded-2xl">
-        <h3 class="text-xs font-bold mb-2">Desempenho por Áreas</h3>
-        <div class="grid grid-cols-8 gap-1 h-32 items-end pb-2">
-          <div class="flex flex-col items-center"><div id="bar-agro" class="w-4 bg-gold rounded-t" style="height:0%"></div><span class="text-[9px] mt-1">Agro</span></div>
-          <div class="flex flex-col items-center"><div id="bar-veg" class="w-4 bg-gold rounded-t" style="height:0%"></div><span class="text-[9px] mt-1">Veg</span></div>
-          <div class="flex flex-col items-center"><div id="bar-agua" class="w-4 bg-gold rounded-t" style="height:0%"></div><span class="text-[9px] mt-1">Água</span></div>
-          <div class="flex flex-col items-center"><div id="bar-cult" class="w-4 bg-gold rounded-t" style="height:0%"></div><span class="text-[9px] mt-1">Cult</span></div>
-          <div class="flex flex-col items-center"><div id="bar-anim" class="w-4 bg-gold rounded-t" style="height:0%"></div><span class="text-[9px] mt-1">Anim</span></div>
-          <div class="flex flex-col items-center"><div id="bar-gen" class="w-4 bg-gold rounded-t" style="height:0%"></div><span class="text-[9px] mt-1">Gen</span></div>
-          <div class="flex flex-col items-center"><div id="bar-tech" class="w-4 bg-gold rounded-t" style="height:0%"></div><span class="text-[9px] mt-1">Tech</span></div>
-          <div class="flex flex-col items-center"><div id="bar-bonus" class="w-4 bg-gold rounded-t" style="height:0%"></div><span class="text-[9px] mt-1">Bônus</span></div>
+        <div class="bg-darkbg px-3 py-1.5 rounded-xl border border-gold/20 flex items-center gap-1.5">
+          <span class="text-xs text-textgray font-semibold">FOGO 🔥</span>
+          <span id="stat-streak" class="text-sm font-bold text-gold">1</span>
         </div>
       </div>
-      <!-- Estatísticas -->
+
+      <!-- Progresso de XP -->
+      <div class="bg-cardbg p-4 rounded-2xl border border-white/5 space-y-2">
+        <div class="flex justify-between text-xs font-semibold">
+          <span class="text-textgray">XP Total: <span id="info-xp" class="text-white">0</span></span>
+          <span class="text-gold" id="info-xp-needed">Próximo Nível: 1000 XP</span>
+        </div>
+        <div class="w-full h-2.5 bg-darkbg rounded-full overflow-hidden">
+          <div id="xp-progress-bar" class="h-full bg-gradient-to-r from-gold to-yellow-600 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Barra de Progresso Geral -->
+      <div class="bg-cardbg p-4 rounded-2xl border border-white/5 space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-bold text-textgray tracking-wider uppercase">Progresso Geral</span>
+          <span id="general-progress-txt" class="text-sm font-extrabold text-gold">0 / 15 Temas</span>
+        </div>
+        <div class="w-full h-3 bg-darkbg rounded-full overflow-hidden">
+          <div id="general-progress-bar" class="h-full bg-gold rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Desempenho por Áreas -->
+      <div class="bg-cardbg p-4 rounded-2xl border border-white/5 space-y-4">
+        <h3 class="text-xs font-bold text-textgray tracking-wider uppercase">Desempenho por Áreas</h3>
+        <div class="grid grid-cols-8 gap-1.5 h-32 items-end pt-2 pb-1 bg-darkbg/50 rounded-xl px-2">
+          <div class="flex flex-col items-center h-full justify-end">
+            <div id="bar-agro" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
+            <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Agro</span>
+          </div>
+          <div class="flex flex-col items-center h-full justify-end">
+            <div id="bar-veg" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
+            <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Veg</span>
+          </div>
+          <div class="flex flex-col items-center h-full justify-end">
+            <div id="bar-agua" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
+            <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Água</span>
+          </div>
+          <div class="flex flex-col items-center h-full justify-end">
+            <div id="bar-cult" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
+            <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Cult</span>
+          </div>
+          <div class="flex flex-col items-center h-full justify-end">
+            <div id="bar-anim" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
+            <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Anim</span>
+          </div>
+          <div class="flex flex-col items-center h-full justify-end">
+            <div id="bar-gen" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
+            <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Gen</span>
+          </div>
+          <div class="flex flex-col items-center h-full justify-end">
+            <div id="bar-tech" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
+            <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Tech</span>
+          </div>
+          <div class="flex flex-col items-center h-full justify-end">
+            <div id="bar-bonus" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm transition-all duration-500" style="height: 0%"></div>
+            <span class="text-[9px] text-textgray mt-2 transform -rotate-12">Bônus</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Matriz de Estatísticas -->
       <div class="grid grid-cols-2 gap-3">
-        <div class="bg-cardbg p-3 rounded-2xl"><span class="text-xs">Acertos</span><span id="stat-hits" class="text-xl font-bold block">0</span></div>
-        <div class="bg-cardbg p-3 rounded-2xl"><span class="text-xs">Questões</span><span id="stat-total" class="text-xl font-bold block">0</span></div>
-        <div class="bg-cardbg p-3 rounded-2xl"><span class="text-xs">Aproveitamento</span><span id="stat-rate" class="text-xl font-bold block text-gold">0%</span></div>
-        <div class="bg-cardbg p-3 rounded-2xl"><span class="text-xs">Melhor nota</span><span id="stat-best" class="text-xl font-bold block">0.0</span></div>
+        <div class="bg-cardbg p-3 rounded-2xl border border-white/5 flex flex-col justify-center">
+          <span class="text-xs text-textgray">Total Acertos</span>
+          <span id="stat-hits" class="text-xl font-bold mt-1 text-white">0</span>
+        </div>
+        <div class="bg-cardbg p-3 rounded-2xl border border-white/5 flex flex-col justify-center">
+          <span class="text-xs text-textgray">Questões Feitas</span>
+          <span id="stat-total" class="text-xl font-bold mt-1 text-white">0</span>
+        </div>
+        <div class="bg-cardbg p-3 rounded-2xl border border-white/5 flex flex-col justify-center">
+          <span class="text-xs text-textgray">Aproveitamento</span>
+          <span id="stat-rate" class="text-xl font-bold mt-1 text-gold">0%</span>
+        </div>
+        <div class="bg-cardbg p-3 rounded-2xl border border-white/5 flex flex-col justify-center">
+          <span class="text-xs text-textgray">Melhor Nota</span>
+          <span id="stat-best" class="text-xl font-bold mt-1 text-white">0.0/10</span>
+        </div>
       </div>
     </section>
 
-    <!-- SIMULADOS -->
+    <!-- SCREEN 2: SIMULADOS (Módulo 1 – Técnicas e Sistemas de Produção Agropecuária) -->
     <section id="screen-simulados" class="hidden space-y-4">
-      <div class="flex justify-between"><h2 class="text-lg font-bold">Simulados</h2><span class="text-xs bg-gold/10 text-gold px-2 py-1 rounded-full">15 temas</span></div>
-      <div class="bg-cardbg rounded-2xl">
-        <div class="p-3 bg-white/5 border-b"><h4 class="font-bold">Módulo 1 – Técnicas e Produção Agropecuária</h4><p id="mod-status" class="text-xs text-textgray">0/15 concluídos</p></div>
-        <div class="p-3 space-y-2" id="lista-temas"></div>
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-white">Simulados Disponíveis</h2>
+        <span class="text-xs bg-gold/10 text-gold px-2.5 py-1 rounded-full border border-gold/30 font-semibold uppercase tracking-wider">15 Temas</span>
+      </div>
+
+      <!-- Único Bloco: Módulo 1 -->
+      <div class="bg-cardbg rounded-2xl border border-white/5 overflow-hidden transition-all duration-200">
+        <div class="p-4 bg-white/5 border-b border-white/5">
+          <h4 class="font-bold text-sm text-white">Módulo 1 – Técnicas e Sistemas de Produção Agropecuária</h4>
+          <p class="text-[11px] text-textgray mt-0.5" id="mod-1-status">0 de 15 concluídos</p>
+        </div>
+        <div class="p-4 space-y-3 divide-y divide-white/5" id="theme-list-container">
+          <div id="theme-T1" class="flex items-center justify-between py-2.5"></div>
+          <div id="theme-T2" class="flex items-center justify-between py-2.5"></div>
+          <div id="theme-T3" class="flex items-center justify-between py-2.5"></div>
+          <div id="theme-T4" class="flex items-center justify-between py-2.5"></div>
+          <div id="theme-T5" class="flex items-center justify-between py-2.5"></div>
+          <div id="theme-T6" class="flex items-center justify-between py-2.5"></div>
+          <div id="theme-T7" class="flex items-center justify-between py-2.5"></div>
+          <div id="theme-T8" class="flex items-center justify-between py-2.5"></div>
+          <div id="theme-T9" class="flex items-center justify-between py-2.5"></div>
+          <div id="theme-T10" class="flex items-center justify-between py-2.5"></div>
+          <div id="theme-T11" class="flex items-center justify-between py-2.5"></div>
+          <div id="theme-T12" class="flex items-center justify-between py-2.5"></div>
+          <div id="theme-T13" class="flex items-center justify-between py-2.5"></div>
+          <div id="theme-T14" class="flex items-center justify-between py-2.5"></div>
+          <div id="theme-T15" class="flex items-center justify-between py-2.5"></div>
+        </div>
       </div>
     </section>
 
-    <!-- CADERNO DE ERROS -->
+    <!-- SCREEN 3: CADERNO DE ERROS -->
     <section id="screen-erros" class="hidden space-y-4">
-      <div class="flex justify-between"><h2 class="text-lg font-bold">Caderno de Erros</h2><button onclick="clearMistakes()" class="text-xs bg-red-500/20 px-3 py-1 rounded-xl">Limpar tudo</button></div>
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-white">Caderno de Erros</h2>
+        <button onclick="clearMistakes()" class="text-xs bg-red-500/10 text-red-400 hover:bg-red-500/20 px-3 py-1.5 rounded-xl border border-red-500/30 font-semibold">
+          Limpar Tudo
+        </button>
+      </div>
       <div id="mistakes-list" class="space-y-3"></div>
     </section>
 
-    <!-- RANKING -->
+    <!-- SCREEN 4: RANKING -->
     <section id="screen-ranking" class="hidden space-y-4">
-      <h2 class="text-lg font-bold">Ranking (XP)</h2>
-      <div id="ranking-list" class="bg-cardbg rounded-2xl p-2 divide-y"></div>
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-white">Ranking da Comunidade</h2>
+        <span class="text-xs bg-gold/10 text-gold px-3 py-1.5 rounded-full border border-gold/20 font-semibold">Simulado Geral</span>
+      </div>
+      <div id="ranking-list" class="bg-cardbg rounded-2xl border border-white/5 p-2 divide-y divide-white/5"></div>
     </section>
 
-    <!-- QUIZ -->
+    <!-- SCREEN 5: QUIZ INTERATIVO -->
     <section id="screen-quiz" class="hidden space-y-4">
-      <div class="flex justify-between"><span id="quiz-theme" class="text-xs text-gold font-bold uppercase"></span><button onclick="exitQuiz()" class="text-xs text-textgray bg-white/5 px-3 py-1 rounded-lg">Sair</button></div>
-      <div class="flex justify-between text-xs"><span id="quiz-counter">Questão 1 de 1</span><span>⏱️</span></div>
-      <div class="h-1.5 bg-cardbg rounded-full"><div id="quiz-progress" class="h-full bg-gold w-full rounded-full"></div></div>
-      <div class="bg-cardbg p-5 rounded-2xl"><p id="quiz-question" class="text-sm">Carregando...</p></div>
-      <div id="quiz-options" class="space-y-2"></div>
-      <div id="quiz-feedback" class="hidden bg-cardbg p-4 rounded-2xl space-y-2"><h4 id="fb-status" class="font-bold text-sm"></h4><p id="fb-text" class="text-xs text-textgray"></p><button onclick="nextQuestion()" class="w-full bg-gold text-darkbg py-2 rounded-xl font-bold">Avançar</button></div>
+      <div class="flex items-center justify-between">
+        <span id="quiz-theme-tag" class="text-xs text-gold font-bold uppercase tracking-wider"></span>
+        <button onclick="exitQuiz()" class="text-xs text-textgray hover:text-white bg-white/5 px-2.5 py-1 rounded-lg border border-white/10">Sair</button>
+      </div>
+
+      <!-- Barra de Progresso da Questão -->
+      <div class="space-y-1">
+        <div class="flex justify-between text-xs text-textgray">
+          <span id="quiz-question-number">Questão 1 de 1</span>
+          <span id="quiz-time-left">⏱️ Tempo Livre</span>
+        </div>
+        <div class="w-full h-1.5 bg-cardbg rounded-full overflow-hidden">
+          <div id="quiz-progress-bar" class="h-full bg-gold rounded-full" style="width: 100%"></div>
+        </div>
+      </div>
+
+      <!-- Corpo da Questão -->
+      <div class="bg-cardbg p-5 rounded-2xl border border-white/5 space-y-4 shadow-lg">
+        <p id="quiz-question-text" class="text-sm font-medium leading-relaxed text-slate-100">Carregando questão...</p>
+      </div>
+
+      <!-- Alternativas de Opções -->
+      <div id="quiz-options-container" class="space-y-2"></div>
+
+      <!-- Área de Feedback / Explicação -->
+      <div id="quiz-feedback-box" class="hidden bg-cardbg p-5 rounded-2xl border border-white/5 space-y-2 animate-fade-in">
+        <h4 id="quiz-feedback-status" class="font-extrabold text-sm uppercase"></h4>
+        <p id="quiz-explanation-text" class="text-xs text-textgray leading-relaxed whitespace-pre-wrap"></p>
+        <button id="quiz-next-btn" onclick="nextQuestion()" class="w-full mt-2 bg-gold hover:bg-yellow-600 text-darkbg font-bold py-3 rounded-xl transition duration-150 text-sm">
+          Avançar
+        </button>
+      </div>
     </section>
+
   </main>
 
-  <!-- NAVEGAÇÃO INFERIOR -->
-  <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-cardbg/90 backdrop-blur border-t py-2 px-6 flex justify-between rounded-t-2xl">
-    <button onclick="switchScreen('dashboard')" id="nav-dashboard" class="flex flex-col items-center text-gold"><span>📊</span><span class="text-[10px]">Painel</span></button>
-    <button onclick="switchScreen('simulados')" id="nav-simulados" class="flex flex-col items-center text-textgray"><span>📚</span><span class="text-[10px]">Simulados</span></button>
-    <button onclick="switchScreen('erros')" id="nav-erros" class="flex flex-col items-center text-textgray"><span>📓</span><span class="text-[10px]">Erros</span></button>
-    <button onclick="switchScreen('ranking')" id="nav-ranking" class="flex flex-col items-center text-textgray"><span>🏆</span><span class="text-[10px]">Ranking</span></button>
-    <button onclick="location.reload()" class="flex flex-col items-center text-textgray"><span>🔄</span><span class="text-[10px]">Recarregar</span></button>
+  <!-- Navegação Inferior Fixa -->
+  <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-cardbg/95 backdrop-blur-md border-t border-white/5 py-3 px-6 flex justify-between items-center z-40 shadow-2xl rounded-t-2xl">
+    <button onclick="switchScreen('dashboard')" id="nav-dashboard" class="flex flex-col items-center gap-1 group text-gold">
+      <span class="text-xl">📊</span>
+      <span class="text-[10px] font-semibold tracking-wider">Painel</span>
+    </button>
+    <button onclick="switchScreen('simulados')" id="nav-simulados" class="flex flex-col items-center gap-1 group text-textgray">
+      <span class="text-xl">📚</span>
+      <span class="text-[10px] font-semibold tracking-wider">Simulados</span>
+    </button>
+    <button onclick="switchScreen('erros')" id="nav-erros" class="flex flex-col items-center gap-1 group text-textgray">
+      <span class="text-xl">📓</span>
+      <span class="text-[10px] font-semibold tracking-wider">Erros</span>
+    </button>
+    <button onclick="switchScreen('ranking')" id="nav-ranking" class="flex flex-col items-center gap-1 group text-textgray">
+      <span class="text-xl">🏆</span>
+      <span class="text-[10px] font-semibold tracking-wider">Ranking</span>
+    </button>
+    <button onclick="location.reload()" class="flex flex-col items-center gap-1 text-textgray hover:text-white">
+      <span class="text-xl">🔄</span>
+      <span class="text-[10px] font-semibold tracking-wider">Recarregar</span>
+    </button>
   </nav>
 
+  <!-- BANCO DE QUESTÕES INTEGRADO COM 15 TEMAS x 5 QUESTÕES REAIS -->
   <script>
-    // ================= BANCO DE QUESTÕES (1 por tema para teste) =================
-    const QUESTIONS = {
-      "TEMA_1": { pergunta: "John Davis e Ray Goldberg, em 1957, cunharam o conceito de?", opcoes: { A: "Subsistência", B: "Agronegócio", C: "Cooperativismo", D: "Monopólio", E: "Exportação" }, correta: "B", explicacao: "Agribusiness", pagina: "pág.29" },
-      "TEMA_2": { pergunta: "Qual prática conserva o solo sem revolvimento?", opcoes: { A: "Plantio direto", B: "Aração profunda", C: "Queimada", D: "Monocultura", E: "Gradagem" }, correta: "A", explicacao: "Sistema Plantio Direto", pagina: "pág.37" },
-      "TEMA_3": { pergunta: "Tecido vegetal que transporta seiva elaborada?", opcoes: { A: "Xilema", B: "Floema", C: "Câmbio", D: "Parênquima", E: "Colênquima" }, correta: "B", explicacao: "Floema", pagina: "pág.70" },
-      "TEMA_4": { pergunta: "Lei do Mínimo de Liebig: a produtividade é limitada pelo nutriente...", opcoes: { A: "mais abundante", B: "em menor quantidade", C: "mais caro", D: "orgânico", E: "sintético" }, correta: "B", explicacao: "Menor proporção", pagina: "pág.94" },
-      "TEMA_5": { pergunta: "Irrigação mais eficiente em uso de água?", opcoes: { A: "Inundação", B: "Gotejamento", C: "Aspersão", D: "Pivô", E: "Sulcos" }, correta: "B", explicacao: "Gotejamento >90% eficiência", pagina: "pág.113" },
-      "TEMA_6": { pergunta: "Bactéria usada na fixação de nitrogênio na soja?", opcoes: { A: "Bradyrhizobium", B: "Rhizobium", C: "Azospirillum", D: "Pseudomonas", E: "Bacillus" }, correta: "A", explicacao: "Bradyrhizobium", pagina: "pág.176" },
-      "TEMA_7": { pergunta: "Setor pecuário com maior automação e integração?", opcoes: { A: "Bovinos corte", B: "Avicultura", C: "Suinocultura", D: "Caprinos", E: "Bubalinos" }, correta: "B", explicacao: "Avicultura de corte", pagina: "pág.209" },
-      "TEMA_8": { pergunta: "Compartimento do rúmen onde ocorre fermentação?", opcoes: { A: "Rúmen", B: "Retículo", C: "Omaso", D: "Abomaso", E: "Esofago" }, correta: "A", explicacao: "Rúmen", pagina: "pág.227" },
-      "TEMA_9": { pergunta: "NDT na nutrição animal significa?", opcoes: { A: "Nutrientes Digestíveis Totais", B: "Nitrogênio Digestível", C: "Nível Degradável", D: "Nutrição de Desenvolvimento", E: "Núcleo de Defesa" }, correta: "A", explicacao: "Nutrientes Digestíveis Totais", pagina: "pág.233" },
-      "TEMA_10": { pergunta: "Manejo de pasto com divisão em piquetes e descanso?", opcoes: { A: "Contínuo", B: "Rotacionado", C: "Diferimento", D: "Queima", E: "Lotação fixa" }, correta: "B", explicacao: "Pastejo rotacionado", pagina: "pág.247" },
-      "TEMA_11": { pergunta: "Parâmetro que mede influência genética aditiva?", opcoes: { A: "Herdabilidade", B: "Heterose", C: "Endogamia", D: "Epistasia", E: "Pleiotropia" }, correta: "A", explicacao: "Herdabilidade", pagina: "pág.256" },
-      "TEMA_12": { pergunta: "Fase crítica na suinocultura pós-desmame?", opcoes: { A: "Gestação", B: "Creche", C: "Terminação", D: "Recria", E: "Maternidade" }, correta: "B", explicacao: "Creche", pagina: "pág.277" },
-      "TEMA_13": { pergunta: "Objetivo da ração concentrada em confinamento?", opcoes: { A: "Ganho rápido de peso", B: "Reduzir custos", C: "Aumentar pastejo", D: "Prevenir doenças", E: "Melhorar fertilidade" }, correta: "A", explicacao: "Acelerar ganho", pagina: "pág.304" },
-      "TEMA_14": { pergunta: "O que significa VRT na agricultura de precisão?", opcoes: { A: "Taxa variável", B: "Velocidade reduzida", C: "Veículo de rastreamento", D: "Vegetação remota", E: "Vertical rotativa" }, correta: "A", explicacao: "Variable Rate Technology", pagina: "pág.339" },
-      "TEMA_15": { pergunta: "Matriz que analisa forças, fraquezas, oportunidades e ameaças?", opcoes: { A: "SWOT", B: "Ishikawa", C: "PDCA", D: "5W2H", E: "GUT" }, correta: "A", explicacao: "Matriz SWOT", pagina: "pág.343" }
+    const QUESTIONS_DB = {
+      "TEMA_1": [
+        {
+          "pergunta": "O agronegócio pode ser compreendido como um encadeamento de atividades econômicas. Qual alternativa indica os autores que, em 1957, cunharam pioneiramente esse conceito sob a ótica de um 'sistema integrado'?",
+          "opcoes": {
+            "A": "Thomas Malthus e David Ricardo.",
+            "B": "John Davis e Ray Goldberg.",
+            "C": "Karl Marx e Friedrich Engels.",
+            "D": "Adam Smith e David Hume.",
+            "E": "John Maynard Keynes e Milton Friedman."
+          },
+          "correta": "B",
+          "explicacao": "O conceito foi estabelecido por John Davis e Ray Goldberg em 1957, definindo as atividades de forma encadeada como um 'sistema integrado'.",
+          "pagina": "página 29 do PDF do SENAR"
+        },
+        {
+          "pergunta": "De acordo com as diretrizes de análise macroeconômica do Centro de Estudos Avançados em Economia Aplicada (Cepea), o agronegócio brasileiro é entendido como o somatório de quais segmentos?",
+          "opcoes": {
+            "A": "Operações de preparo do solo, plantio, tratos culturais e colheita.",
+            "B": "Agricultura familiar tradicional, complexos patronais e cooperativas de crédito.",
+            "C": "Insumos para a agropecuária, produção agropecuária básica, agroindústria e agrosserviços.",
+            "D": "Comércio atacadista nacional, acordos bilaterais e fluxos de exportação.",
+            "E": "Sistemas orgânicos certificados, cultivos convencionais e arranjos hidropônicos."
+          },
+          "correta": "C",
+          "explicacao": "A análise metodológica do Cepea adota o somatório de quatro eixos de análise: insumos, produção, agroindústria e agrosserviços.",
+          "pagina": "página 29 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Avaliando a série histórica macroeconômica gerada pelo Cepea/Esalq-USP em cooperação com a CNA iniciada em 2003, qual comportamento define a participação do agronegócio no PIB nacional?",
+          "opcoes": {
+            "A": "Retração severa decorrente da desindustrialização das cadeias rurais.",
+            "B": "Estabilidade linear absoluta, sem apresentar variações percentuais.",
+            "C": "Tendência de participação crescente na composição do Produto Interno Bruto (PIB) total.",
+            "D": "Comportamento cíclico estrito governado unicamente por oscilações climáticas.",
+            "E": "Manutenção histórica de índices fixados invariavelmente abaixo de 10% do PIB."
+          },
+          "correta": "C",
+          "explicacao": "A participação do complexo do agronegócio no PIB brasileiro apresenta tendência histórica global de crescimento contínuo.",
+          "pagina": "página 29 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Os estudos do Cepea apontam que o agronegócio brasileiro experimentou um acentuado desenvolvimento tecnológico e produtivo nas últimas décadas. Quais foram os reflexos diretos desse avanço?",
+          "opcoes": {
+            "A": "Redução sistemática dos fluxos de exportação.",
+            "B": "Ampliação das exportações, elevação da renda dos produtores e oferta de alimentos de maior qualidade e menor custo.",
+            "C": "Estagnação volumétrica dos estoques de grãos e elevação de custos de consumo.",
+            "D": "Depreciação dos padrões fitossanitários dos alimentos primários.",
+            "E": "Perda severa de competitividade nos mercados internacionais frente aos subsídios."
+          },
+          "correta": "B",
+          "explicacao": "O avanço tecnológico impulsionou a produtividade, elevando as exportações, gerando renda interna no campo e alimentos acessíveis ao consumidor.",
+          "pagina": "página 29 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O Centro de Estudos Avançados em Economia Aplicada (Cepea) apresenta os segmentos que formam a cadeia integrada do agronegócio nacional. Assinale a alternativa que define corretamente esses segmentos em conformidade com a atividade oficial estudada.",
+          "opcoes": {
+            "A": "Agroindústria, comércio nacional, comércio internacional e vendas.",
+            "B": "Insumos para a agropecuária, produção agropecuária primária, agroindústria e agrosserviços.",
+            "C": "Insumos, produtos eletrônicos, indústria e comércio.",
+            "D": "Insumos, produção agropecuária secundária e agrosserviços.",
+            "E": "Produção primária, produção secundária e produção terciária."
+          },
+          "correta": "B",
+          "explicacao": "Os quatro eixos fundamentais que englobam a macrocadeia são os insumos, a produção rural dentro da fazenda, o beneficiamento agroindustrial e o setor de serviços/distribuição.",
+          "pagina": "página 30 do PDF do SENAR"
+        }
+      ],
+      "TEMA_2": [
+        {
+          "pergunta": "Em 1797, o economista inglês Thomas Malthus formulou uma teoria sobre a capacidade de suprimento alimentar global. Qual era a premissa dessa tese, superada posteriormente pelo avanço tecnológico do campo?",
+          "opcoes": {
+            "A": "A população mundial cresceria em progressão aritmética, superando a oferta de terras agrícolas.",
+            "B": "A produção de alimentos cresceria em progressão geométrica, gerando excedentes de commodities.",
+            "C": "O agronegócio operaria de forma encadeada sob a ótica de um sistema industrial fechado.",
+            "D": "A população mundial cresceria em progressão geométrica, enquanto a produção de alimentos cresceria em progressão aritmética, tornando impossível alimentar a humanidade.",
+            "E": "O melhoramento genético vegetal estabilizaria de forma definitiva as taxas de natalidade global."
+          },
+          "correta": "D",
+          "explicacao": "Thomas Malthus afirmou em 1797 que a produção de alimentos crescia de forma aritmética, enquanto a população expandia-se geometricamente. Sua visão pessimista foi superada pelo avanço científico das máquinas, fertilizantes e genética, que otimizaram a produção vegetal.",
+          "pagina": "página 37 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O sucesso de um agrossistema e a busca por modelos de desenvolvimento sustentável dependem do controle de variáveis. Conforme a apostila, quais fatores promovem uma produção vegetal eficiente?",
+          "opcoes": {
+            "A": "A homogeneidade climática regional associada estritamente à suficiência edáfica.",
+            "B": "A seleção de genótipos ou cultivares, o manejo da nutrição mineral, o controle de pragas, doenças e plantas daninhas, a disponibilidade de água e o sistema de produção.",
+            "C": "O uso massivo de defensivos químicos de largo espectro em consonância com a fertilização.",
+            "D": "A implantação obrigatória de regimes de fertirrigação nitrogenada contínua.",
+            "E": "A mecanização integral das operações de colheita e o isolamento de sementes."
+          },
+          "correta": "B",
+          "explicacao": "A eficiência de um cultivo vegetal depende da coordenação integrada de fatores genéticos, nutricionais, hídricos, de sanidade vegetal e boas práticas de manejo.",
+          "pagina": "página 39 do PDF do SENAR"
+        },
+        {
+          "pergunta": "No contexto da transição ecológica do agronegócio brasileiro, como se conceitua o modelo de agricultura orgânica apresentado na apostila?",
+          "opcoes": {
+            "A": "Um arranjo produtivo intensivo focado na adubação de alta solubilidade química.",
+            "B": "Um sistema de produção agrícola baseado em princípios ecológicos que abrange o manejo adequado dos recursos naturais do solo, a nutrição vegetal, a proteção das plantas e a valorização dos recursos humanos.",
+            "C": "Um modelo tecnológico baseado no emprego irrestrito de transgênicos sob patente.",
+            "D": "Um sistema de manejo profilático dependente de antibióticos e hormônios.",
+            "E": "Um método de plantio direto na palhada que dispensa qualquer correção do solo."
+          },
+          "correta": "B",
+          "explicacao": "A agricultura orgânica adota preceitos biológicos e ecológicos, harmonizando as relações de sustentabilidade ambiental com a integridade social da fazenda.",
+          "pagina": "página 40 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A agricultura orgânica caracteriza-se por restrições severas ao uso de insumos artificiais. Quais práticas ou produtos NÃO são permitidos nesse sistema no território brasileiro?",
+          "opcoes": {
+            "A": "A adubação verde consorciada e a rotação de culturas.",
+            "B": "O controle biológico com parasitoides e a inoculação de sementes.",
+            "C": "O uso de organismos geneticamente modificados, fertilizantes de alta solubilidade, agrotóxicos, antibióticos, hormônios, aditivos artificiais e radiações ionizantes.",
+            "D": "A reciclagem de resíduos orgânicos compostados e o manejo de conservação do solo.",
+            "E": "O emprego de fungos micorrízicos e o extrativismo florestal planejado."
+          },
+          "correta": "C",
+          "explicacao": "É expressamente vedada a inclusão de organismos modificados (transgênicos), agrotóxicos sintéticos de síntese química, hormônios e fertilizantes solúveis sintéticos.",
+          "pagina": "página 40 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A agricultura orgânica funciona como um guarda-chuva conceitual que abriga correntes agroecológicas afins. Quais correntes ou movimentos são citados na apostila como abrangidos por esse sistema?",
+          "opcoes": {
+            "A": "A agricultura de subsistência tradicional e o sistema convencional químico de monocultura.",
+            "B": "A agricultura alternativa, a biológica, a orgânica, a natural, a biodinâmica, a permacultura e os sistemas agroflorestais.",
+            "C": "A hidroponia comercial em estufa e a aquaponia integrada com peixes carnívoros.",
+            "D": "A monocultura extensiva de commodities e o pastejo contínuo em lotação direta.",
+            "E": "Os modelos de integração lavoura-pecuária-floresta (ILPF) conduzidos de forma convencional."
+          },
+          "correta": "B",
+          "explicacao": "As linhas alternativas, agroecológicas, biodinâmicas, biológicas e os agroflorestais compartilham os mesmos preceitos biológicos básicos de sustentabilidade ambiental.",
+          "pagina": "página 40 do PDF do SENAR"
+        }
+      ],
+      "TEMA_3": [
+        {
+          "pergunta": "A principal característica biofísica que unifica os organismos pertencentes ao Reino Vegetal é a autotrofia por meio da fotossíntese. Com base nos fundamentos fisiológicos descritos no material, como se define esse processo?",
+          "opcoes": {
+            "A": "A oxidação bioquímica de compostos carbonados na mitocôndria para a liberação de ATP e CO2.",
+            "B": "A conversão de energia luminosa, por meio da atuação da clorofila, em energia química, com produção de carboidratos a partir de dióxido de carbono (CO2) e água.",
+            "C": "A absorção radicular passiva de macro e micronutrientes minerais dissolvidos na seiva bruta.",
+            "D": "O mecanismo de reprodução vegetativa assexuada conduzido por tecidos meristemáticos totipotentes.",
+            "E": "A transformação de energia mecânica derivada do vento em energia potencial osmótica para o alongamento celular."
+          },
+          "correta": "B",
+          "explicacao": "A fotossíntese é o motor energético do Reino Vegetal. Através dos pigmentos de clorofila contidos nos cloroplastos, as plantas capturam os fótons da luz solar e utilizam essa energia para fixar o CO2 atmosférico e clivar a molécula de água, sintetizando esqueletos de carbono (carboidratos) e liberando oxigênio (O2).",
+          "pagina": "página 70 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O conceito de agrobiodiversidade estabelece as conexões entre a biologia evolutiva e o desenvolvimento sociocultural do agronegócio. De acordo com as definições literais da apostila, o que engloba a agrobiodiversidade?",
+          "opcoes": {
+            "A": "A totalidade das populações biológicas endêmicas intocadas e exclusivas de biomas nativos.",
+            "B": "Unicamente as linhagens mutantes artificiais e os organismos geneticamente modificados sob patente industrial.",
+            "C": "Todos os componentes que têm relevância para a agricultura e a alimentação, ou seja, a parcela da biodiversidade utilizada pelo homem na agricultura, ou em práticas correlatas, na natureza, de forma domesticada ou semidomesticada.",
+            "D": "Restritamente as espécies olerícolas e frutíferas cultivadas em sistemas de produção orgânica com selo SisOrg.",
+            "E": "Exclusivamente a microbiota saprófita do solo responsável pelos processos de nitrificação e mineralização."
+          },
+          "correta": "C",
+          "explicacao": "A agrobiodiversidade compreende a fatia de biodiversidade explorada, domesticada e adaptada pelo ser humano para suporte de suas cadeias agroalimentares e industriais.",
+          "pagina": "página 71 do PDF do SENAR"
+        },
+        {
+          "pergunta": "No zoneamento botânico e industrial das matérias-primas lignocelulósicas, qual grupo de plantas vasculares caracteriza-se por produzir sementes nuas (desprovidas de fruto protetor) e não originar flores verdadeiras, sendo amplamente explorado para celulose e serraria?",
+          "opcoes": {
+            "A": "Briófitas (avasculares de pequeno porte).",
+            "B": "Pteridófitas (vasculares criptógamas sem sementes).",
+            "C": "Gimnospermas (como pinheiros, coníferas e ciprestes).",
+            "D": "Angiospermas (plantas frutíferas com ovário desenvolvido).",
+            "E": "Algas clorófitas planctônicas de viveiros."
+          },
+          "correta": "C",
+          "explicacao": "As Gimnospermas produzem sementes desprovidas de frutos protetores (ovário floral verdadeiro). O principal exemplo de relevância florestal são os pinus.",
+          "pagina": "página 72 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A correta identificação taxonômica orienta a aplicação de herbicidas seletivos e o manejo fitotécnico. Com base nos critérios anatômicos comparativos apresentados na tabela da página 73, qual característica diferencia estruturalmente as monocotiledôneas?",
+          "opcoes": {
+            "A": "Sistema radicular do tipo pivotante ou axial com eixo central dominante.",
+            "B": "Arquitetura foliar dotada de nervuras reticuladas ou peninérveas.",
+            "C": "Flores tetrâmeras ou pentâmeras, com verticilos organizados em base 4 ou 5.",
+            "D": "Sistema radicular em feixe, comumente denominado do tipo fasciculado.",
+            "E": "Crescimento secundário lateral em espessura via atividade contínua do câmbio vascular."
+          },
+          "correta": "D",
+          "explicacao": "As monocotiledôneas (milho, arroz, cana) possuem raízes fasciculadas (em feixes finos ou cabeleira), em contraste com o sistema pivotante das dicotiledôneas.",
+          "pagina": "página 73 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O planejamento de rotação de culturas exige o conhecimento das famílias botânicas para evitar a persistência de patógenos no solo. Qual alternativa agrupa espécies vegetais comerciais pertencentes à família das Solanáceas?",
+          "opcoes": {
+            "A": "Milho comercial, cana-de-açúcar industrial e sorgo granífero.",
+            "B": "Feijão comum, soja transgênica e amendoim forrageiro.",
+            "C": "Batata, tomate e berinjela.",
+            "D": "Arroz irrigado, trigo de inverno e aveia preta.",
+            "E": "Alface crespa, couve-manteiga e brócolis ramoso."
+          },
+          "correta": "C",
+          "explicacao": "Batata, tomate e berinjela pertencem à família das Solanáceas, sendo culturas suscetíveis a pragas e patógenos de solo comuns.",
+          "pagina": "página 74 do PDF do SENAR"
+        }
+      ],
+      "TEMA_4": [
+        {
+          "pergunta": "Os elementos minerais considerados essenciais para o metabolismo vegetal são classificados em função da exigência quantitativa da cultura. Qual alternativa agrupa exclusivamente macronutrientes minerais?",
+          "opcoes": {
+            "A": "Ferro (Fe), Manganês (Mn), Boro (B), Cobre (Cu), Zinco (Zn), Molibdênio (Mo), Cloro (Cl) e Níquel (Ni).",
+            "B": "Nitrogênio (N), Fósforo (P), Potássio (K), Cálcio (Ca), Magnésio (Mg) e Enxofre (S).",
+            "C": "Carbono (C), Oxigênio (O), Hidrogênio (H), Nitrogênio (N) e Fósforo (P).",
+            "D": "Zinco (Zn), Cobre (Cu), Manganês (Mn), Ferro (Fe), Boro (B), Molibdênio (Mo) e Alumínio (Al).",
+            "E": "Cálcio (Ca), Magnésio (Mg), Enxofre (S), Ferro (Fe), Manganês (Mn) e Zinco (Zn)."
+          },
+          "correta": "B",
+          "explicacao": "Os macronutrientes absorvidos via solução do solo exigidos em larga escala estrutural e metabólica são N, P, K, Ca, Mg e S.",
+          "pagina": "página 94 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Embora os micronutrientes minerais desempenhem papéis catalíticos vitais na ativação enzimática, as plantas os absorvem em quantidades milimétricas. Qual alternativa contém apenas micronutrientes essenciais regulamentados no material?",
+          "opcoes": {
+            "A": "Zinco (Zn), Cobre (Cu), Manganês (Mn), Ferro (Fe), Boro (B), Molibdênio (Mo), Cloro (Cl) e Níquel (Ni).",
+            "B": "Nitrogênio (N), Fósforo (P), Potássio (K), Cálcio (Ca) e Magnésio (Mg).",
+            "C": "Carbono (C), Hidrogênio (H), Oxigênio (O), Nitrogênio (N) e Enxofre (S).",
+            "D": "Cálcio (Ca), Magnésio (Mg), Enxofre (S), Zinco (Zn) e Cobre (Cu).",
+            "E": "Fósforo (P), Potássio (K), Cálcio (Ca), Magnésio (Mg) e Enxofre (S)."
+          },
+          "correta": "A",
+          "explicacao": "Os micronutrientes listados nas diretrizes do SENAR são: boro, cloro, cobre, ferro, manganês, molibdênio, zinco e níquel.",
+          "pagina": "página 95 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A passagem de íons minerais da solução do solo para o interior do tecido radicular é governada por variáveis intrínsecas e extrínsecas. De acordo com o quadro do material, qual alternativa apresenta exclusivamente fatores DO MEIO (extrinsecos) que afetam a absorção?",
+          "opcoes": {
+            "A": "O potencial genético do híbrido, o estado iônico celular interno e o nível de carboidratos nas raízes.",
+            "B": "A disponibilidade do nutriente, o nível de acidez do solo (pH), a aeração, a umidade e a temperatura.",
+            "C": "A taxa de transpiração estomática, a morfologia física do sistema radicular e a idade cronológica da planta.",
+            "D": "O potencial genético, a taxa de transpiração foliar e a arquitetura de ramificação lateral radicular.",
+            "E": "O estado iônico da célula-guarda, o nível de fotoassimilados no floema e a simbiose micorrízica isolada."
+          },
+          "correta": "B",
+          "explicacao": "Fatores externos ou ambientais como temperatura, umidade, pH e teores de oxigênio edáficos regulam diretamente o processo biológico ativo de captação radicular.",
+          "pagina": "página 96 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O nitrogênio (N) participa ativamente da síntese de esqueletos de carbono e macromoléculas vegetais. Assinale a alternativa que transcreve corretamente as funções específicas desse nutriente listadas na tabela da página 97:",
+          "opcoes": {
+            "A": "Componente estrutural de ácidos nucleicos, atuando na formação primária de ATP.",
+            "B": "Atuar na regulação estomática, na translocação de amidos e na indução de resistência mecânica.",
+            "C": "Aumentar a absorção de potássio (K), cálcio (Ca) e magnésio (Mg), atuar na formação de proteínas e contribuir para a uniformidade dos frutos.",
+            "D": "Participar da sustentação mecânica do colmo e potencializar a interceptação radicular.",
+            "E": "Compor de forma isolada a molécula de clorofila livre, auxiliando na redução de perdas por lixiviação."
+          },
+          "correta": "C",
+          "explicacao": "O nitrogênio otimiza a absorção de cátions metálicos, integra a estrutura de aminoácidos para síntese de proteínas e melhora a uniformidade e calibre de frutos.",
+          "pagina": "página 97 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O fósforo (P) é um dos macronutrientes mais limitantes em solos tropicais devido aos processos de fixação química. Qual alternativa descreve corretamente sua função bioquímica vital nas plantas, segundo a tabela do material?",
+          "opcoes": {
+            "A": "Estimular as taxas de absorção foliar de potássio e regular a estabilidade da parede celular externa.",
+            "B": "Componente estrutural de ácidos nucleicos, atuando na formação de adenosina trifosfato (ATP) e adenosina difosfato (ADP), responsáveis pelo armazenamento e transferência de energia.",
+            "C": "Atuar de forma direta na fotofosforilação cíclica e na translocação de amido.",
+            "D": "Participar da sustentação de tecidos e mediar a absorção osmótica de água.",
+            "E": "Atuar na síntese de aminoácidos aromáticos secundários e na ativação mecânica de enzimas."
+          },
+          "correta": "B",
+          "explicacao": "O Fósforo (P) faz parte direta do esqueleto celular energético de ATP e dos ácidos nucleicos (DNA/RNA), regulando todo o fluxo bioquímico vital.",
+          "pagina": "página 97 do PDF do SENAR"
+        }
+      ],
+      "TEMA_5": [
+        {
+          "pergunta": "A agricultura irrigada desempenha papel central na verticalização da produção no agronegócio. De acordo com os dados estatísticos nacionais apresentados na página 113, qual é a relação de produtividade física observada entre a agricultura irrigada e a tradicional de sequeiro?",
+          "opcoes": {
+            "A": "A agricultura irrigada é cerca de 1,5 vez mais produtiva na colheita volumétrica de grãos.",
+            "B": "A agricultura irrigada atinge o patamar exato de 2 vezes o rendimento da lavoura de sequeiro.",
+            "C": "A agricultura irrigada chega a ser 3 vezes mais produtiva que a agricultura tradicional.",
+            "D": "A agricultura irrigada expande o rendimento biológico em até 5 vezes a capacidade do lote.",
+            "E": "Não são registradas diferenças estatísticas significativas de produtividade entre os dois modelos sazonais."
+          },
+          "correta": "C",
+          "explicacao": "A irrigação confere estabilidade hídrica ao dossel da lavoura, potencializando em até 3 vezes os rendimentos físicos por unidade de área de solo cultivada.",
+          "pagina": "página 113 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A governança hídrica e a concessão de outorgas de captação de água para projetos de irrigação no Brasil são disciplinadas por uma autarquia especial. A Agência Nacional de Águas e Saneamento Básico (ANA) foi instituída como desdobramento de qual diploma legal federal?",
+          "opcoes": {
+            "A": "Lei Federal nº 10.831/2003.",
+            "B": "Lei Federal nº 9.433/1997 (Lei das Águas).",
+            "C": "Lei Federal nº 12.529/2011.",
+            "D": "Lei Federal nº 13.848/2019.",
+            "E": "Lei Federal nº 14.026/2020."
+          },
+          "correta": "B",
+          "explicacao": "A ANA é o braço executivo de governança e outorga de águas no Brasil com base na Lei nº 9.433/1997.",
+          "pagina": "página 113 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O planejamento de perímetros públicos de irrigação gera indicadores de estabilidade econômica no campo. De acordo com as estimativas oficiais divulgadas pela Codevasf (2017), qual é o incremento médio verificado na produtividade das colheitas em áreas irrigadas em comparação às áreas não irrigadas?",
+          "opcoes": {
+            "A": "Um acréscimo marginal linear fixado em exatamente 1,5 vez maior.",
+            "B": "Um rendimento de biomassa foliar em média 2 a 2,5 vezes maior.",
+            "C": "Um ganho de produtividade de colheita que chega a ser, em média, 2,5 a 3 vezes maior que em área não irrigada.",
+            "D": "Uma expansão volumétrica verticalizada de 4 a 5 vezes maior.",
+            "E": "Um incremento absoluto fixado no teto de 7 vezes maior por hectare."
+          },
+          "correta": "C",
+          "explicacao": "A Codevasf aponta estabilidade e ganho real de 2,5 a 3 vezes na colheita média de perímetros irrigados frente ao sequeiro tradicional.",
+          "pagina": "página 114 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O método de irrigação por superfície (como em sulcos ou faixas inundadas) baseia-se no escoamento gravitacional da água sobre a camada arável. Qual alternativa descreve uma das principais limitações técnico-operacionais desse método?",
+          "opcoes": {
+            "A": "Exigir elevados custos de instalação inicial de tubulações sob pressão.",
+            "B": "Bloquear terminantemente a aplicação de água que possua partículas ou sólidos.",
+            "C": "Impor um elevado consumo de energia elétrica comparado aos métodos de aspersão.",
+            "D": "Apresentar severa dependência das condições topográficas, o que requer sistematização planialtimétrica do terreno.",
+            "E": "Sofrer perdas drásticas de água por deriva provocada pela ação de ventos."
+          },
+          "correta": "D",
+          "explicacao": "Os métodos de irrigação superficial dependem das forças da gravidade e de relevo equilibrado (plano ou plano-ondulado), exigindo sistematização de solo.",
+          "pagina": "página 115 do PDF do SENAR"
+        },
+        {
+          "pergunta": "No grupo dos sistemas pressurizados por aspersão, o sistema autopropelido destaca-se pela mobilidade. Como esse sistema é caracterizado mecanicamente?",
+          "opcoes": {
+            "A": "Uma estrutura linear suspensa que gira em formato de pivô circular, movida por motoredutores.",
+            "B": "Um canhão único aspersor montado em um carrinho que se desloca em linha reta ao longo da área, cuja pressão da água na mangueira flexível é responsável pela propulsão.",
+            "C": "Uma tubulação fixa tracionada intermitentemente por tratores.",
+            "D": "Múltiplas linhas de tubulações enterradas que espergem água por gravidade.",
+            "E": "Laterais móveis manuais montadas em rodas metálicas propulsionadas por geradores."
+          },
+          "correta": "B",
+          "explicacao": "O autopropelido baseia-se na locomoção hidráulica autônoma de um carretel que reboca o canhão de aspersão pela linha da plantação.",
+          "pagina": "página 117 do PDF do SENAR"
+        }
+      ],
+      "TEMA_6": [
+        {
+          "pergunta": "A cotonicultura brasileira passou por profundas transformações estruturais e geográficas ao longo das últimas décadas. Conforme o contexto histórico apresentado na página 131, qual praga causou prejuízos devastadores nos anos 1980 e qual estado consolidou-se como o polo produtor na região do Cerrado a partir dos anos 2000?",
+          "opcoes": {
+            "A": "O ataque do 'bicudo-do-algodoeiro' na década de 1980 e o estabelecimento da cultura no estado do Mato Grosso a partir dos anos 2000.",
+            "B": "A infestação de lagarta-do-cartucho nos anos 1980 e a migração produtiva para o Rio Grande do Sul.",
+            "C": "O surto de pulgão-das-folhas em 1980 seguido pela transferência para a Região Nordeste.",
+            "D": "A introdução do ácaro-rajado e a posterior configuração no Maranhão.",
+            "E": "O declínio produtivo por nematoides na década de 1980 e realocação para o bioma Pampas."
+          },
+          "correta": "A",
+          "explicacao": "A praga do bicudo-do-algodoeiro arrasou a cotonicultura tradicional nacional. A partir dos anos 2000, o Mato Grosso ressurgiu como a grande potência do Cerrado.",
+          "pagina": "página 131 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A dispersão global da cafeicultura envolve lendas e marcos socioeconômicos marcantes. De acordo com a cronologia histórica apresentada na página 139, onde a bebida a partir de grãos torrados foi desenvolvida e como ocorreu a introdução do cafeeiro no Brasil?",
+          "opcoes": {
+            "A": "Foi concebida originalmente na Etiópia e transportada por frotas holandesas no século XVII.",
+            "B": "Foi desenvolvida na Pérsia no século XVI e a cultura foi introduzida no Brasil inicialmente em Belém do Pará, vindo das Guianas.",
+            "C": "Foi estabelecida de forma pioneira na Arábia Saudita e trazida por missões francesas no século XVIII.",
+            "D": "Foi industrializada na Turquia e inserida por imigrantes japoneses no século XX.",
+            "E": "Foi processada na Itália e as mudas foram contrabandeadas por jesuítas espanhóis."
+          },
+          "correta": "B",
+          "explicacao": "O grão de café começou a ser torrado na Pérsia medieval (séc. XVI). Palheta introduziu a planta no Brasil (Pará) via sementes contrabandeadas da Guiana Francesa.",
+          "pagina": "página 139 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A introdução da cultura da cana-de-açúcar (Saccharum officinarum) funcionou como o primeiro grande vetor socioeconômico. Conforme os fatos históricos resgatados na página 159, quem coordenou o primeiro plantio comercial e em qual capitania?",
+          "opcoes": {
+            "A": "O governador-geral Tomé de Sousa, na capitania da Bahia.",
+            "B": "Martim Afonso de Souza, na capitania de São Vicente (território do atual estado de São Paulo).",
+            "C": "O donatário Duarte Coelho, na capitania de Pernambuco.",
+            "D": "O fidalgo Mem de Sá, na capitania do Rio de Janeiro.",
+            "E": "O navegador Pedro Álvares Cabral, na capitania de Porto Seguro."
+          },
+          "correta": "B",
+          "explicacao": "Martim Afonso de Souza deu início ao plantio comercial de cana-de-açúcar e ao primeiro engenho de cana em São Vicente em 1532.",
+          "pagina": "página 159 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O milho apresenta uma trajetória evolutiva singular que exigiu a intervenção humana para sua domesticação. Conforme os dados apresentados na página 169, qual é a ancestral selvagem do milho e qual a situação da cultura no Brasil à época do descobrimento?",
+          "opcoes": {
+            "A": "Um ancestral selvagem denominado 'teosinto'; as populações indígenas locais já cultivavam e consumiam o milho no período pré-cabralino.",
+            "B": "Uma gramínea ancestral chamada 'triticale' cultivada de forma exclusiva pelos astecas.",
+            "C": "Um morfotipo primitivo parentado ao 'sorgo bicolor' domesticado pelos maias.",
+            "D": "Um grão rústico classificado como 'centeio bravo' adaptado a terraços andinos.",
+            "E": "Uma poácea selvagem denominada 'painço de altitude' explorada pelos olmecas."
+          },
+          "correta": "A",
+          "explicacao": "O ancestral selvagem do milho é o teosinto. No descobrimento nacional, as populações nativas brasileiras já cultivavam largamente o grão.",
+          "pagina": "página 169 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A oleaginosa Glycine max tornou-se a principal commodity do país. Conforme a linha histórica resgatada na página 176 da apostila, qual grupo populacional introduziu a cultura no Brasil e em qual estado iniciou-se o cultivo comercial em grande escala na década de 1970?",
+          "opcoes": {
+            "A": "Imigrantes alemães no século XIX, iniciando no estado do Paraná.",
+            "B": "Imigrantes japoneses, que trouxeram a soja em 1908, sendo que o crescimento comercial em grande escala começou nos anos 1970, inicialmente no estado do Rio Grande do Sul.",
+            "C": "Imigrantes chineses na década de 1950, estabelecendo os primeiros campos em São Paulo.",
+            "D": "Imigrantes coreanos no ano de 1920, focando na produção artesanal em Santa Catarina.",
+            "E": "Imigrantes árabes na década de 1940, abrindo as fronteiras no cerrado do Mato Grosso."
+          },
+          "correta": "B",
+          "explicacao": "Imigrantes japoneses trouxeram sementes de soja em 1908. Contudo, a escalada comercial deu-se nos anos 1970 na região do Rio Grande do Sul.",
+          "pagina": "página 176 do PDF do SENAR"
+        }
+      ],
+      "TEMA_7": [
+        {
+          "pergunta": "A atividade leiteira desempenha papel fundamental na fixação do homem no campo e na geração de renda nos agrossistemas brasileiros. De acordo com as estatísticas setoriais apresentadas na página 208, qual posição o Brasil ocupa no ranking mundial de produção de leite e qual foi a sua produção volumétrica líquida?",
+          "opcoes": {
+            "A": "3º lugar mundial, registrando a marca de 50 bilhões de litros anuais.",
+            "B": "6º lugar no ranking mundial de produção de leite, com 38 bilhões de litros.",
+            "C": "2º lugar mundial, apresentando o patamar estável de 45 bilhões de litros.",
+            "D": "10º lugar no ranking mundial, computando a entrega de 25 bilhões de litros.",
+            "E": "1º lugar mundial, isolado na liderança com a marca de 60 bilhões de litros."
+          },
+          "correta": "B",
+          "explicacao": "O Brasil ocupa a 6ª posição de produção leiteira global com volumes anuais na faixa de 38 bilhões de litros.",
+          "pagina": "página 208 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Na avicultura nacional, qual segmento produtivo opera sob intenso modelo de integração vertical cooperativa com elevados índices de automação?",
+          "opcoes": {
+            "A": "Caprinocultura leiteira.",
+            "B": "Cunicultura de pele.",
+            "C": "Avicultura de corte.",
+            "D": "Apicultura silvestre.",
+            "E": "Piscicultura ornamental."
+          },
+          "correta": "C",
+          "explicacao": "A avicultura de corte brasileira está no topo de eficiência global, apoiada em sistemas eficientes de integração vertical, controle de sanidade e genética apurada.",
+          "pagina": "página 209 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual raça bovina de origem zebuína (indiana) predomina no rebanho nacional de corte pela alta rusticidade, capacidade de caminhada e tolerância ao calor?",
+          "opcoes": {
+            "A": "Angus britânico.",
+            "B": "Nelore.",
+            "C": "Hereford.",
+            "D": "Limousin francês.",
+            "E": "Caracu nativo."
+          },
+          "correta": "B",
+          "explicacao": "O gado Nelore (zebuíno) dita as bases do rebanho de corte brasileiro devido à rusticidade extrema e capacidade de conversão a pasto.",
+          "pagina": "página 211 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual unidade federativa brasileira destaca-se historicamente como o maior polo produtor e bacia leiteira regional do país em volume comercializado?",
+          "opcoes": {
+            "A": "Minas Gerais.",
+            "B": "Mato Grosso do Sul.",
+            "C": "Amazonas.",
+            "D": "São Paulo.",
+            "E": "Piauí."
+          },
+          "correta": "A",
+          "explicacao": "O estado de Minas Gerais responde pela liderança volumétrica histórica na captação leiteira comercial do agronegócio.",
+          "pagina": "página 214 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual região brasileira detém a maior concentração de granjas modernas de suínos associadas a grandes cooperativas industriais integradas?",
+          "opcoes": {
+            "A": "Região Norte.",
+            "B": "Região Nordeste.",
+            "C": "Região Sul.",
+            "D": "Região Sudeste.",
+            "E": "Área de Preservação Amazônica."
+          },
+          "correta": "C",
+          "explicacao": "A Região Sul concentra a suinocultura tecnificada de exportação brasileira devido à sua rede de cooperativas de integração.",
+          "pagina": "página 218 do PDF do SENAR"
+        }
+      ],
+      "TEMA_8": [
+        {
+          "pergunta": "No âmbito das ciências zootécnicas, o entendimento das interações estruturais do organismo ampara a otimização dos índices produtivos dos plantéis. Conforme o texto introdutório da página 226, qual é a importância prática de se dominar os conhecimentos complementares de anatomia e fisiologia na produção animal?",
+          "opcoes": {
+            "A": "Conhecer a organização das partes do corpo dos animais é fundamental para compreender como elas funcionam, possibilitando o aprimoramento do manejo e do trato zootécnico diário.",
+            "B": "A anatomia atua restrita ao estudo do comportamento etológico animal, ao passo que a fisiologia mapeia a procedência botânica.",
+            "C": "Ambas constituem disciplinas biomédicas teóricas de interesse exclusivo na medicina humana.",
+            "D": "O domínio dessas ciências serve exclusivamente como ferramenta diagnóstica para a identificação precoce de patologias.",
+            "E": "Constituem termos sinônimos idênticos na biologia animal, cujo escopo restringe-se aos hormônios reprodutivos."
+          },
+          "correta": "A",
+          "explicacao": "Anatomia (forma) e Fisiologia (função) dão o suporte biológico e técnico indispensável para balizar as boas decisões de manejo zootécnico diário no campo.",
+          "pagina": "página 226 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A sustentação e a integridade cinemática do corpo dos animais de produção dependem de um arranjo de suporte e contração. Conforme a página 227, quais as funções desempenhadas pelos sistemas esquelético e muscular?",
+          "opcoes": {
+            "A": "Atuar de forma isolada na termogênese por calafrio.",
+            "B": "Suportar a estrutura corporal e atuar como a unidade funcional responsável pela locomoção biomecânica do animal.",
+            "C": "Exercer unicamente o papel de barreira mecânica rígida para blindagem.",
+            "D": "Atuar estritamente na hematopoiese medular e no armazenamento de íons cálcio.",
+            "E": "Coordenar a sinalização hormonal de feedback e o controle do balanço anabólico."
+          },
+          "correta": "B",
+          "explicacao": "A locomoção biomecânica e o suporte mecânico dependem da sinergia do sistema osteomuscular (ossos e músculos).",
+          "pagina": "página 227 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A evolução filogenética moldou o aparelho digestório das diferentes espécies domésticas. De acordo com as noções de fisiologia comparada da página 227, como se dividem as três grandes classes alimentares?",
+          "opcoes": {
+            "A": "Carnívoros de alta digestibilidade, onívoros de fluxo contínuo e frugívoros.",
+            "B": "Herbívoros, onívoros e carnívoros.",
+            "C": "Ruminantes pré-gástricos, monogástricos químicos simples e poligástricos.",
+            "D": "Pastadores em lotação contínua, navegadores ramoneadores e filtradores.",
+            "E": "Granívoros avícolas, insetívoros silvestres e piscívoros."
+          },
+          "correta": "B",
+          "explicacao": "As três grandes categorias alimentares morfo-fisiológicas de vertebrados domésticos compreendem herbívoros, onívoros e carnívoros.",
+          "pagina": "página 227 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A concentração calórica e a digestibilidade bromatológica do ingrediente ingerido determinam a taxa de consumo. Conforme a dinâmica anatômica descrita na página 227, qual é a adaptação estrutural observada em espécies que consomem dietas de baixa densidade energética?",
+          "opcoes": {
+            "A": "Essas espécies manifestam órgãos digestivos de dimensões reduzidas.",
+            "B": "Essas espécies apresentam órgãos volumosos, necessários para processar e extrair nutrientes de grandes quantidades de alimento.",
+            "C": "Essas espécies desenvolvem estômagos químicos simples desprovidos de compartimentos.",
+            "D": "Essas espécies dependem do fornecimento de rações concentradas para sobrevivência.",
+            "E": "Essas espécies perdem a classificação tecidual do trato digestivo e absorvem umidade por via cutânea."
+          },
+          "correta": "B",
+          "explicacao": "Animais adaptados a alimentos volumosos fibrosos de menor densidade energética necessitam de um sistema digestivo de grande volume para processamento da digestão.",
+          "pagina": "página 227 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Os ruminantes destacam-se pela capacidade de converter carboidratos estruturais insolúveis. Conforme o texto da página 227, qual modificação anatômica confere a esses animais a capacidade de digerir as fibras vegetais com extrema eficiência?",
+          "opcoes": {
+            "A": "A posse de um estômago simples glandular (monogástrico).",
+            "B": "A posse de um estômago compartimentado, o que lhes permite aproveitar a fibra que ingerem com maior eficiência.",
+            "C": "O encurtamento drástico do lúmen intestinal, permitindo eliminação precoce.",
+            "D": "A ausência total de cavidade estomacal glandular.",
+            "E": "O desenvolvimento de dois estômagos lineares simples isolados."
+          },
+          "correta": "B",
+          "explicacao": "O estômago composto (poligástrico) provê câmaras exclusivas para a simbiose de degradação anaeróbica microbiana de celulose.",
+          "pagina": "página 227 do PDF do SENAR"
+        }
+      ],
+      "TEMA_9": [
+        {
+          "pergunta": "O planejamento econômico de sistemas pecuários intensivos exige um controle rigoroso dos fatores que impactam a rentabilidade do agrossistema. Conforme as informações apresentadas na página 233, qual é a relação direta entre a alimentação, o manejo e as matrizes de custos de produção?",
+          "opcoes": {
+            "A": "A alimentação e o manejo representam os menores centros de custos na planilha.",
+            "B": "A alimentação e o manejo são as bases da produção de carne, leite, ovos e lã, pois são eles que compreendem os maiores custos.",
+            "C": "A alimentação atua como uma variável de custo irrelevante.",
+            "D": "Alimentação e manejo representam custos fixos imutáveis que não interferem.",
+            "E": "A alimentação constitui um gargalo financeiro restrito à avicultura."
+          },
+          "correta": "B",
+          "explicacao": "A nutrição e alimentação compõem a maior fatia operacional na composição de custos do agrossistema pecuário intensivo.",
+          "pagina": "página 233 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Embora comumente tratados como sinônimos, os eixos de alimentação e nutrição representam etapas distintas na cadeia zootécnica. De acordo com as definições expressas na página 233, o que diferencia esses dois termos?",
+          "opcoes": {
+            "A": "Alimentação define os processos enzimáticos de degradação; enquanto nutrição restringe-se ao ato mecânico.",
+            "B": "A alimentação é o conjunto de práticas relacionadas à ingestão de alimentos; a nutrição se refere aos processos pelos quais um organismo vivo digere e assimila os nutrientes contidos nos alimentos.",
+            "C": "Alimentação consiste unicamente no cálculo de rações; ao passo que nutrição é o ato de apreensão bucal.",
+            "D": "Constituem sinônimos fisiológicos intercambiáveis, podendo ser empregados indistintamente.",
+            "E": "Alimentação define os processos de absorção intestinal; enquanto nutrição constitui a eliminação de fezes."
+          },
+          "correta": "B",
+          "explicacao": "Alimentação é o ato externo e voluntário de fornecimento de matéria alimentar. Nutrição é o conjunto de processos fisiológicos internos de assimilação.",
+          "pagina": "página 233 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A captação e o aproveitamento metabólico dos compostos químicos dos alimentos dão suporte à manutenção da homeostase. Conforme o texto da página 233, por meio da nutrição os seres vivos conseguem realizar quais processos vitais?",
+          "opcoes": {
+            "A": "Executar de forma exclusiva os eixos de reprodução hormonal e locomoção.",
+            "B": "Crescer, manter as funções do organismo e reparar tecidos corporais.",
+            "C": "Ativar os mecanismos de termogênese física para produção de calor.",
+            "D": "Realizar exclusivamente a filtragem e eliminação de resíduos metabólicos.",
+            "E": "Garantir a síntese de hormônios foliares e enzimas."
+          },
+          "correta": "B",
+          "explicacao": "Nutrientes servem para mantença energética basal, reposição e crescimento tecidual e homeostase de sistemas.",
+          "pagina": "página 233 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O sucesso técnico do manejo nutricional exige do produtor rural uma visão holística que contorne as variações sazonais. Conforme as diretrizes estratégicas da página 233, quais aspectos devem ser prioritariamente conhecidos?",
+          "opcoes": {
+            "A": "Aferir unicamente o custo imediato de aquisição do saco de ração comercial.",
+            "B": "A compreensão do comportamento alimentar dos animais; o planejamento alimentar; e a opção por dietas de custo mínimo.",
+            "C": "Mapear de forma exclusiva e isolada as variáveis de idade cronológica.",
+            "D": "Avaliar apenas a homogeneidade racial do lote contemporâneo nos piquetes.",
+            "E": "Monitorar as oscilações climáticas sazonais de temperatura."
+          },
+          "correta": "B",
+          "explicacao": "Unir o conhecimento de comportamento com planos de estoques hídricos/forragem e formulação de menor custo dita o sucesso do manejo alimentar.",
+          "pagina": "página 233 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A bromatologia adota convenções internacionais para organizar as matérias-primas agropecuárias. Conforme a página 234, quais são as duas principais entidades norte-americanas que estabelecem essa classificação de referência?",
+          "opcoes": {
+            "A": "A Food and Drug Administration (FDA) e o United States Department of Agriculture (USDA).",
+            "B": "A Associação Americana Oficial de Controle de Alimentos (AAFCO) e o Conselho Nacional de Pesquisas dos EUA (NRC).",
+            "C": "A Organização Mundial da Saúde (OMS) e a Organização das Nações Unidas (FAO).",
+            "D": "A Associação Brasileira de Proteína Animal (ABPA) e o Sindicato da Indústria (SINDIRAÇÕES).",
+            "E": "A Empresa Brasileira de Pesquisa Agropecuária (EMBRAPA) e o Ministério da Agricultura (MAPA)."
+          },
+          "correta": "B",
+          "explicacao": "As duas principais entidades globais científicas norte-americanas de catalogação e classificação de alimentos para animais são a AAFCO e o NRC.",
+          "pagina": "página 234 do PDF do SENAR"
+        }
+      ],
+      "TEMA_10": [
+        {
+          "pergunta": "O aproveitamento de pastagens tropicais consolida-se como a base bioeconômica da pecuária de ruminantes no território nacional. Conforme o texto de introdução da página 247, qual é a principal característica diferencial que torna esse sistema uma opção técnica vantajosa?",
+          "opcoes": {
+            "A": "É o sistema que permite maior margem de flexibilidade na idealização e no planejamento dos sistemas de produção animal.",
+            "B": "Caracteriza-se por registrar os menores índices de produtividade volumétrica líquida, compensando unicamente pelo apelo de sustentabilidade.",
+            "C": "Constitui um regime de exploração zootécnica exclusivo para bovinos de corte, sendo biologicamente inaplicável às demais espécies de ruminantes.",
+            "D": "Representa um modelo autônomo que dispensa por completo a obrigatoriedade do fornecimento de suplementação mineral no cocho.",
+            "E": "Configura-se como o modelo de maior custo imediato por quilo de carcaça e de maior complexidade operacional mecânica disponível."
+          },
+          "correta": "A",
+          "explicacao": "A exploração animal sob pastagens tropicais propicia ao produtor alta maleabilidade na customização e adaptação das metas conforme fomento de capital.",
+          "pagina": "página 247 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O vocabulário técnico da forragicultura atribui significados precisos às frações vegetais. Conforme as definições expressas na página 248, qual é o significado do termo 'forragem'?",
+          "opcoes": {
+            "A": "Toda e qualquer espécie de planta cultivada e colhida por via mecânica para silagem de grãos.",
+            "B": "Partes comestíveis das plantas, exceto os grãos, que podem servir à alimentação dos animais.",
+            "C": "Linhagens botânicas de gramíneas de metabolismo C4 tropical.",
+            "D": "Estruturas foliares pertencentes estritamente à família das leguminosas.",
+            "E": "Qualquer espécie vegetal infestante ou invasora que se propaga em pastagens degradadas."
+          },
+          "correta": "B",
+          "explicacao": "Entende-se por forragem todas as partes verdes e fibrosas ingeríveis por herbívoros (colmos, folhas, bainhas), excetuando-se os grãos e sementes concentrados.",
+          "pagina": "página 248 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A organização do espaço físico e o método de colheita biológica diferenciam os conceitos. Conforme as definições técnicas da página 248, o que caracteriza o conceito de 'pastagem'?",
+          "opcoes": {
+            "A": "Área de terra arável destinada ao cultivo exclusivo de grãos e cereais.",
+            "B": "Área de forragem para ser colhida principalmente a pastejo.",
+            "C": "Qualquer fragmento ou cobertura de vegetação verde existente no perímetro.",
+            "D": "Área correspondente à reserva legal da fazenda, voltada à preservação.",
+            "E": "Sistema de confinamento permanente ou semiconfinamento animal."
+          },
+          "correta": "B",
+          "explicacao": "A pastagem constitui a unidade ecológica de campo onde o alimento forrageiro está pronto para a colheita direta via apreensão do bocado animal.",
+          "pagina": "página 248 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Os métodos modernos de manejo intensificado dependem da divisão física da área forrageira. Conforme as especificações da página 248, qual é a definição correta de 'piquete'?",
+          "opcoes": {
+            "A": "Área de pastejo correspondente a uma subdivisão de uma unidade de manejo de pastejo, fechada e separada de outras áreas por cerca.",
+            "B": "Qualquer extensão territorial aberta e desprovida de divisões físicas utilizada para pastejo contínuo.",
+            "C": "Área de terra arável destinada ao cultivo de volumosos.",
+            "D": "Estrutura central cimentada onde se localiza a sala de ordenha mecânica.",
+            "E": "Instalação mecânica de contenção de animais dotada de troncos e balanças eletrônicas."
+          },
+          "correta": "A",
+          "explicacao": "O piquete é a subdivisão física cercada destinada a receber o lote sob taxas rotacionadas instantâneas elevadas de pastejo e descanso.",
+          "pagina": "página 248 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O equilíbrio entre a taxa de acúmulo de capim e a taxa de lotação evita processos de degradação. Conforme os preceitos zootécnicos abordados na página 248, como se conceitua a 'capacidade de suporte'?",
+          "opcoes": {
+            "A": "O número máximo absoluto de animais que o pecuarista consegue alojar.",
+            "B": "A máxima taxa de lotação que proporciona um determinado nível de desempenho animal.",
+            "C": "A pesagem bruta de matéria seca total de forragem acumulada ao longo do ano.",
+            "D": "O intervalo cronológico necessário para o completo rebrotamento pós-corte.",
+            "E": "A extensão territorial mínima necessária em hectares para sustentar uma unidade animal."
+          },
+          "correta": "B",
+          "explicacao": "A capacidade de suporte quantifica a carga animal teto que o pasto tolera sem sofrer sobrepastejo e mantendo as metas de ganho animal.",
+          "pagina": "página 248 do PDF do SENAR"
+        }
+      ],
+      "TEMA_11": [
+        {
+          "pergunta": "A sustentabilidade e a eficiência bioeconômica das cadeias pecuárias modernas apoiam-se na seleção direcionada de caracteres de interesse econômico. Conforme as diretrizes introduzidas na página 256, qual é o objetivo central do melhoramento genético nos sistemas de produção animal?",
+          "opcoes": {
+            "A": "Incrementar de forma indiscriminada o volume populacional bruto de cabeças alojadas na propriedade, independentemente do padrão qualitativo.",
+            "B": "Melhorar o índice produtivo do rebanho por meio de animais considerados superiores.",
+            "C": "Reduzir as planilhas de custos fixos operacionais por meio da eliminação total da necessidade de aplicação de manejos sanitários e profilaxia.",
+            "D": "Padronizar de forma rígida todos os indivíduos pertencentes a uma mesma linhagem, anulando a influência de características edafoclimáticas locais.",
+            "E": "Promover a substituição integral do manejo nutricional do rebanho pela fixação de alelos dominantes de alta conversão alimentar."
+          },
+          "correta": "B",
+          "explicacao": "O melhoramento visa focar e aumentar a frequência gênica de alelos de interesse zootécnico econômico, melhorando a produtividade líquida global do plantel.",
+          "pagina": "página 256 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O progresso genético acumulado por geração exige uma abordagem que alinhe o potencial biológico com as limitações. Conforme o material técnico da página 256, qual é a característica fundamental que define o planejamento?",
+          "opcoes": {
+            "A": "Deve obedecer a um protocolo padronizado único e linear, aplicável a qualquer propriedade.",
+            "B": "É individual e particular de cada propriedade e deve ser baseado em uma correta avaliação dos animais e das características locais.",
+            "C": "Sua viabilidade biológica depende do emprego compulsório da inseminação artificial.",
+            "D": "É modelado única e exclusivamente pelas flutuações e exigências do mercado.",
+            "E": "Baseia-se na importação de material genético germoplasma de nações temperadas."
+          },
+          "correta": "B",
+          "explicacao": "Por lidar com a interação genótipo-ambiente, os programas de seleção devem ser desenhados sob medida para as realidades edafoclimáticas de cada fazenda.",
+          "pagina": "página 256 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O entendimento dos mecanismos de herança biológica baliza o acasalamento corretivo. Conforme os preceitos clássicos detalhados na página 257, o que define conceitualmente o termo 'Genótipo'?",
+          "opcoes": {
+            "A": "A manifestação física temporária de caracteres mensuráveis do animal.",
+            "B": "É o patrimônio genético de determinado indivíduo.",
+            "C": "O conjunto de características estéticas e anatômicas observáveis a olho nu.",
+            "D": "A resposta dinâmica linear decorrente do estresse hídrico.",
+            "E": "O teto máximo de eficiência e conversão alimentar."
+          },
+          "correta": "B",
+          "explicacao": "O genótipo é a dotação de genes fixa herdada parentalmente presente no DNA celular que estabelece as capacidades latentes do animal.",
+          "pagina": "página 257 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A avaliação morfológica e a mensuração de peso operam diretamente sobre o desempenho real exposto pelos indivíduos. Conforme a definição estabelecida na página 257, o que constitui corretamente o conceito de 'Fenótipo'?",
+          "opcoes": {
+            "A": "A dotação molecular total e o arranjo de alelos recessivos.",
+            "B": "O mapeamento de nucleotídeos e o sequenciamento contido no DNA.",
+            "C": "É a manifestação do genótipo, com a influência dos fatores de ambiente que envolvem o indivíduo, tais como a nutrição, o manejo, a sanidade e as condições climáticas.",
+            "D": "A variação isolada observada na pigmentação da cobertura pilosa.",
+            "E": "O limiar de produtividade líquida que independe das variáveis estacionais."
+          },
+          "correta": "C",
+          "explicacao": "Fenótipo é a manifestação física visível e mensurável no animal, gerada pela interação direta de sua dotação genética com o meio de criação.",
+          "pagina": "página 257 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A taxonomia zootécnica agrupa populações domésticas com base na fixação de caracteres morfológicos. Conforme as especificações conceituais da página 257, qual é a definição de 'Raça'?",
+          "opcoes": {
+            "A": "O agrupamento temporário de indivíduos pertencentes a espécies distintas.",
+            "B": "Conjunto de indivíduos de uma espécie, com características semelhantes e definidas, transmitidas hereditariamente, e que os tornam diferentes de outros conjuntos de indivíduos da mesma espécie.",
+            "C": "Qualquer lote contemporâneo de animais manejado sob o mesmo retiro ou propriedade.",
+            "D": "O grupo populacional de animais que partilha do mesmo nicho ecológico.",
+            "E": "A progênie que exibe as mesmas curvas de crescimento ponderal."
+          },
+          "correta": "B",
+          "explicacao": "Raça congrega o grupo de animais co-específicos que herdaram de forma estável traços funcionais e fenotípicos comuns fixados geneticamente.",
+          "pagina": "página 257 do PDF do SENAR"
+        }
+      ],
+      "TEMA_12": [
+        {
+          "pergunta": "A avicultura de corte nacional expandiu seu volume de produção de forma acelerada, impulsionada por melhorias na eficiência zootécnica e pela competitividade de custos no varejo. Conforme os dados históricos expressos na página 277, qual foi a evolução do consumo per capita anual de carne de frango no Brasil entre o ano de 1973 e os dias atuais?",
+          "opcoes": {
+            "A": "Evoluiu de um patamar basal de 2 kg para a marca de 10 kg por habitante/ano.",
+            "B": "Passou de um patamar de cerca de 4 kg por habitante por ano para mais de 25 kg por habitante por ano atualmente.",
+            "C": "Apresentou um crescimento linear tímido, deslocando-se de 8 kg para atingir 15 kg por habitante/ano.",
+            "D": "Partiu de marcas marginais de 1 kg para estabilizar-se no teto fixo de 30 kg por habitante/ano.",
+            "E": "Registrou uma oscilação estacional ascendente, progredindo de 10 kg para 20 kg por habitante/ano."
+          },
+          "correta": "B",
+          "explicacao": "O consumo doméstico anual individual saltou de 4 kg em 1973 para marcas acima de 25 kg atualmente, amparado pela popularização da proteína avícola.",
+          "pagina": "página 277 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A organização econômica e a governança contratual das granjas avícolas de corte estruturam-se em modelos. Conforme as especificações descritas na página 277, quais são as três modalidades de sistemas de produção de frango praticadas?",
+          "opcoes": {
+            "A": "Sistema extensivo tradicional, sistema semi-intensivo caipira e sistema intensivo.",
+            "B": "O sistema de integração, o cooperativo e o independente.",
+            "C": "Sistema de integração verticalizada, sistema horizontalizado livre e sistema misto.",
+            "D": "Sistema confinado sob pressão negativa, sistema semiconfinado e sistema a pasto móvel.",
+            "E": "Sistema de produção orgânica, sistema convencional e sistema familiar."
+          },
+          "correta": "B",
+          "explicacao": "As três grandes categorias de modelagem de governança e transação da cadeia avícola compreendem o integrado, o cooperativo e o independente.",
+          "pagina": "página 277 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O ganho médio diário de peso (GMD) e o índice de eficiência em aviários comerciais resultam da interação de variáveis. Conforme o material técnico detalhado na página 278, quais fatores afetam diretamente o desempenho das aves?",
+          "opcoes": {
+            "A": "Depende de forma exclusiva da formulação centesimal da ração.",
+            "B": "O tipo de pintinho; o tipo de ração; época do ano; manejo, densidade da criação e qualidade da cama; e doenças.",
+            "C": "É regulado estritamente pela dotação genômica inicial e pela idade de abate.",
+            "D": "É determinado unicamente pelas dimensões civis das instalações e automação.",
+            "E": "Depende do cumprimento do calendário vacinal e do programa de luz."
+          },
+          "correta": "B",
+          "explicacao": "Fatores genéticos, nutricionais, ambientais, densidade e sanidade regulam de forma complexa e integrada os escores zootécnicos avícolas.",
+          "pagina": "página 278 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A bioclimatologia de instalações avícolas utiliza o posicionamento geográfico como a primeira linha defensiva passiva. Conforme as regras descritas na página 278, qual deve ser a orientação azimutal correta dos galpões no Brasil?",
+          "opcoes": {
+            "A": "Construção orientada rigidamente no sentido longitudinal norte-sul.",
+            "B": "O aviário deve ser instalado no sentido leste-oeste, para reduzir a incidência de raios solares no interior da instalação.",
+            "C": "Implantação transversal no sentido noroeste-sudeste.",
+            "D": "Construção alinhada no sentido nordeste-sudoeste.",
+            "E": "A disposição geográfica é uma variável biologicamente indiferente."
+          },
+          "correta": "B",
+          "explicacao": "Orientar o maior eixo longitudinal leste-oeste minimiza a incidência solar direta nas laterais do galpão, garantindo melhor conforto e resfriamento passivo.",
+          "pagina": "página 278 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O dimensionamento estrutural de galpões regula a taxa de renovação mecânica de ar. Conforme as métricas oficiais recomendadas na página 279, quais devem ser as medidas de largura, comprimento e pé-direito de um aviário?",
+          "opcoes": {
+            "A": "Largura de 8 e 10 m, comprimento de 50 a 80 m, associados a pé-direito de 2 m.",
+            "B": "A largura do galpão deve ficar entre 12 e 14 m. O comprimento deve ter de 100 a 150 m. O pé direito do galpão deve ser de 3 m.",
+            "C": "Largura de 15 a 20 m, comprimento de 200 a 250 m, com pé-direito de 4 m.",
+            "D": "Largura de 6 a 8 m, comprimento de 80 a 100 m, com pé-direito de 2,5 m.",
+            "E": "Largura de 10 a 12 m, comprimento de 60 a 90 m, com pé-direito de 3,5 m."
+          },
+          "correta": "B",
+          "explicacao": "Larguras de 12-14m, comprimentos de 100-150m e pé-direito de 3m são as dimensões padrão recomendadas para otimizar ventilação e controle térmico.",
+          "pagina": "página 279 do PDF do SENAR"
+        }
+      ],
+      "TEMA_13": [
+        {
+          "pergunta": "A atividade leiteira no Brasil apresenta forte capilaridade e interface com a agricultura de base familiar ao longo do território nacional. Conforme o panorama contextualizado na página 304, qual é o papel social dessa atividade e qual o grande gargalo estrutural enfrentado na atualidade?",
+          "opcoes": {
+            "A": "O leite configura-se como uma commodity de luxo restrita ao abastecimento de nichos de alta renda.",
+            "B": "O leite tem importante papel social, pois garante renda mensal, emprega diversas famílias e contribui para minimizar o êxodo rural. Com mão de obra escassa e em idade avançada, o desafio é manter o negócio do leite em longo prazo.",
+            "C": "A atividade consolidou-se sob a governança exclusiva de megacorporações agroindustriais multinacionais.",
+            "D": "A cadeia produtiva apresenta baixo impacto na retenção de postos de trabalho directos no campo.",
+            "E": "O complexo leiteiro exibe baixa relevância na fixação de famílias na zona rural."
+          },
+          "correta": "B",
+          "explicacao": "A pecuária de leite retém o homem no campo e gera renda mensal regular, mas enfrenta sérios gargalos ligados ao envelhecimento e falta de sucessão geracional familiar.",
+          "pagina": "página 304 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Bovinos em confinamento intensivo na fase de acabamento recebem rações concentradas para atender a qual meta zootécnica?",
+          "opcoes": {
+            "A": "Minimizar a microflora ruminal nativa.",
+            "B": "Prolongar o ciclo do boi na propriedade por mais de um ano.",
+            "C": "Acelerar ganho de peso diário e promover a correta deposição de gordura na carcaça.",
+            "D": "Estreitar a atividade de mastigação contínua de fibras.",
+            "E": "Aumentar a textura óssea do traseiro."
+          },
+          "correta": "C",
+          "explicacao": "Dietas ricas em grãos fornecem a energia de alta densidade metabólica exigida para rápido ganho de peso e deposição de gordura na carcaça.",
+          "pagina": "página 305 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Na bovinocultura de leite comercial, qual a duração recomendada de período seco que as vacas devem passar antes do próximo parto planejado?",
+          "opcoes": {
+            "A": "15 dias em lactação.",
+            "B": "60 dias sem ordenha.",
+            "C": "120 dias em isolamento seco.",
+            "D": "Não se deve efeturar secagem das vacas.",
+            "E": "5 dias de repouso."
+          },
+          "correta": "B",
+          "explicacao": "A secagem programada de 60 dias é o período necessário para involução tecidual glandular, profilaxia e restauração física para o novo ciclo de lactação.",
+          "pagina": "página 308 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O estresse térmico em vacas de alta produção leiteira prejudica os índices da atividade. Qual sintoma físico e visível indica que os animais estão sob estresse térmico excessivo?",
+          "opcoes": {
+            "A": "Aumento nítido da taxa respiratória (ofego), busca por sombra e salivação intensa.",
+            "B": "Busca voluntária por deitar-se ao sol.",
+            "C": "Aumento repentino do consumo de rações secas.",
+            "D": "Comportamento de brincadeira agressiva.",
+            "E": "Arrepiamento generalizado de pelos de cobertura."
+          },
+          "correta": "A",
+          "explicacao": "O aumento nítido da taxa de frequência respiratória (ofego de dissipação), salivação e prostração à sombra indicam estresse calórico extremo.",
+          "pagina": "página 311 do PDF do SENAR"
+        },
+        {
+          "pergunta": "Qual sistema moderno de confinamento leiteiro utiliza galpões cobertos com cama de maravalha sob processo controlado de compostagem biológica ativa?",
+          "opcoes": {
+            "A": "Tie Stall com baias estreitas.",
+            "B": "Free Stall com separadores de concreto.",
+            "C": "Compost Barn.",
+            "D": "Piquete aberto rotacionado adubado.",
+            "E": "Gaiolas suspensas aéreas."
+          },
+          "correta": "C",
+          "explicacao": "O Compost Barn abriga os animais sobre uma cama orgânica macia em fermentação ativa que fornece alto bem-estar térmico.",
+          "pagina": "página 315 do PDF do SENAR"
+        }
+      ],
+      "TEMA_14": [
+        {
+          "pergunta": "A modernização dos agrossistemas exige a incorporação de ferramentas que permitam a superação do manejo convencional baseado em médias globais por talhão. Conforme os preceitos teóricos introduzidos na página 339, qual é a definição conceitual correta de Agricultura de Precisão (AP)?",
+          "opcoes": {
+            "A": "É o uso exclusivo de maquinários pesados para semeadura, dispensando o mapeamento.",
+            "B": "Usa recursos mecânicos, eletrônicos e informáticos, como mapeamento dos fatores de produção, ferramentas de suporte à decisão e aplicação localizada de insumos, para fazer o gerenciamento localizado de sistemas agrícolas.",
+            "C": "Consiste na substituição integral de toda a força de trabalho humano por robôs.",
+            "D": "É a tática baseada no emprego de insumos de base orgânica em áreas de preservação.",
+            "E": "É a metodologia que preconiza a aplicação de defensivos em dose única uniforme."
+          },
+          "correta": "B",
+          "explicacao": "A AP é uma filosofia gerencial focada em mapear a variabilidade espacial do talhão e tratá-lo com aplicações georreferenciadas na dose e local certos.",
+          "pagina": "página 339 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A transição do manejo em grande escala para o gerenciamento sítio-específico altera a dinâmica econômica. Conforme o texto explicativo da página 339, quais são os principais benefícios gerados?",
+          "opcoes": {
+            "A": "O incremento linear no volume de insumos aplicados e ampliação do passivo ambiental.",
+            "B": "Priorizar investimentos em áreas com maior potencial efetivo de produção e racionalização/redução do uso de insumos.",
+            "C": "A eliminação total do uso de qualquer classe de defensivos químicos.",
+            "D": "A retração de produtividade líquida em troca de selos ecológicos.",
+            "E": "O aumento descontrolado dos custos operacionais decorrente de tecnologia."
+          },
+          "correta": "B",
+          "explicacao": "Melhorar a alocação de recursos em subzonas de real potencial maximiza o retorno do capital investido (economia) e reduz contaminações de solo (ecologia).",
+          "pagina": "página 339 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O mapeamento de dados espaciais e a georreferenciação das propriedades demandam a estruturação de um ecossistema. Conforme a listagem apresentada na página 340, quais são os equipamentos utilizados?",
+          "opcoes": {
+            "A": "Tratores cabinados, colhedoras de fluxo axial e plantadeiras.",
+            "B": "Apenas computadores de mesa dedicados e softwares básicos de gestão.",
+            "C": "GPS, drones, sondas e sensores remotos.",
+            "D": "Exclusivamente sistemas motorizados de irrigação localizada por microaspersão.",
+            "E": "Apenas balanças rodoviárias estáticas e medidores de umidade de grãos."
+          },
+          "correta": "C",
+          "explicacao": "Hardwares como antenas de satélite (GPS), imagens de drones, sensores ativos e sondas eletromagnéticas dão o suporte de captação de dados espaciais.",
+          "pagina": "página 340 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A Agricultura de Precisão conceitua-se como um sistema gerencial que assume a variabilidade em todos os seus eixos. Conforme as especificações da página 340, qual é o objetivo central desse sistema?",
+          "opcoes": {
+            "A": "Uniformizar de forma forçada toda a lavoura por meio de terraplenagem mecânica pesada.",
+            "B": "Solucionar problemas de uniformidade das lavouras e tirar proveito dessas variações, que podem gerar um ganho de produtividade com o menor custo possível.",
+            "C": "Aplicar de forma linear a mesma dosagem de corretivos em toda a área.",
+            "D": "Substituir em definitivo as análises químicas laboratoriais pelo monitoramento óptico.",
+            "E": "Reduzir os investimentos e as metas de rendimento em subáreas de baixo potencial."
+          },
+          "correta": "B",
+          "explicacao": "Entendendo que o talhão não é homogêneo, a AP visa atuar sob medida em subzonas corrigindo desvios específicos para elevar o teto médio produtivo.",
+          "pagina": "página 340 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O desenvolvimento de mapas de recomendação de fertilidade apoia-se em coletas que mapeiam as coordenadas geográficas. Conforme a abordagem simples detalhada na página 340, como se processa essa etapa?",
+          "opcoes": {
+            "A": "Proceder à coleta rápida de amostras de solo de forma aleatória na porteira.",
+            "B": "Retiradas amostras de solo de forma sistemática. Após as análises, são gerados mapas de aplicação. O processo todo leva menos de 20 dias.",
+            "C": "Realizar o mapeamento e amostragem de nutrientes exclusivamente via sensoriamento.",
+            "D": "Executar a coleta direcionada de solo de forma bianual após a colheita total.",
+            "E": "Proceder à amostragem em malhas georreferenciadas apenas em anos de quebra severa."
+          },
+          "correta": "B",
+          "explicacao": "Dividir o lote em grades georreferenciadas para análise química e posterior interpolação geoestatística de mapas de aplicação é um ciclo rápido (menos de 20 dias).",
+          "pagina": "página 340 do PDF do SENAR"
+        }
+      ],
+      "TEMA_15": [
+        {
+          "pergunta": "O estabelecimento de limites cartográficos precisos atende a exigências legais e constitui o arcabouço de localização. Conforme as especificações descritas na página 343, qual é a definição conceitual de 'Georreferenciamento'?",
+          "opcoes": {
+            "A": "A avaliação química macroscópica da fertilidade do horizonte edáfico.",
+            "B": "É o mapeamento de um imóvel rural que referencia os vértices de seu perímetro ao Sistema Geodésico Brasileiro com o uso de dados de satélites.",
+            "C": "O processo físico de demarcação e coleta de amostras de solo em grades.",
+            "D": "A execução prática da aplicação de insumos químicos na lavoura por meio de GPS.",
+            "E": "O monitoramento cinemático do trator."
+          },
+          "correta": "B",
+          "explicacao": "O georreferenciamento é a medição perimetral física oficial que integra os marcos geodésicos da propriedade ao sistema oficial nacional de coordenadas geográficas.",
+          "pagina": "página 343 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O tratamento de dados espaciais exige uma engrenagem computacional especializada para tomada de decisão. Conforme os preceitos abordados na página 343, o que define o conceito de 'Geoprocessamento'?",
+          "opcoes": {
+            "A": "O emprego exclusivo de drones para captação de imagens ortofotomosaicos.",
+            "B": "É o conjunto de tecnologias de coleta, tratamento, manipulação e apresentação de informações espaciais, tendo como principal ferramenta o Sistema de Informações Geográficas (SIG).",
+            "C": "A operação localizada de distribuição de corretivos acoplada a atuadores hidráulicos.",
+            "D": "A modelagem e tratamento de dados gerados por sensores de fluxo.",
+            "E": "A confecção manual de croquis e mapas analógicos de produtividade de campo."
+          },
+          "correta": "B",
+          "explicacao": "Geoprocessamento constitui o conjunto de softwares (SIG/GIS) e metodologias computacionais que permitem armazenar, cruzar e plotar camadas geográficas de dados.",
+          "pagina": "página 343 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O mapeamento do solo capta variações na resistência e na facilidade de condução de correntes. Conforme as especificações descritas na página 347, qual é a maior aplicação da Condutividade Elétrica Aparente (CEa) na agricultura?",
+          "opcoes": {
+            "A": "Determinar de forma exclusiva o balanço de evapotranspiração potencial.",
+            "B": "Mapeamento de inúmeras propriedades do solo, como salinidade, conteúdo de argila e de água – informações que auxiliam a amostragem de solo e a definição de zonas de manejo.",
+            "C": "Identificar e catalogar de forma visual a presença de vetores fitossanitários fúngicos.",
+            "D": "Calcular via equações matemáticas a dose líquida de fertilizantes nitrogenados.",
+            "E": "Monitorar de forma passiva as oscilações microclimáticas de umidade relativa."
+          },
+          "correta": "B",
+          "explicacao": "A leitura continuada de CEa identifica manchas texturais, umidade e salinidade do solo, facilitando agrupar o lote em zonas de manejo semelhantes.",
+          "pagina": "página 347 do PDF do SENAR"
+        },
+        {
+          "pergunta": "O avanço da eletrônica em campo esbarra em formatos proprietários fechados que travam a comunicação. Conforme as discussões na página 351, qual protocolo representa a unificação dessa comunicação?",
+          "opcoes": {
+            "A": "O receptor de posicionamento cinemático RTK.",
+            "B": "O padrão de comunicação aberta Isobus.",
+            "C": "Algoritmos neurais integrados para telemetria sem fio.",
+            "D": "As plataformas de internet de dados móveis.",
+            "E": "Os microchips sensores de leitura por radiofrequência."
+          },
+          "correta": "B",
+          "explicacao": "O protocolo padronizado Isobus (norma ISO 11783) dita a compatibilização eletrônica plug-and-play entre implementos e tratores.",
+          "pagina": "página 351 do PDF do SENAR"
+        },
+        {
+          "pergunta": "A consolidação da Agricultura de Precisão (AP) ampara-se no cumprimento de metas de sustentabilidade econômica e ecológica. Conforme os preceitos de síntese expressos na página 352, quais são os objetivos centrais?",
+          "opcoes": {
+            "A": "Expandir horizontalmente a extensão territorial de área cultivada.",
+            "B": "Obter maior retorno econômico e causar menor impacto ao meio ambiente.",
+            "C": "Banir de forma definitiva a utilização de qualquer classe de defensivo.",
+            "D": "Substituir a totalidade dos operadores por frotas robóticas.",
+            "E": "Padronizar de forma rígida o volume físico colhido no território nacional."
+          },
+          "correta": "B",
+          "explicacao": "A essência da AP reside em calibrar a aplicação de recursos para que a fazenda aumente seus lucros operacionais agredindo minimamente o meio ambiente.",
+          "pagina": "página 352 do PDF do SENAR"
+        }
+      ]
     };
 
     const TEMAS_INFO = {
-      "TEMA_1": "🌾 T1 - Agronegócio", "TEMA_2": "🌱 T2 - Sistemas Sustentáveis", "TEMA_3": "🌿 T3 - Botânica", "TEMA_4": "🧪 T4 - Nutrição do Solo", "TEMA_5": "💧 T5 - Irrigação", "TEMA_6": "🌽 T6 - Culturas", "TEMA_7": "🐄 T7 - Produção Animal", "TEMA_8": "🔬 T8 - Anatomia Animal", "TEMA_9": "🍽️ T9 - Nutrição Animal", "TEMA_10": "🌾 T10 - Forragicultura", "TEMA_11": "🧬 T11 - Melhoramento", "TEMA_12": "🐔 T12 - Monogástricos", "TEMA_13": "🐮 T13 - Ruminantes", "TEMA_14": "📡 T14 - Agricultura de Precisão", "TEMA_15": "🎁 T15 - Bônus"
+      "TEMA_1": { nome: "🌾 T1 - Contextualização do Agronegócio", categoria: "Agro" },
+      "TEMA_2": { nome: "🌱 T2 - Sistemas de Produção Sustentável", categoria: "Veg." },
+      "TEMA_3": { nome: "🌿 T3 - Fundamentos de Botânica", categoria: "Veg." },
+      "TEMA_4": { nome: "🧪 T4 - Nutrição Mineral & Solo", categoria: "Cult." },
+      "TEMA_5": { nome: "💧 T5 - Irrigação e Drenagem", categoria: "Água" },
+      "TEMA_6": { nome: "🌽 T6 - Principais Culturas", categoria: "Cult." },
+      "TEMA_7": { nome: "🐄 T7 - Produção Animal no Agro", categoria: "Anim." },
+      "TEMA_8": { nome: "🔬 T8 - Anatomia & Fisiologia Animal", categoria: "Anim." },
+      "TEMA_9": { nome: "🍽️ T9 - Alimentação & Nutrição Animal", categoria: "Anim." },
+      "TEMA_10": { nome: "🌾 T10 - Forragicultura e Pastagens", categoria: "Anim." },
+      "TEMA_11": { nome: "🧬 T11 - Melhoramento Genético Animal", categoria: "Gen." },
+      "TEMA_12": { nome: "🐔 T12 - Produção de Monogástricos", categoria: "Tech" },
+      "TEMA_13": { nome: "🐮 T13 - Produção de Ruminantes", categoria: "Tech" },
+      "TEMA_14": { nome: "📡 T14 - Agricultura de Precisão", categoria: "Tech" },
+      "TEMA_15": { nome: "🎁 T15 - Simulado Bônus", categoria: "Bônus" }
     };
-    const CATEGORIA = { "TEMA_1":"Agro","TEMA_2":"Veg","TEMA_3":"Veg","TEMA_4":"Cult","TEMA_5":"Água","TEMA_6":"Cult","TEMA_7":"Anim","TEMA_8":"Anim","TEMA_9":"Anim","TEMA_10":"Anim","TEMA_11":"Gen","TEMA_12":"Tech","TEMA_13":"Tech","TEMA_14":"Tech","TEMA_15":"Bônus" };
-    const ordemTemas = ["TEMA_1","TEMA_2","TEMA_3","TEMA_4","TEMA_5","TEMA_6","TEMA_7","TEMA_8","TEMA_9","TEMA_10","TEMA_11","TEMA_12","TEMA_13","TEMA_14","TEMA_15"];
 
-    // Estado do usuário
-    let user = {
-      xp: 0, streak: 1, lastActive: "",
-      totalHits: 0, totalQuestions: 0,
-      completed: [], scores: {}, mistakes: []
+    // Estado da Aplicação persistido no localStorage
+    let userState = {
+      xp: 0,
+      level: 1,
+      streak: 1,
+      lastActive: "",
+      totalHits: 0,
+      totalQuestions: 0,
+      completedThemes: [],
+      scores: {},
+      mistakes: [] // Máximo de 10 registros
     };
 
+    // Iniciar dados do SDK do Telegram
     let tg = window.Telegram?.WebApp;
-    if(tg) { tg.ready(); tg.expand(); }
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
 
-    // Carregar/salvar
-    function load() { let s = localStorage.getItem("krona_v2"); if(s) { try { user = JSON.parse(s); } catch(e){} } }
-    function save() { localStorage.setItem("krona_v2", JSON.stringify(user)); }
-
-    // Inicialização
+    // Inicialização da página
     window.addEventListener('DOMContentLoaded', () => {
-      load();
-      let nome = "Estudante";
-      if(tg?.initDataUnsafe?.user) nome = tg.initDataUnsafe.user.first_name;
-      document.getElementById("user-name").innerText = nome.toUpperCase();
-      document.getElementById("user-avatar").innerText = nome.charAt(0).toUpperCase();
+      loadState();
+      initTelegramUser();
       checkStreak();
-      renderDashboard();
-      renderTemas();
+      updateDashboardUI();
+      renderThemes();
       switchScreen('dashboard');
     });
 
-    function showToast(msg, type='') { let t = document.getElementById('toast'); t.innerText = msg; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'), 2000); }
-
-    function checkStreak() {
-      let hoje = new Date().toISOString().slice(0,10);
-      if(user.lastActive !== hoje) {
-        if(user.lastActive) user.streak = 1;
-        user.lastActive = hoje;
-        save();
+    function initTelegramUser() {
+      const nameElem = document.getElementById('user-name');
+      const avatarElem = document.getElementById('user-avatar');
+      
+      let firstName = "Estudante";
+      
+      if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        firstName = tg.initDataUnsafe.user.first_name;
       }
+      
+      nameElem.innerText = firstName.toUpperCase();
+      avatarElem.innerText = firstName.charAt(0).toUpperCase();
     }
 
-    function renderDashboard() {
-      document.getElementById("stat-streak").innerText = user.streak;
-      document.getElementById("stat-hits").innerText = user.totalHits;
-      document.getElementById("stat-total").innerText = user.totalQuestions;
-      document.getElementById("info-xp").innerText = user.xp;
-      let rate = user.totalQuestions ? Math.round(user.totalHits/user.totalQuestions*100) : 0;
-      document.getElementById("stat-rate").innerText = rate+"%";
-      let level = Math.floor(user.xp/1000)+1;
-      let titulo = level>=8?"Mestre Supremo":level>=6?"Produtor Consultor":level>=4?"Técnico Master":level>=2?"Assistente de Campo":"Estudante Novato";
-      document.getElementById("user-level").innerHTML = `Nível ${level} • ${titulo}`;
-      let xpProx = level*1000;
-      let xpAnt = (level-1)*1000;
-      let percent = Math.min(100, Math.max(0, (user.xp-xpAnt)/(xpProx-xpAnt)*100));
-      document.getElementById("xp-bar").style.width = percent+"%";
-      document.getElementById("info-xp-needed").innerText = `Próximo nível: ${xpProx} XP`;
-      let concluidos = user.completed.length;
-      document.getElementById("progress-txt").innerText = concluidos+"/15";
-      document.getElementById("progress-bar").style.width = (concluidos/15*100)+"%";
-      let melhor = Math.max(0, ...Object.values(user.scores));
-      document.getElementById("stat-best").innerText = melhor.toFixed(1)+"/10";
-      // gráfico
-      const cats = { "Agro":0, "Veg":0, "Água":0, "Cult":0, "Anim":0, "Gen":0, "Tech":0, "Bônus":0 };
-      for(let t of ordemTemas) {
-        if(user.scores[t]) {
-          let cat = CATEGORIA[t];
-          cats[cat] += user.scores[t];
+    function loadState() {
+      const local = localStorage.getItem('krona_analytics_state');
+      if (local) {
+        try {
+          userState = JSON.parse(local);
+        } catch (e) {
+          console.error("Falha ao ler dados de progresso locais.");
         }
       }
-      document.getElementById("bar-agro").style.height = cats.Agro+"%";
-      document.getElementById("bar-veg").style.height = cats.Veg+"%";
-      document.getElementById("bar-agua").style.height = cats["Água"]+"%";
-      document.getElementById("bar-cult").style.height = cats.Cult+"%";
-      document.getElementById("bar-anim").style.height = cats.Anim+"%";
-      document.getElementById("bar-gen").style.height = cats.Gen+"%";
-      document.getElementById("bar-tech").style.height = cats.Tech+"%";
-      document.getElementById("bar-bonus").style.height = cats.Bônus+"%";
     }
 
-    function renderTemas() {
-      let container = document.getElementById("lista-temas");
-      container.innerHTML = "";
-      let concluidos = 0;
-      for(let t of ordemTemas) {
-        let feito = user.completed.includes(t);
-        if(feito) concluidos++;
-        let nota = user.scores[t] ? user.scores[t] : 0;
-        let btn = `<button onclick="startQuiz('${t}')" class="text-xs bg-gold hover:bg-yellow-600 text-darkbg font-bold px-3 py-1.5 rounded-xl">${feito ? 'Refazer' : 'Iniciar'}</button>`;
-        let badge = feito ? `<span class="text-[11px] text-gold bg-gold/10 px-2 py-1 rounded">${nota}/10</span>` : '';
-        container.innerHTML += `<div class="flex justify-between items-center py-2 border-b border-white/10"><div><p class="text-xs font-semibold">${TEMAS_INFO[t]}</p><span class="text-[10px] text-textgray">1 Questão</span></div><div class="flex gap-2 items-center">${badge}${btn}</div></div>`;
-      }
-      document.getElementById("mod-status").innerText = `${concluidos}/15 concluídos`;
+    function saveState() {
+      localStorage.setItem('krona_analytics_state', JSON.stringify(userState));
     }
 
-    // Navegação
-    function switchScreen(s) {
-      if(activeQuiz && !confirm("Sair do simulado? Progresso será perdido.")) return;
-      activeQuiz = null;
-      document.getElementById("screen-dashboard").classList.add("hidden");
-      document.getElementById("screen-simulados").classList.add("hidden");
-      document.getElementById("screen-erros").classList.add("hidden");
-      document.getElementById("screen-ranking").classList.add("hidden");
-      document.getElementById("screen-quiz").classList.add("hidden");
-      document.getElementById(`screen-${s}`).classList.remove("hidden");
-      let btns = ["dashboard","simulados","erros","ranking"];
-      btns.forEach(b => { let el = document.getElementById(`nav-${b}`); if(el) { el.classList.remove("text-gold"); el.classList.add("text-textgray"); } });
-      let active = document.getElementById(`nav-${s}`);
-      if(active) { active.classList.remove("text-textgray"); active.classList.add("text-gold"); }
-      if(s==="erros") renderMistakes();
-      if(s==="ranking") renderRanking();
-      if(s==="dashboard") renderDashboard();
-    }
-
-    // Quiz
-    let activeQuiz = null;
-    function startQuiz(tema) {
-      let q = QUESTIONS[tema];
-      if(!q) { showToast("Erro: questão não encontrada"); return; }
-      activeQuiz = {
-        tema: tema,
-        pergunta: q.pergunta,
-        opcoes: q.opcoes,
-        correta: q.correta,
-        explicacao: q.explicacao,
-        pagina: q.pagina,
-        respondido: false,
-        acertou: false
-      };
-      document.getElementById("quiz-theme").innerText = TEMAS_INFO[tema];
-      document.getElementById("quiz-counter").innerText = "Questão 1 de 1";
-      document.getElementById("quiz-question").innerText = q.pergunta;
-      let container = document.getElementById("quiz-options");
-      container.innerHTML = "";
-      for(let letra of ["A","B","C","D","E"]) {
-        let btn = document.createElement("button");
-        btn.className = "w-full text-left bg-cardbg hover:bg-slate-800 border border-white/10 p-3 rounded-xl text-xs flex gap-3 items-center";
-        btn.innerHTML = `<span class="w-6 h-6 rounded-full bg-darkbg border border-gold/30 text-gold flex items-center justify-center font-bold text-xs">${letra}</span><span>${q.opcoes[letra]}</span>`;
-        btn.onclick = () => selectOption(letra);
-        container.appendChild(btn);
-      }
-      document.getElementById("quiz-feedback").classList.add("hidden");
-      document.getElementById("quiz-progress").style.width = "0%";
-      switchScreen("quiz");
-    }
-
-    function selectOption(letra) {
-      if(activeQuiz.respondido) return;
-      activeQuiz.respondido = true;
-      let isCorreta = (letra === activeQuiz.correta);
-      if(isCorreta) {
-        activeQuiz.acertou = true;
-        showToast("✅ Acertou! +100 XP", "correct");
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `px-4 py-3 rounded-2xl shadow-xl text-xs font-semibold tracking-wide transition-all duration-300 transform translate-y-3 opacity-0 flex items-center gap-2 mb-2 w-max max-w-[340px] border`;
+      
+      if (type === 'success') {
+        toast.className += ' bg-correct text-white border-green-700/50';
+      } else if (type === 'error') {
+        toast.className += ' bg-wrong text-white border-red-700/50';
       } else {
-        showToast("❌ Errou!", "wrong");
-        user.mistakes.push({
-          tema: TEMAS_INFO[activeQuiz.tema],
-          pergunta: activeQuiz.pergunta,
-          suaResposta: `${letra}) ${activeQuiz.opcoes[letra]}`,
-          correta: `${activeQuiz.correta}) ${activeQuiz.opcoes[activeQuiz.correta]}`,
-          explicacao: activeQuiz.explicacao,
-          data: new Date().toLocaleDateString()
-        });
-        if(user.mistakes.length>10) user.mistakes.shift();
-        save();
+        toast.className += ' bg-cardbg text-gold border-gold/30';
       }
-      // Desabilitar todos os botões
-      let btns = document.querySelectorAll("#quiz-options button");
-      btns.forEach(b => b.disabled = true);
-      // Destacar correta/errada
-      btns.forEach(b => {
-        let txt = b.innerText[0];
-        if(txt === activeQuiz.correta) b.classList.add("border-correct", "bg-correct/10");
-        if(txt === letra && !isCorreta) b.classList.add("border-wrong", "bg-wrong/10");
+      
+      toast.innerHTML = `<span>${message}</span>`;
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.classList.remove('translate-y-3', 'opacity-0');
+      }, 50);
+      
+      setTimeout(() => {
+        toast.classList.add('translate-y-3', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function checkStreak() {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const lastActive = userState.lastActive;
+      
+      if (!lastActive) {
+        userState.streak = 1;
+      } else if (lastActive !== todayStr) {
+        const lastDate = new Date(lastActive);
+        const todayDate = new Date(todayStr);
+        const diffTime = Math.abs(todayDate - lastDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === 1) {
+          userState.streak += 1;
+          showToast(`Sua sequência diária aumentou! 🔥 Sequência atual: ${userState.streak} dias.`, 'success');
+        } else if (diffDays > 1) {
+          userState.streak = 1;
+        }
+      }
+      userState.lastActive = todayStr;
+      saveState();
+    }
+
+    function switchScreen(screenId) {
+      if (activeQuizState) {
+        if (!confirm("Tem certeza que deseja sair do simulado atual? Seu progresso nesta rodada será desconsiderado.")) {
+          return;
+        }
+        activeQuizState = null;
+      }
+
+      const screens = ['dashboard', 'simulados', 'erros', 'ranking', 'quiz'];
+      screens.forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        if (el) el.classList.add('hidden');
       });
-      let feedback = activeQuiz.explicacao + (activeQuiz.pagina ? `\n\n📖 Consulte a ${activeQuiz.pagina} do material.` : "");
-      document.getElementById("fb-status").innerHTML = isCorreta ? "✅ Resposta correta!" : "❌ Resposta incorreta!";
-      document.getElementById("fb-text").innerHTML = feedback;
-      document.getElementById("quiz-feedback").classList.remove("hidden");
-      document.getElementById("quiz-progress").style.width = "100%";
+      
+      document.getElementById(`screen-${screenId}`).classList.remove('hidden');
+
+      const navButtons = ['dashboard', 'simulados', 'erros', 'ranking'];
+      navButtons.forEach(b => {
+        const btn = document.getElementById(`nav-${b}`);
+        if (btn) {
+          btn.classList.remove('text-gold');
+          btn.classList.add('text-textgray');
+        }
+      });
+      
+      const activeBtn = document.getElementById(`nav-${screenId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-textgray');
+        activeBtn.classList.add('text-gold');
+      }
+
+      if (screenId === 'dashboard') {
+        updateDashboardUI();
+      } else if (screenId === 'erros') {
+        renderMistakes();
+      } else if (screenId === 'ranking') {
+        renderRanking();
+      }
+    }
+
+    // Renderização simplificada com Módulo Único Dinâmico e "5 Questões" descritivo
+    function renderThemes() {
+      const themesList = ["TEMA_1", "TEMA_2", "TEMA_3", "TEMA_4", "TEMA_5", "TEMA_6", "TEMA_7", "TEMA_8", "TEMA_9", "TEMA_10", "TEMA_11", "TEMA_12", "TEMA_13", "TEMA_14", "TEMA_15"];
+
+      const renderUnit = (themeId) => {
+        const el = document.getElementById(`theme-${themeId}`);
+        if (!el) return;
+        
+        const isCompleted = userState.completedThemes.includes(themeId);
+        const score = userState.scores[themeId] !== undefined ? userState.scores[themeId] : null;
+        
+        el.innerHTML = `
+          <div class="flex-1 pr-3">
+            <p class="text-xs font-semibold text-white leading-snug">${TEMAS_INFO[themeId].nome}</p>
+            <span class="text-[10px] text-textgray">5 Questões</span>
+          </div>
+          <div class="flex items-center gap-2">
+            ${isCompleted ? `<span class="text-[11px] text-gold font-bold bg-gold/10 px-2 py-1 rounded border border-gold/20">${score}/10</span>` : ''}
+            <button onclick="startQuiz('${themeId}')" class="text-xs bg-gold hover:bg-yellow-600 text-darkbg font-bold px-3 py-1.5 rounded-xl transition">
+              ${isCompleted ? 'Refazer' : 'Iniciar'}
+            </button>
+          </div>
+        `;
+      };
+
+      themesList.forEach(renderUnit);
+      
+      const completedCount = themesList.filter(t => userState.completedThemes.includes(t)).length;
+      const mod1Status = document.getElementById('mod-1-status');
+      if (mod1Status) {
+        mod1Status.innerText = `${completedCount} de 15 concluídos`;
+      }
+    }
+
+    function updateDashboardUI() {
+      document.getElementById('stat-streak').innerText = userState.streak;
+      document.getElementById('stat-hits').innerText = userState.totalHits;
+      document.getElementById('stat-total').innerText = userState.totalQuestions;
+      document.getElementById('info-xp').innerText = userState.xp;
+
+      const rate = userState.totalQuestions > 0 ? Math.round((userState.totalHits / userState.totalQuestions) * 100) : 0;
+      document.getElementById('stat-rate').innerText = `${rate}%`;
+
+      const level = Math.floor(userState.xp / 1000) + 1;
+      userState.level = level;
+      document.getElementById('user-level-label').innerText = `Nível ${level} • ${getRankTitle(level)}`;
+      
+      const xpNeeded = level * 1000;
+      const prevXp = (level - 1) * 1000;
+      const progressPercent = Math.min(Math.max(((userState.xp - prevXp) / (xpNeeded - prevXp)) * 100, 0), 100);
+      
+      document.getElementById('info-xp-needed').innerText = `Próximo Nível: ${xpNeeded} XP`;
+      document.getElementById('xp-progress-bar').style.width = `${progressPercent}%`;
+
+      const completedCount = userState.completedThemes.length;
+      document.getElementById('general-progress-txt').innerText = `${completedCount} / 15 Temas`;
+      const generalPercent = Math.round((completedCount / 15) * 100);
+      document.getElementById('general-progress-bar').style.width = `${generalPercent}%`;
+
+      let maxScore = 0;
+      Object.values(userState.scores).forEach(s => {
+        if (s > maxScore) maxScore = s;
+      });
+      document.getElementById('stat-best').innerText = `${maxScore.toFixed(1)}/10`;
+
+      updateChartUI();
+    }
+
+    function getRankTitle(level) {
+      if (level >= 8) return "Mestre Supremo";
+      if (level >= 6) return "Produtor Consultor";
+      if (level >= 4) return "Técnico Master";
+      if (level >= 2) return "Assistente de Campo";
+      return "Estudante Novato";
+    }
+
+    function updateChartUI() {
+      const CATEGORIES = ["Agro", "Veg.", "Água", "Cult.", "Anim.", "Gen.", "Tech", "Bônus"];
+      
+      const mapping = {
+        "Agro": ["TEMA_1"],
+        "Veg.": ["TEMA_2", "TEMA_3"],
+        "Cult.": ["TEMA_4", "TEMA_6"],
+        "Água": ["TEMA_5"],
+        "Anim.": ["TEMA_7", "TEMA_8", "TEMA_9", "TEMA_10"],
+        "Gen.": ["TEMA_11"],
+        "Tech": ["TEMA_12", "TEMA_13", "TEMA_14"],
+        "Bônus": ["TEMA_15"]
+      };
+
+      const ids = {
+        "Agro": "bar-agro",
+        "Veg.": "bar-veg",
+        "Água": "bar-agua",
+        "Cult.": "bar-cult",
+        "Anim.": "bar-anim",
+        "Gen.": "bar-gen",
+        "Tech": "bar-tech",
+        "Bônus": "bar-bonus"
+      };
+
+      CATEGORIES.forEach(cat => {
+        const themes = mapping[cat];
+        let scoreSum = 0;
+        let count = 0;
+        
+        themes.forEach(t => {
+          if (userState.scores[t] !== undefined) {
+            scoreSum += userState.scores[t];
+            count++;
+          }
+        });
+
+        const percent = count > 0 ? Math.round((scoreSum / (count * 10)) * 100) : 0;
+        const barEl = document.getElementById(ids[cat]);
+        if (barEl) {
+          barEl.style.height = `${percent}%`;
+        }
+      });
+    }
+
+    // ================= LÓGICA DO SIMULADO (QUIZ) =================
+    let activeQuizState = null;
+
+    // Inicialização do Quiz filtrando apenas para 1 questão aleatória por tema (exibe "Questão 1 de 1")
+    function startQuiz(themeId) {
+      const list = QUESTIONS_DB[themeId];
+      if (!list || list.length === 0) {
+        showToast("Não encontramos questões cadastradas para este tema.", "error");
+        return;
+      }
+      
+      showToast("Carregando simulado do tema...", "info");
+      
+      // Seleciona uma pergunta aleatória das 5 disponíveis para manter dinâmico ao refazer
+      const randomIndex = Math.floor(Math.random() * list.length);
+      const selectedQuestion = list[randomIndex];
+      
+      activeQuizState = {
+        themeId: themeId,
+        questions: [JSON.parse(JSON.stringify(selectedQuestion))], // Executa apenas a questão selecionada
+        currentIndex: 0,
+        hits: 0,
+        answered: false
+      };
+
+      document.getElementById('quiz-theme-tag').innerText = TEMAS_INFO[themeId].nome;
+      switchScreen('quiz');
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const qState = activeQuizState;
+      const question = qState.questions[qState.currentIndex];
+      
+      qState.answered = false;
+      document.getElementById('quiz-question-number').innerText = `Questão ${qState.currentIndex + 1} de ${qState.questions.length}`;
+      document.getElementById('quiz-question-text').innerText = question.pergunta;
+      
+      const container = document.getElementById('quiz-options-container');
+      container.innerHTML = '';
+      document.getElementById('quiz-feedback-box').classList.add('hidden');
+
+      const keys = ["A", "B", "C", "D", "E"];
+      keys.forEach(key => {
+        const text = question.opcoes[key];
+        const btn = document.createElement('button');
+        btn.id = `opt-${key}`;
+        btn.onclick = () => selectOption(key);
+        btn.className = "w-full text-left bg-cardbg hover:bg-slate-800 border border-white/5 p-4 rounded-xl text-xs flex items-center gap-3 transition focus:outline-none";
+        btn.innerHTML = `
+          <span class="w-6 h-6 rounded-full bg-darkbg border border-gold/30 text-gold flex items-center justify-center font-bold text-xs shrink-0">${key}</span>
+          <span class="leading-relaxed">${text}</span>
+        `;
+        container.appendChild(btn);
+      });
+
+      const progVal = ((qState.currentIndex) / qState.questions.length) * 100;
+      document.getElementById('quiz-progress-bar').style.width = `${100 - progVal}%`;
+    }
+
+    function selectOption(keySelected) {
+      const qState = activeQuizState;
+      if (qState.answered) return;
+      qState.answered = true;
+
+      const question = qState.questions[qState.currentIndex];
+      const correctKey = question.correta;
+      const isCorrect = keySelected === correctKey;
+
+      if (isCorrect) {
+        qState.hits++;
+        showToast("Você acertou! 🌟 +100 XP", "success");
+        document.getElementById(`opt-${keySelected}`).classList.add('border-correct', 'bg-correct/10');
+        document.getElementById(`opt-${keySelected}`).querySelector('span').classList.add('bg-correct', 'text-white', 'border-correct');
+        
+        document.getElementById('quiz-feedback-status').innerText = "Resposta Correta! 🌟";
+        document.getElementById('quiz-feedback-status').className = "font-extrabold text-sm uppercase text-correct";
+      } else {
+        showToast("Ops! Resposta incorreta.", "error");
+        document.getElementById(`opt-${keySelected}`).classList.add('border-wrong', 'bg-wrong/10');
+        document.getElementById(`opt-${keySelected}`).querySelector('span').classList.add('bg-wrong', 'text-white', 'border-wrong');
+        
+        document.getElementById(`opt-${correctKey}`).classList.add('border-correct', 'bg-correct/10');
+        
+        document.getElementById('quiz-feedback-status').innerText = "A alternativa correta era: " + correctKey;
+        document.getElementById('quiz-feedback-status').className = "font-extrabold text-sm uppercase text-wrong";
+
+        userState.mistakes.push({
+          theme: TEMAS_INFO[qState.themeId].nome,
+          question: question.pergunta,
+          yourAnswer: keySelected + ") " + question.opcoes[keySelected],
+          correctAnswer: correctKey + ") " + question.opcoes[correctKey],
+          explanation: question.explicacao,
+          date: new Date().toLocaleDateString('pt-BR')
+        });
+
+        if (userState.mistakes.length > 10) {
+          userState.mistakes.shift();
+        }
+      }
+
+      const keys = ["A", "B", "C", "D", "E"];
+      keys.forEach(k => {
+        document.getElementById(`opt-${k}`).disabled = true;
+      });
+
+      // Renderização do feedback explicativo com o mapeamento dinâmico da página do PDF correspondente
+      let feedbackText = question.explicacao;
+      if (question.pagina) {
+        feedbackText += `\n\n📖 Consulte a ${question.pagina} do material didático.`;
+      }
+      document.getElementById('quiz-explanation-text').innerText = feedbackText;
+      document.getElementById('quiz-feedback-box').classList.remove('hidden');
+
+      if (qState.currentIndex === qState.questions.length - 1) {
+        document.getElementById('quiz-next-btn').innerText = "Finalizar Simulado";
+      } else {
+        document.getElementById('quiz-next-btn').innerText = "Avançar";
+      }
     }
 
     function nextQuestion() {
-      if(!activeQuiz) return;
-      let tema = activeQuiz.tema;
-      let ganhouXP = activeQuiz.acertou ? 100 : 0;
-      let acertou = activeQuiz.acertou ? 1 : 0;
-      user.xp += ganhouXP;
-      user.totalHits += acertou;
-      user.totalQuestions += 1;
-      if(!user.completed.includes(tema)) user.completed.push(tema);
-      let nota = acertou * 10; // pois só 1 questão
-      if(!user.scores[tema] || nota > user.scores[tema]) user.scores[tema] = nota;
-      save();
-      activeQuiz = null;
-      renderDashboard();
-      renderTemas();
-      switchScreen("simulados");
-      showToast(`Simulado finalizado! Nota: ${nota}/10. XP ganho: ${ganhouXP}`);
+      const qState = activeQuizState;
+      if (qState.currentIndex < qState.questions.length - 1) {
+        qState.currentIndex++;
+        renderQuestion();
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function finishQuiz() {
+      const qState = activeQuizState;
+      const themeId = qState.themeId;
+      
+      const score = (qState.hits / qState.questions.length) * 10;
+      const earnedXp = qState.hits * 100;
+
+      userState.xp += earnedXp;
+      userState.totalHits += qState.hits;
+      userState.totalQuestions += qState.questions.length;
+
+      if (!userState.completedThemes.includes(themeId)) {
+        userState.completedThemes.push(themeId);
+      }
+
+      if (userState.scores[themeId] === undefined || score > userState.scores[themeId]) {
+        userState.scores[themeId] = score;
+      }
+
+      saveState();
+      activeQuizState = null;
+
+      alert(`🎉 Simulado Concluído!\n\nNota: ${score.toFixed(1)}/10.0\nPontos Obtidos: +${earnedXp} XP`);
+      
+      renderThemes();
+      switchScreen('dashboard');
     }
 
     function exitQuiz() {
-      if(confirm("Sair do simulado? Seu progresso será perdido.")) { activeQuiz = null; switchScreen("simulados"); }
+      if (confirm("Seu progresso atual neste simulado será perdido. Deseja sair?")) {
+        activeQuizState = null;
+        switchScreen('simulados');
+      }
     }
 
+    // ================= CADERNO DE ERROS =================
     function renderMistakes() {
-      let container = document.getElementById("mistakes-list");
-      if(user.mistakes.length===0) { container.innerHTML = '<div class="text-center p-8">🎉 Nenhum erro registrado.</div>'; return; }
-      container.innerHTML = "";
-      [...user.mistakes].reverse().forEach(m => {
-        container.innerHTML += `<div class="bg-cardbg p-3 rounded-xl space-y-2"><div class="flex justify-between border-b pb-1"><span class="text-gold text-xs font-bold">${m.tema}</span><span class="text-[9px] text-textgray">${m.data}</span></div><p class="text-xs">${m.pergunta}</p><div class="bg-darkbg/50 p-2 rounded text-[11px]"><p class="text-wrong">Sua: ${m.suaResposta}</p><p class="text-correct">Correta: ${m.correta}</p></div><p class="text-[10px] italic">${m.explicacao}</p></div>`;
+      const container = document.getElementById('mistakes-list');
+      container.innerHTML = '';
+
+      if (userState.mistakes.length === 0) {
+        container.innerHTML = `
+          <div class="bg-cardbg p-8 rounded-2xl border border-white/5 text-center space-y-2">
+            <span class="text-3xl">🎉</span>
+            <h4 class="font-bold text-sm text-white">Sem Erros Registrados</h4>
+            <p class="text-xs text-textgray leading-relaxed max-w-[280px] mx-auto">Parabéns! Seus erros em simulados serão documentados aqui para que você possa revisá-los.</p>
+          </div>
+        `;
+        return;
+      }
+
+      [...userState.mistakes].reverse().forEach(item => {
+        const div = document.createElement('div');
+        div.className = "bg-cardbg p-4 rounded-2xl border border-white/5 space-y-3";
+        div.innerHTML = `
+          <div class="flex items-center justify-between border-b border-white/5 pb-2">
+            <span class="text-[10px] text-gold font-bold uppercase tracking-wider">${item.theme}</span>
+            <span class="text-[9px] text-textgray">${item.date}</span>
+          </div>
+          <p class="text-xs text-white leading-relaxed font-medium">${item.question}</p>
+          <div class="bg-darkbg/50 p-2.5 rounded-xl space-y-1 text-[11px] border border-white/5">
+            <p class="text-wrong"><span class="font-bold text-wrong">Sua resposta:</span> ${item.yourAnswer}</p>
+            <p class="text-correct"><span class="font-bold text-correct">Gabarito:</span> ${item.correctAnswer}</p>
+          </div>
+          <p class="text-[10px] text-textgray leading-normal italic bg-darkbg/20 p-2 rounded-lg border border-gold/10">
+            <span class="font-bold text-gold not-italic">Explicação:</span> ${item.explanation}
+          </p>
+        `;
+        container.appendChild(div);
       });
     }
 
-    function clearMistakes() { if(confirm("Limpar todos os erros?")) { user.mistakes = []; save(); renderMistakes(); showToast("Caderno limpo!"); } }
+    function clearMistakes() {
+      if (confirm("Tem certeza que deseja limpar todo o seu caderno de erros?")) {
+        userState.mistakes = [];
+        saveState();
+        renderMistakes();
+        showToast("Caderno de erros redefinido com sucesso.", "success");
+      }
+    }
 
+    // ================= SISTEMA DE RANKING =================
     function renderRanking() {
-      let container = document.getElementById("ranking-list");
-      let nomeUser = document.getElementById("user-name").innerText;
-      let players = [
-        { nome: "Pedro Santos", xp: 4800, nivel: 5, isUser: false },
-        { nome: "Camila Ribeiro", xp: 3200, nivel: 4, isUser: false },
-        { nome: "Thiago Silva", xp: 1500, nivel: 2, isUser: false },
-        { nome: "Aline Costa", xp: 800, nivel: 1, isUser: false },
-        { nome: nomeUser, xp: user.xp, nivel: Math.floor(user.xp/1000)+1, isUser: true }
+      const listContainer = document.getElementById('ranking-list');
+      listContainer.innerHTML = '';
+
+      const competitors = [
+        { name: "Pedro Santos (SENAR)", xp: 4800, level: 5, isUser: false },
+        { name: "Camila Ribeiro", xp: 3200, level: 4, isUser: false },
+        { name: "Thiago Silva", xp: 1500, level: 2, isUser: false },
+        { name: "Aline Costa", xp: 800, level: 1, isUser: false }
       ];
-      players.sort((a,b)=>b.xp-a.xp);
-      container.innerHTML = "";
-      players.forEach((p,i) => {
-        let medal = i===0?"🥇":i===1?"🥈":i===2?"🥉":`${i+1}`;
-        container.innerHTML += `<div class="flex justify-between items-center p-2 ${p.isUser?'bg-gold/10 border border-gold/30 rounded-lg my-1':''}"><div class="flex gap-3"><span class="text-gold w-6 text-center font-bold">${medal}</span><div><p class="text-xs font-bold ${p.isUser?'text-gold':'text-white'}">${p.nome}</p><span class="text-[9px] text-textgray">Nível ${p.nivel}</span></div></div><span class="text-xs font-bold">${p.xp} XP</span></div>`;
+
+      let currentUserName = "VOCÊ";
+      if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        currentUserName = tg.initDataUnsafe.user.first_name.toUpperCase();
+      }
+
+      competitors.push({
+        name: currentUserName,
+        xp: userState.xp,
+        level: userState.level,
+        isUser: true
+      });
+
+      competitors.sort((a, b) => b.xp - a.xp);
+
+      competitors.forEach((c, idx) => {
+        const item = document.createElement('div');
+        item.className = `flex items-center justify-between p-3.5 transition-all ${c.isUser ? 'bg-gold/10 border border-gold/30 rounded-xl my-1' : ''}`;
+        
+        let rankBadge = `${idx + 1}`;
+        if (idx === 0) rankBadge = "🥇";
+        else if (idx === 1) rankBadge = "🥈";
+        else if (idx === 2) rankBadge = "🥉";
+
+        item.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="w-6 text-center font-bold text-sm text-gold">${rankBadge}</span>
+            <div>
+              <p class="text-xs font-bold leading-none ${c.isUser ? 'text-gold' : 'text-white'}">${c.name}</p>
+              <span class="text-[9px] text-textgray">Nível ${c.level}</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-extrabold text-white">${c.xp} XP</span>
+          </div>
+        `;
+        listContainer.appendChild(item);
       });
     }
   </script>
