@@ -7,370 +7,358 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'sans-serif'] },
-          colors: {
-            darkbg: '#060A13', cardbg: '#101B2E', gold: '#D4A84B',
-            correct: '#4E9F3D', wrong: '#E05D5D', textgray: '#8F9CAE'
-          }
-        }
-      }
-    }
-  </script>
   <style>
+    * { user-select: none; -webkit-tap-highlight-color: transparent; }
     ::-webkit-scrollbar { display: none; }
-    body { -webkit-tap-highlight-color: transparent; user-select: none; }
   </style>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { darkbg: '#060A13', cardbg: '#101B2E', gold: '#D4A84B', correct: '#4E9F3D', wrong: '#E05D5D', textgray: '#8F9CAE' } } } }
+  </script>
 </head>
 <body class="bg-darkbg text-white font-sans min-h-screen flex flex-col">
 
-  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 pointer-events-none w-full px-4"></div>
+  <!-- Toast -->
+  <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2 rounded-xl bg-cardbg text-gold text-sm"></div>
 
   <main class="w-full max-w-[480px] mx-auto flex-1 flex flex-col px-4 pt-4 pb-28 overflow-y-auto">
 
-    <!-- DASHBOARD -->
+    <!-- DASHBOARD (Painel) -->
     <section id="screen-dashboard" class="space-y-5">
-      <div class="flex items-center justify-between bg-cardbg p-4 rounded-2xl border border-white/5">
-        <div class="flex items-center gap-3">
+      <!-- Perfil -->
+      <div class="bg-cardbg p-4 rounded-2xl flex justify-between items-center">
+        <div class="flex gap-3 items-center">
           <div id="user-avatar" class="w-12 h-12 rounded-full bg-gradient-to-tr from-gold to-yellow-600 flex items-center justify-center font-bold text-darkbg text-lg">?</div>
-          <div><h2 id="user-name" class="font-bold text-base">Carregando...</h2><p id="user-level-label" class="text-xs text-gold">Nível 1 • Aprendiz</p></div>
+          <div><h2 id="user-name" class="font-bold">Carregando...</h2><p id="user-level" class="text-xs text-gold">Nível 1 • Aprendiz</p></div>
         </div>
-        <div class="bg-darkbg px-3 py-1.5 rounded-xl border border-gold/20 flex items-center gap-1.5"><span class="text-xs text-textgray">FOGO 🔥</span><span id="stat-streak" class="text-sm font-bold text-gold">1</span></div>
+        <div class="bg-darkbg px-3 py-1 rounded-xl flex gap-1"><span class="text-xs text-textgray">🔥</span><span id="stat-streak" class="text-gold font-bold">1</span></div>
       </div>
-
-      <div class="bg-cardbg p-4 rounded-2xl border border-white/5 space-y-2">
-        <div class="flex justify-between text-xs"><span class="text-textgray">XP Total: <span id="info-xp" class="text-white">0</span></span><span class="text-gold" id="info-xp-needed">Próximo Nível: 1000 XP</span></div>
-        <div class="w-full h-2.5 bg-darkbg rounded-full overflow-hidden"><div id="xp-progress-bar" class="h-full bg-gradient-to-r from-gold to-yellow-600 rounded-full" style="width:0%"></div></div>
+      <!-- XP -->
+      <div class="bg-cardbg p-4 rounded-2xl space-y-2">
+        <div class="flex justify-between text-xs"><span>XP Total: <span id="info-xp" class="text-white">0</span></span><span id="info-xp-needed" class="text-gold">Próximo nível: 1000 XP</span></div>
+        <div class="h-2 bg-darkbg rounded-full overflow-hidden"><div id="xp-bar" class="h-full bg-gold w-0"></div></div>
       </div>
-
-      <div class="bg-cardbg p-4 rounded-2xl border border-white/5 space-y-3">
-        <div class="flex justify-between items-center"><span class="text-xs font-bold text-textgray">Progresso Geral</span><span id="general-progress-txt" class="text-sm font-extrabold text-gold">0 / 15 Temas</span></div>
-        <div class="w-full h-3 bg-darkbg rounded-full overflow-hidden"><div id="general-progress-bar" class="h-full bg-gold rounded-full" style="width:0%"></div></div>
+      <!-- Progresso Geral -->
+      <div class="bg-cardbg p-4 rounded-2xl space-y-2">
+        <div class="flex justify-between"><span class="text-xs font-bold">Progresso Geral</span><span id="progress-txt" class="text-gold font-bold">0/15</span></div>
+        <div class="h-2 bg-darkbg rounded-full"><div id="progress-bar" class="h-full bg-gold w-0"></div></div>
       </div>
-
-      <div class="bg-cardbg p-4 rounded-2xl border border-white/5 space-y-4">
-        <h3 class="text-xs font-bold text-textgray">Desempenho por Áreas</h3>
-        <div class="grid grid-cols-8 gap-1.5 h-32 items-end pt-2 pb-1 bg-darkbg/50 rounded-xl px-2">
-          <div class="flex flex-col items-center h-full justify-end"><div id="bar-agro" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm" style="height:0%"></div><span class="text-[9px] text-textgray mt-2 -rotate-12">Agro</span></div>
-          <div class="flex flex-col items-center h-full justify-end"><div id="bar-veg" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm" style="height:0%"></div><span class="text-[9px] text-textgray mt-2 -rotate-12">Veg</span></div>
-          <div class="flex flex-col items-center h-full justify-end"><div id="bar-agua" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm" style="height:0%"></div><span class="text-[9px] text-textgray mt-2 -rotate-12">Água</span></div>
-          <div class="flex flex-col items-center h-full justify-end"><div id="bar-cult" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm" style="height:0%"></div><span class="text-[9px] text-textgray mt-2 -rotate-12">Cult</span></div>
-          <div class="flex flex-col items-center h-full justify-end"><div id="bar-anim" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm" style="height:0%"></div><span class="text-[9px] text-textgray mt-2 -rotate-12">Anim</span></div>
-          <div class="flex flex-col items-center h-full justify-end"><div id="bar-gen" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm" style="height:0%"></div><span class="text-[9px] text-textgray mt-2 -rotate-12">Gen</span></div>
-          <div class="flex flex-col items-center h-full justify-end"><div id="bar-tech" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm" style="height:0%"></div><span class="text-[9px] text-textgray mt-2 -rotate-12">Tech</span></div>
-          <div class="flex flex-col items-center h-full justify-end"><div id="bar-bonus" class="w-4 bg-gradient-to-t from-gold/50 to-gold rounded-t-sm" style="height:0%"></div><span class="text-[9px] text-textgray mt-2 -rotate-12">Bônus</span></div>
+      <!-- Gráfico -->
+      <div class="bg-cardbg p-4 rounded-2xl">
+        <h3 class="text-xs font-bold mb-2">Desempenho por Áreas</h3>
+        <div class="grid grid-cols-8 gap-1 h-32 items-end pb-2">
+          <div class="flex flex-col items-center"><div id="bar-agro" class="w-4 bg-gold rounded-t" style="height:0%"></div><span class="text-[9px] mt-1">Agro</span></div>
+          <div class="flex flex-col items-center"><div id="bar-veg" class="w-4 bg-gold rounded-t" style="height:0%"></div><span class="text-[9px] mt-1">Veg</span></div>
+          <div class="flex flex-col items-center"><div id="bar-agua" class="w-4 bg-gold rounded-t" style="height:0%"></div><span class="text-[9px] mt-1">Água</span></div>
+          <div class="flex flex-col items-center"><div id="bar-cult" class="w-4 bg-gold rounded-t" style="height:0%"></div><span class="text-[9px] mt-1">Cult</span></div>
+          <div class="flex flex-col items-center"><div id="bar-anim" class="w-4 bg-gold rounded-t" style="height:0%"></div><span class="text-[9px] mt-1">Anim</span></div>
+          <div class="flex flex-col items-center"><div id="bar-gen" class="w-4 bg-gold rounded-t" style="height:0%"></div><span class="text-[9px] mt-1">Gen</span></div>
+          <div class="flex flex-col items-center"><div id="bar-tech" class="w-4 bg-gold rounded-t" style="height:0%"></div><span class="text-[9px] mt-1">Tech</span></div>
+          <div class="flex flex-col items-center"><div id="bar-bonus" class="w-4 bg-gold rounded-t" style="height:0%"></div><span class="text-[9px] mt-1">Bônus</span></div>
         </div>
       </div>
-
+      <!-- Estatísticas -->
       <div class="grid grid-cols-2 gap-3">
-        <div class="bg-cardbg p-3 rounded-2xl border border-white/5"><span class="text-xs text-textgray">Total Acertos</span><span id="stat-hits" class="text-xl font-bold block mt-1 text-white">0</span></div>
-        <div class="bg-cardbg p-3 rounded-2xl border border-white/5"><span class="text-xs text-textgray">Questões Feitas</span><span id="stat-total" class="text-xl font-bold block mt-1 text-white">0</span></div>
-        <div class="bg-cardbg p-3 rounded-2xl border border-white/5"><span class="text-xs text-textgray">Aproveitamento</span><span id="stat-rate" class="text-xl font-bold block mt-1 text-gold">0%</span></div>
-        <div class="bg-cardbg p-3 rounded-2xl border border-white/5"><span class="text-xs text-textgray">Melhor Nota</span><span id="stat-best" class="text-xl font-bold block mt-1 text-white">0.0/10</span></div>
+        <div class="bg-cardbg p-3 rounded-2xl"><span class="text-xs">Acertos</span><span id="stat-hits" class="text-xl font-bold block">0</span></div>
+        <div class="bg-cardbg p-3 rounded-2xl"><span class="text-xs">Questões</span><span id="stat-total" class="text-xl font-bold block">0</span></div>
+        <div class="bg-cardbg p-3 rounded-2xl"><span class="text-xs">Aproveitamento</span><span id="stat-rate" class="text-xl font-bold block text-gold">0%</span></div>
+        <div class="bg-cardbg p-3 rounded-2xl"><span class="text-xs">Melhor nota</span><span id="stat-best" class="text-xl font-bold block">0.0</span></div>
       </div>
     </section>
 
     <!-- SIMULADOS -->
     <section id="screen-simulados" class="hidden space-y-4">
-      <div class="flex items-center justify-between"><h2 class="text-lg font-bold">Simulados Disponíveis</h2><span class="text-xs bg-gold/10 text-gold px-2.5 py-1 rounded-full border border-gold/30">15 Temas</span></div>
-      <div class="bg-cardbg rounded-2xl border border-white/5 overflow-hidden">
-        <div class="p-4 bg-white/5 border-b border-white/5"><h4 class="font-bold text-sm">Módulo 1 – Técnicas e Sistemas de Produção Agropecuária</h4><p class="text-[11px] text-textgray mt-0.5" id="mod-1-status">0 de 15 concluídos</p></div>
-        <div class="p-4 space-y-3 divide-y divide-white/5" id="theme-list-container">
-          <div id="theme-T1" class="flex items-center justify-between py-2.5"></div><div id="theme-T2" class="flex items-center justify-between py-2.5"></div><div id="theme-T3" class="flex items-center justify-between py-2.5"></div><div id="theme-T4" class="flex items-center justify-between py-2.5"></div><div id="theme-T5" class="flex items-center justify-between py-2.5"></div><div id="theme-T6" class="flex items-center justify-between py-2.5"></div><div id="theme-T7" class="flex items-center justify-between py-2.5"></div><div id="theme-T8" class="flex items-center justify-between py-2.5"></div><div id="theme-T9" class="flex items-center justify-between py-2.5"></div><div id="theme-T10" class="flex items-center justify-between py-2.5"></div><div id="theme-T11" class="flex items-center justify-between py-2.5"></div><div id="theme-T12" class="flex items-center justify-between py-2.5"></div><div id="theme-T13" class="flex items-center justify-between py-2.5"></div><div id="theme-T14" class="flex items-center justify-between py-2.5"></div><div id="theme-T15" class="flex items-center justify-between py-2.5"></div>
-        </div>
+      <div class="flex justify-between"><h2 class="text-lg font-bold">Simulados</h2><span class="text-xs bg-gold/10 text-gold px-2 py-1 rounded-full">15 temas</span></div>
+      <div class="bg-cardbg rounded-2xl">
+        <div class="p-3 bg-white/5 border-b"><h4 class="font-bold">Módulo 1 – Técnicas e Produção Agropecuária</h4><p id="mod-status" class="text-xs text-textgray">0/15 concluídos</p></div>
+        <div class="p-3 space-y-2" id="lista-temas"></div>
       </div>
     </section>
 
     <!-- CADERNO DE ERROS -->
     <section id="screen-erros" class="hidden space-y-4">
-      <div class="flex items-center justify-between"><h2 class="text-lg font-bold">Caderno de Erros</h2><button onclick="clearMistakes()" class="text-xs bg-red-500/10 text-red-400 hover:bg-red-500/20 px-3 py-1.5 rounded-xl border border-red-500/30">Limpar Tudo</button></div>
+      <div class="flex justify-between"><h2 class="text-lg font-bold">Caderno de Erros</h2><button onclick="clearMistakes()" class="text-xs bg-red-500/20 px-3 py-1 rounded-xl">Limpar tudo</button></div>
       <div id="mistakes-list" class="space-y-3"></div>
     </section>
 
     <!-- RANKING -->
     <section id="screen-ranking" class="hidden space-y-4">
-      <div class="flex items-center justify-between"><h2 class="text-lg font-bold">Ranking da Comunidade</h2><span class="text-xs bg-gold/10 text-gold px-3 py-1.5 rounded-full border border-gold/20">Baseado no XP</span></div>
-      <div id="ranking-list" class="bg-cardbg rounded-2xl border border-white/5 p-2 divide-y divide-white/5"></div>
+      <h2 class="text-lg font-bold">Ranking (XP)</h2>
+      <div id="ranking-list" class="bg-cardbg rounded-2xl p-2 divide-y"></div>
     </section>
 
     <!-- QUIZ -->
     <section id="screen-quiz" class="hidden space-y-4">
-      <div class="flex items-center justify-between"><span id="quiz-theme-tag" class="text-xs text-gold font-bold uppercase"></span><button onclick="exitQuiz()" class="text-xs text-textgray hover:text-white bg-white/5 px-2.5 py-1 rounded-lg border border-white/10">Sair</button></div>
-      <div class="space-y-1"><div class="flex justify-between text-xs text-textgray"><span id="quiz-question-number">Questão 1 de 1</span><span>⏱️ Tempo Livre</span></div><div class="w-full h-1.5 bg-cardbg rounded-full overflow-hidden"><div id="quiz-progress-bar" class="h-full bg-gold rounded-full" style="width:100%"></div></div></div>
-      <div class="bg-cardbg p-5 rounded-2xl border border-white/5 shadow-lg"><p id="quiz-question-text" class="text-sm font-medium leading-relaxed">Carregando questão...</p></div>
-      <div id="quiz-options-container" class="space-y-2"></div>
-      <div id="quiz-feedback-box" class="hidden bg-cardbg p-5 rounded-2xl border border-white/5 space-y-2"><h4 id="quiz-feedback-status" class="font-extrabold text-sm uppercase"></h4><p id="quiz-explanation-text" class="text-xs text-textgray leading-relaxed whitespace-pre-wrap"></p><button id="quiz-next-btn" onclick="nextQuestion()" class="w-full mt-2 bg-gold hover:bg-yellow-600 text-darkbg font-bold py-3 rounded-xl text-sm">Avançar</button></div>
+      <div class="flex justify-between"><span id="quiz-theme" class="text-xs text-gold font-bold uppercase"></span><button onclick="exitQuiz()" class="text-xs text-textgray bg-white/5 px-3 py-1 rounded-lg">Sair</button></div>
+      <div class="flex justify-between text-xs"><span id="quiz-counter">Questão 1 de 1</span><span>⏱️</span></div>
+      <div class="h-1.5 bg-cardbg rounded-full"><div id="quiz-progress" class="h-full bg-gold w-full rounded-full"></div></div>
+      <div class="bg-cardbg p-5 rounded-2xl"><p id="quiz-question" class="text-sm">Carregando...</p></div>
+      <div id="quiz-options" class="space-y-2"></div>
+      <div id="quiz-feedback" class="hidden bg-cardbg p-4 rounded-2xl space-y-2"><h4 id="fb-status" class="font-bold text-sm"></h4><p id="fb-text" class="text-xs text-textgray"></p><button onclick="nextQuestion()" class="w-full bg-gold text-darkbg py-2 rounded-xl font-bold">Avançar</button></div>
     </section>
   </main>
 
-  <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-cardbg/95 backdrop-blur-md border-t border-white/5 py-3 px-6 flex justify-between items-center z-40 rounded-t-2xl">
-    <button onclick="switchScreen('dashboard')" id="nav-dashboard" class="flex flex-col items-center gap-1 text-gold"><span class="text-xl">📊</span><span class="text-[10px] font-semibold">Painel</span></button>
-    <button onclick="switchScreen('simulados')" id="nav-simulados" class="flex flex-col items-center gap-1 text-textgray"><span class="text-xl">📚</span><span class="text-[10px] font-semibold">Simulados</span></button>
-    <button onclick="switchScreen('erros')" id="nav-erros" class="flex flex-col items-center gap-1 text-textgray"><span class="text-xl">📓</span><span class="text-[10px] font-semibold">Erros</span></button>
-    <button onclick="switchScreen('ranking')" id="nav-ranking" class="flex flex-col items-center gap-1 text-textgray"><span class="text-xl">🏆</span><span class="text-[10px] font-semibold">Ranking</span></button>
-    <button onclick="location.reload()" class="flex flex-col items-center gap-1 text-textgray hover:text-white"><span class="text-xl">🔄</span><span class="text-[10px] font-semibold">Recarregar</span></button>
+  <!-- NAVEGAÇÃO INFERIOR -->
+  <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-cardbg/90 backdrop-blur border-t py-2 px-6 flex justify-between rounded-t-2xl">
+    <button onclick="switchScreen('dashboard')" id="nav-dashboard" class="flex flex-col items-center text-gold"><span>📊</span><span class="text-[10px]">Painel</span></button>
+    <button onclick="switchScreen('simulados')" id="nav-simulados" class="flex flex-col items-center text-textgray"><span>📚</span><span class="text-[10px]">Simulados</span></button>
+    <button onclick="switchScreen('erros')" id="nav-erros" class="flex flex-col items-center text-textgray"><span>📓</span><span class="text-[10px]">Erros</span></button>
+    <button onclick="switchScreen('ranking')" id="nav-ranking" class="flex flex-col items-center text-textgray"><span>🏆</span><span class="text-[10px]">Ranking</span></button>
+    <button onclick="location.reload()" class="flex flex-col items-center text-textgray"><span>🔄</span><span class="text-[10px]">Recarregar</span></button>
   </nav>
 
   <script>
-    // ================= BANCO DE QUESTÕES (1 pergunta por tema para teste) =================
-    const QUESTIONS_DB = {
-      "TEMA_1": [{ pergunta: "O agronegócio pode ser compreendido como um encadeamento de atividades econômicas. Qual alternativa indica os autores que, em 1957, cunharam pioneiramente esse conceito sob a ótica de um 'sistema integrado'?", opcoes: { A: "Thomas Malthus e David Ricardo.", B: "John Davis e Ray Goldberg.", C: "Karl Marx e Friedrich Engels.", D: "Adam Smith e David Hume.", E: "John Maynard Keynes e Milton Friedman." }, correta: "B", explicacao: "John Davis e Ray Goldberg em 1957.", pagina: "página 29" }],
-      "TEMA_2": [{ pergunta: "Em 1797, Thomas Malthus formulou uma teoria sobre a capacidade de suprimento alimentar. Qual era a premissa dessa tese?", opcoes: { A: "A população cresceria em progressão aritmética.", B: "A produção de alimentos cresceria em progressão geométrica.", C: "A população cresceria em progressão geométrica e a produção em aritmética.", D: "A tecnologia resolveria a fome.", E: "A terra era infinita." }, correta: "C", explicacao: "Malthus previu que a população cresceria em PG e alimentos em PA.", pagina: "página 37" }],
-      "TEMA_3": [{ pergunta: "Qual tecido vegetal transporta seiva elaborada (açúcares)?", opcoes: { A: "Xilema", B: "Floema", C: "Câmbio", D: "Parênquima", E: "Colênquima" }, correta: "B", explicacao: "O floema transporta seiva elaborada.", pagina: "página 70" }],
-      "TEMA_4": [{ pergunta: "Segundo a Lei do Mínimo de Liebig, a produtividade é limitada pelo elemento essencial...", opcoes: { A: "em maior quantidade", B: "em menor proporção", C: "mais caro", D: "mais tóxico", E: "mais solúvel" }, correta: "B", explicacao: "O elemento em menor proporção limita o crescimento.", pagina: "página 94" }],
-      "TEMA_5": [{ pergunta: "Qual método de irrigação é mais eficiente em termos de uso da água?", opcoes: { A: "Inundação", B: "Sulcos", C: "Aspersão convencional", D: "Gotejamento", E: "Pivô central" }, correta: "D", explicacao: "Gotejamento atinge eficiência >90%.", pagina: "página 113" }],
-      "TEMA_6": [{ pergunta: "Qual bactéria é usada na Fixação Biológica de Nitrogênio na soja?", opcoes: { A: "Bradyrhizobium", B: "Rhizobium", C: "Azospirillum", D: "Pseudomonas", E: "Bacillus" }, correta: "A", explicacao: "Bradyrhizobium é o simbionte da soja.", pagina: "página 176" }],
-      "TEMA_7": [{ pergunta: "Qual cadeia pecuária brasileira tem maior índice de automação e integração?", opcoes: { A: "Bovinocultura de corte", B: "Avicultura de corte", C: "Suinocultura", D: "Caprinocultura", E: "Bubalinocultura" }, correta: "B", explicacao: "Avicultura de corte é altamente automatizada.", pagina: "página 209" }],
-      "TEMA_8": [{ pergunta: "Qual compartimento do estômago dos ruminantes é a câmara de fermentação?", opcoes: { A: "Rúmen", B: "Retículo", C: "Omaso", D: "Abomaso", E: "Esofago" }, correta: "A", explicacao: "O rúmen é o principal local de fermentação.", pagina: "página 227" }],
-      "TEMA_9": [{ pergunta: "O que significa a sigla NDT na nutrição animal?", opcoes: { A: "Nutrientes Digestíveis Totais", B: "Nível Digestivo Técnico", C: "Nitrogênio Digestível Total", D: "Nutrição de Desenvolvimento Tardio", E: "Núcleo de Defesa Tecidual" }, correta: "A", explicacao: "NDT = Nutrientes Digestíveis Totais.", pagina: "página 233" }],
-      "TEMA_10": [{ pergunta: "Qual prática de manejo de pasto é caracterizada pela divisão em piquetes com períodos de pastejo e descanso?", opcoes: { A: "Pastejo contínuo", B: "Pastejo rotacionado", C: "Lotação fixa", D: "Diferimento", E: "Queima controlada" }, correta: "B", explicacao: "Pastejo rotacionado alterna pastejo e descanso.", pagina: "página 247" }],
-      "TEMA_11": [{ pergunta: "Qual parâmetro mede a proporção da variância fenotípica devida a efeitos genéticos aditivos?", opcoes: { A: "Herdabilidade", B: "Heterose", C: "Endogamia", D: "Epistasia", E: "Pleiotropia" }, correta: "A", explicacao: "Herdabilidade é a fração genética aditiva da variância.", pagina: "página 256" }],
-      "TEMA_12": [{ pergunta: "Na produção de suínos, qual fase exige maior cuidado térmico e dietas de transição logo após o desmame?", opcoes: { A: "Gestação", B: "Maternidade", C: "Creche", D: "Terminação", E: "Recria" }, correta: "C", explicacao: "A fase de creche é crítica para leitões recém-desmamados.", pagina: "página 277" }],
-      "TEMA_13": [{ pergunta: "Qual o principal objetivo do fornecimento de ração concentrada para bovinos em confinamento?", opcoes: { A: "Reduzir custos", B: "Acelerar ganho de peso e deposição de gordura", C: "Aumentar o período de pastejo", D: "Prevenir doenças", E: "Melhorar a fertilidade" }, correta: "B", explicacao: "Concentrados aceleram o ganho de peso e acabamento da carcaça.", pagina: "página 304" }],
-      "TEMA_14": [{ pergunta: "O que significa a sigla VRT na Agricultura de Precisão?", opcoes: { A: "Variable Rate Technology", B: "Virtual Reality Tracking", C: "Vehicle Rotation Test", D: "Vegetation Response Time", E: "Vertical Row Tillage" }, correta: "A", explicacao: "VRT = Tecnologia de Taxa Variável.", pagina: "página 339" }],
-      "TEMA_15": [{ pergunta: "Qual ferramenta de diagnóstico estratégico analisa Forças, Fraquezas, Oportunidades e Ameaças?", opcoes: { A: "Matriz SWOT", B: "Diagrama de Ishikawa", C: "Ciclo PDCA", D: "5W2H", E: "Brainstorming" }, correta: "A", explicacao: "Matriz SWOT (FOFA) avalia ambiente interno e externo.", pagina: "página 343" }]
+    // ================= BANCO DE QUESTÕES (1 por tema para teste) =================
+    const QUESTIONS = {
+      "TEMA_1": { pergunta: "John Davis e Ray Goldberg, em 1957, cunharam o conceito de?", opcoes: { A: "Subsistência", B: "Agronegócio", C: "Cooperativismo", D: "Monopólio", E: "Exportação" }, correta: "B", explicacao: "Agribusiness", pagina: "pág.29" },
+      "TEMA_2": { pergunta: "Qual prática conserva o solo sem revolvimento?", opcoes: { A: "Plantio direto", B: "Aração profunda", C: "Queimada", D: "Monocultura", E: "Gradagem" }, correta: "A", explicacao: "Sistema Plantio Direto", pagina: "pág.37" },
+      "TEMA_3": { pergunta: "Tecido vegetal que transporta seiva elaborada?", opcoes: { A: "Xilema", B: "Floema", C: "Câmbio", D: "Parênquima", E: "Colênquima" }, correta: "B", explicacao: "Floema", pagina: "pág.70" },
+      "TEMA_4": { pergunta: "Lei do Mínimo de Liebig: a produtividade é limitada pelo nutriente...", opcoes: { A: "mais abundante", B: "em menor quantidade", C: "mais caro", D: "orgânico", E: "sintético" }, correta: "B", explicacao: "Menor proporção", pagina: "pág.94" },
+      "TEMA_5": { pergunta: "Irrigação mais eficiente em uso de água?", opcoes: { A: "Inundação", B: "Gotejamento", C: "Aspersão", D: "Pivô", E: "Sulcos" }, correta: "B", explicacao: "Gotejamento >90% eficiência", pagina: "pág.113" },
+      "TEMA_6": { pergunta: "Bactéria usada na fixação de nitrogênio na soja?", opcoes: { A: "Bradyrhizobium", B: "Rhizobium", C: "Azospirillum", D: "Pseudomonas", E: "Bacillus" }, correta: "A", explicacao: "Bradyrhizobium", pagina: "pág.176" },
+      "TEMA_7": { pergunta: "Setor pecuário com maior automação e integração?", opcoes: { A: "Bovinos corte", B: "Avicultura", C: "Suinocultura", D: "Caprinos", E: "Bubalinos" }, correta: "B", explicacao: "Avicultura de corte", pagina: "pág.209" },
+      "TEMA_8": { pergunta: "Compartimento do rúmen onde ocorre fermentação?", opcoes: { A: "Rúmen", B: "Retículo", C: "Omaso", D: "Abomaso", E: "Esofago" }, correta: "A", explicacao: "Rúmen", pagina: "pág.227" },
+      "TEMA_9": { pergunta: "NDT na nutrição animal significa?", opcoes: { A: "Nutrientes Digestíveis Totais", B: "Nitrogênio Digestível", C: "Nível Degradável", D: "Nutrição de Desenvolvimento", E: "Núcleo de Defesa" }, correta: "A", explicacao: "Nutrientes Digestíveis Totais", pagina: "pág.233" },
+      "TEMA_10": { pergunta: "Manejo de pasto com divisão em piquetes e descanso?", opcoes: { A: "Contínuo", B: "Rotacionado", C: "Diferimento", D: "Queima", E: "Lotação fixa" }, correta: "B", explicacao: "Pastejo rotacionado", pagina: "pág.247" },
+      "TEMA_11": { pergunta: "Parâmetro que mede influência genética aditiva?", opcoes: { A: "Herdabilidade", B: "Heterose", C: "Endogamia", D: "Epistasia", E: "Pleiotropia" }, correta: "A", explicacao: "Herdabilidade", pagina: "pág.256" },
+      "TEMA_12": { pergunta: "Fase crítica na suinocultura pós-desmame?", opcoes: { A: "Gestação", B: "Creche", C: "Terminação", D: "Recria", E: "Maternidade" }, correta: "B", explicacao: "Creche", pagina: "pág.277" },
+      "TEMA_13": { pergunta: "Objetivo da ração concentrada em confinamento?", opcoes: { A: "Ganho rápido de peso", B: "Reduzir custos", C: "Aumentar pastejo", D: "Prevenir doenças", E: "Melhorar fertilidade" }, correta: "A", explicacao: "Acelerar ganho", pagina: "pág.304" },
+      "TEMA_14": { pergunta: "O que significa VRT na agricultura de precisão?", opcoes: { A: "Taxa variável", B: "Velocidade reduzida", C: "Veículo de rastreamento", D: "Vegetação remota", E: "Vertical rotativa" }, correta: "A", explicacao: "Variable Rate Technology", pagina: "pág.339" },
+      "TEMA_15": { pergunta: "Matriz que analisa forças, fraquezas, oportunidades e ameaças?", opcoes: { A: "SWOT", B: "Ishikawa", C: "PDCA", D: "5W2H", E: "GUT" }, correta: "A", explicacao: "Matriz SWOT", pagina: "pág.343" }
     };
 
     const TEMAS_INFO = {
-      "TEMA_1": { nome: "🌾 T1 - Contextualização do Agronegócio", categoria: "Agro" },
-      "TEMA_2": { nome: "🌱 T2 - Sistemas de Produção Sustentável", categoria: "Veg." },
-      "TEMA_3": { nome: "🌿 T3 - Fundamentos de Botânica", categoria: "Veg." },
-      "TEMA_4": { nome: "🧪 T4 - Nutrição Mineral & Solo", categoria: "Cult." },
-      "TEMA_5": { nome: "💧 T5 - Irrigação e Drenagem", categoria: "Água" },
-      "TEMA_6": { nome: "🌽 T6 - Principais Culturas", categoria: "Cult." },
-      "TEMA_7": { nome: "🐄 T7 - Produção Animal no Agro", categoria: "Anim." },
-      "TEMA_8": { nome: "🔬 T8 - Anatomia & Fisiologia Animal", categoria: "Anim." },
-      "TEMA_9": { nome: "🍽️ T9 - Alimentação & Nutrição Animal", categoria: "Anim." },
-      "TEMA_10": { nome: "🌾 T10 - Forragicultura e Pastagens", categoria: "Anim." },
-      "TEMA_11": { nome: "🧬 T11 - Melhoramento Genético Animal", categoria: "Gen." },
-      "TEMA_12": { nome: "🐔 T12 - Produção de Monogástricos", categoria: "Tech" },
-      "TEMA_13": { nome: "🐮 T13 - Produção de Ruminantes", categoria: "Tech" },
-      "TEMA_14": { nome: "📡 T14 - Agricultura de Precisão", categoria: "Tech" },
-      "TEMA_15": { nome: "🎁 T15 - Simulado Bônus", categoria: "Bônus" }
+      "TEMA_1": "🌾 T1 - Agronegócio", "TEMA_2": "🌱 T2 - Sistemas Sustentáveis", "TEMA_3": "🌿 T3 - Botânica", "TEMA_4": "🧪 T4 - Nutrição do Solo", "TEMA_5": "💧 T5 - Irrigação", "TEMA_6": "🌽 T6 - Culturas", "TEMA_7": "🐄 T7 - Produção Animal", "TEMA_8": "🔬 T8 - Anatomia Animal", "TEMA_9": "🍽️ T9 - Nutrição Animal", "TEMA_10": "🌾 T10 - Forragicultura", "TEMA_11": "🧬 T11 - Melhoramento", "TEMA_12": "🐔 T12 - Monogástricos", "TEMA_13": "🐮 T13 - Ruminantes", "TEMA_14": "📡 T14 - Agricultura de Precisão", "TEMA_15": "🎁 T15 - Bônus"
+    };
+    const CATEGORIA = { "TEMA_1":"Agro","TEMA_2":"Veg","TEMA_3":"Veg","TEMA_4":"Cult","TEMA_5":"Água","TEMA_6":"Cult","TEMA_7":"Anim","TEMA_8":"Anim","TEMA_9":"Anim","TEMA_10":"Anim","TEMA_11":"Gen","TEMA_12":"Tech","TEMA_13":"Tech","TEMA_14":"Tech","TEMA_15":"Bônus" };
+    const ordemTemas = ["TEMA_1","TEMA_2","TEMA_3","TEMA_4","TEMA_5","TEMA_6","TEMA_7","TEMA_8","TEMA_9","TEMA_10","TEMA_11","TEMA_12","TEMA_13","TEMA_14","TEMA_15"];
+
+    // Estado do usuário
+    let user = {
+      xp: 0, streak: 1, lastActive: "",
+      totalHits: 0, totalQuestions: 0,
+      completed: [], scores: {}, mistakes: []
     };
 
-    let userState = { xp: 0, level: 1, streak: 1, lastActive: "", totalHits: 0, totalQuestions: 0, completedThemes: [], scores: {}, mistakes: [] };
     let tg = window.Telegram?.WebApp;
-    if (tg) { tg.ready(); tg.expand(); }
+    if(tg) { tg.ready(); tg.expand(); }
 
-    window.addEventListener('DOMContentLoaded', () => { loadState(); initUser(); checkStreak(); updateDashboard(); renderThemes(); switchScreen('dashboard'); });
+    // Carregar/salvar
+    function load() { let s = localStorage.getItem("krona_v2"); if(s) { try { user = JSON.parse(s); } catch(e){} } }
+    function save() { localStorage.setItem("krona_v2", JSON.stringify(user)); }
 
-    function initUser() {
-      let name = "Estudante";
-      if (tg?.initDataUnsafe?.user) name = tg.initDataUnsafe.user.first_name;
-      document.getElementById('user-name').innerText = name.toUpperCase();
-      document.getElementById('user-avatar').innerText = name.charAt(0).toUpperCase();
+    // Inicialização
+    window.addEventListener('DOMContentLoaded', () => {
+      load();
+      let nome = "Estudante";
+      if(tg?.initDataUnsafe?.user) nome = tg.initDataUnsafe.user.first_name;
+      document.getElementById("user-name").innerText = nome.toUpperCase();
+      document.getElementById("user-avatar").innerText = nome.charAt(0).toUpperCase();
+      checkStreak();
+      renderDashboard();
+      renderTemas();
+      switchScreen('dashboard');
+    });
+
+    function showToast(msg, type='') { let t = document.getElementById('toast'); t.innerText = msg; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'), 2000); }
+
+    function checkStreak() {
+      let hoje = new Date().toISOString().slice(0,10);
+      if(user.lastActive !== hoje) {
+        if(user.lastActive) user.streak = 1;
+        user.lastActive = hoje;
+        save();
+      }
     }
-    function loadState() { try { let data = localStorage.getItem('krona_state'); if(data) userState = JSON.parse(data); } catch(e){} }
-    function saveState() { localStorage.setItem('krona_state', JSON.stringify(userState)); }
-    function showToast(msg, type='info') { /* implementado, mas por brevidade omitido */ }
-    function checkStreak() { let today = new Date().toISOString().slice(0,10); if(userState.lastActive !== today) { userState.streak = userState.lastActive ? 1 : 1; userState.lastActive = today; saveState(); } }
 
+    function renderDashboard() {
+      document.getElementById("stat-streak").innerText = user.streak;
+      document.getElementById("stat-hits").innerText = user.totalHits;
+      document.getElementById("stat-total").innerText = user.totalQuestions;
+      document.getElementById("info-xp").innerText = user.xp;
+      let rate = user.totalQuestions ? Math.round(user.totalHits/user.totalQuestions*100) : 0;
+      document.getElementById("stat-rate").innerText = rate+"%";
+      let level = Math.floor(user.xp/1000)+1;
+      let titulo = level>=8?"Mestre Supremo":level>=6?"Produtor Consultor":level>=4?"Técnico Master":level>=2?"Assistente de Campo":"Estudante Novato";
+      document.getElementById("user-level").innerHTML = `Nível ${level} • ${titulo}`;
+      let xpProx = level*1000;
+      let xpAnt = (level-1)*1000;
+      let percent = Math.min(100, Math.max(0, (user.xp-xpAnt)/(xpProx-xpAnt)*100));
+      document.getElementById("xp-bar").style.width = percent+"%";
+      document.getElementById("info-xp-needed").innerText = `Próximo nível: ${xpProx} XP`;
+      let concluidos = user.completed.length;
+      document.getElementById("progress-txt").innerText = concluidos+"/15";
+      document.getElementById("progress-bar").style.width = (concluidos/15*100)+"%";
+      let melhor = Math.max(0, ...Object.values(user.scores));
+      document.getElementById("stat-best").innerText = melhor.toFixed(1)+"/10";
+      // gráfico
+      const cats = { "Agro":0, "Veg":0, "Água":0, "Cult":0, "Anim":0, "Gen":0, "Tech":0, "Bônus":0 };
+      for(let t of ordemTemas) {
+        if(user.scores[t]) {
+          let cat = CATEGORIA[t];
+          cats[cat] += user.scores[t];
+        }
+      }
+      document.getElementById("bar-agro").style.height = cats.Agro+"%";
+      document.getElementById("bar-veg").style.height = cats.Veg+"%";
+      document.getElementById("bar-agua").style.height = cats["Água"]+"%";
+      document.getElementById("bar-cult").style.height = cats.Cult+"%";
+      document.getElementById("bar-anim").style.height = cats.Anim+"%";
+      document.getElementById("bar-gen").style.height = cats.Gen+"%";
+      document.getElementById("bar-tech").style.height = cats.Tech+"%";
+      document.getElementById("bar-bonus").style.height = cats.Bônus+"%";
+    }
+
+    function renderTemas() {
+      let container = document.getElementById("lista-temas");
+      container.innerHTML = "";
+      let concluidos = 0;
+      for(let t of ordemTemas) {
+        let feito = user.completed.includes(t);
+        if(feito) concluidos++;
+        let nota = user.scores[t] ? user.scores[t] : 0;
+        let btn = `<button onclick="startQuiz('${t}')" class="text-xs bg-gold hover:bg-yellow-600 text-darkbg font-bold px-3 py-1.5 rounded-xl">${feito ? 'Refazer' : 'Iniciar'}</button>`;
+        let badge = feito ? `<span class="text-[11px] text-gold bg-gold/10 px-2 py-1 rounded">${nota}/10</span>` : '';
+        container.innerHTML += `<div class="flex justify-between items-center py-2 border-b border-white/10"><div><p class="text-xs font-semibold">${TEMAS_INFO[t]}</p><span class="text-[10px] text-textgray">1 Questão</span></div><div class="flex gap-2 items-center">${badge}${btn}</div></div>`;
+      }
+      document.getElementById("mod-status").innerText = `${concluidos}/15 concluídos`;
+    }
+
+    // Navegação
     function switchScreen(s) {
       if(activeQuiz && !confirm("Sair do simulado? Progresso será perdido.")) return;
       activeQuiz = null;
-      ['dashboard','simulados','erros','ranking','quiz'].forEach(id => document.getElementById(`screen-${id}`).classList.add('hidden'));
-      document.getElementById(`screen-${s}`).classList.remove('hidden');
-      ['dashboard','simulados','erros','ranking'].forEach(b => { let btn = document.getElementById(`nav-${b}`); if(btn) { btn.classList.remove('text-gold'); btn.classList.add('text-textgray'); } });
-      let active = document.getElementById(`nav-${s}`); if(active) { active.classList.remove('text-textgray'); active.classList.add('text-gold'); }
-      if(s === 'dashboard') updateDashboard();
-      else if(s === 'erros') renderMistakes();
-      else if(s === 'ranking') renderRanking();
+      document.getElementById("screen-dashboard").classList.add("hidden");
+      document.getElementById("screen-simulados").classList.add("hidden");
+      document.getElementById("screen-erros").classList.add("hidden");
+      document.getElementById("screen-ranking").classList.add("hidden");
+      document.getElementById("screen-quiz").classList.add("hidden");
+      document.getElementById(`screen-${s}`).classList.remove("hidden");
+      let btns = ["dashboard","simulados","erros","ranking"];
+      btns.forEach(b => { let el = document.getElementById(`nav-${b}`); if(el) { el.classList.remove("text-gold"); el.classList.add("text-textgray"); } });
+      let active = document.getElementById(`nav-${s}`);
+      if(active) { active.classList.remove("text-textgray"); active.classList.add("text-gold"); }
+      if(s==="erros") renderMistakes();
+      if(s==="ranking") renderRanking();
+      if(s==="dashboard") renderDashboard();
     }
 
-    function renderThemes() {
-      const temas = Object.keys(TEMAS_INFO);
-      temas.forEach(t => {
-        let el = document.getElementById(`theme-${t}`);
-        if(!el) return;
-        let completed = userState.completedThemes.includes(t);
-        let score = userState.scores[t] || 0;
-        el.innerHTML = `<div class="flex-1 pr-3"><p class="text-xs font-semibold text-white">${TEMAS_INFO[t].nome}</p><span class="text-[10px] text-textgray">1 Questão</span></div>
-        <div class="flex items-center gap-2">${completed ? `<span class="text-[11px] text-gold font-bold bg-gold/10 px-2 py-1 rounded border border-gold/20">${score}/10</span>` : ''}
-        <button onclick="startQuiz('${t}')" class="text-xs bg-gold hover:bg-yellow-600 text-darkbg font-bold px-3 py-1.5 rounded-xl">${completed ? 'Refazer' : 'Iniciar'}</button></div>`;
-      });
-      let concluidos = temas.filter(t => userState.completedThemes.includes(t)).length;
-      document.getElementById('mod-1-status').innerText = `${concluidos} de 15 concluídos`;
-    }
-
-    function updateDashboard() {
-      document.getElementById('stat-streak').innerText = userState.streak;
-      document.getElementById('stat-hits').innerText = userState.totalHits;
-      document.getElementById('stat-total').innerText = userState.totalQuestions;
-      document.getElementById('info-xp').innerText = userState.xp;
-      let rate = userState.totalQuestions ? Math.round((userState.totalHits/userState.totalQuestions)*100) : 0;
-      document.getElementById('stat-rate').innerText = `${rate}%`;
-      let level = Math.floor(userState.xp/1000)+1;
-      userState.level = level;
-      document.getElementById('user-level-label').innerText = `Nível ${level} • ${level>=8?"Mestre Supremo":level>=6?"Produtor Consultor":level>=4?"Técnico Master":level>=2?"Assistente de Campo":"Estudante Novato"}`;
-      let xpNeeded = level*1000, prev = (level-1)*1000, percent = Math.min(100, Math.max(0, ((userState.xp-prev)/(xpNeeded-prev))*100));
-      document.getElementById('xp-progress-bar').style.width = `${percent}%`;
-      document.getElementById('info-xp-needed').innerText = `Próximo Nível: ${xpNeeded} XP`;
-      let concluidos = userState.completedThemes.length;
-      document.getElementById('general-progress-txt').innerText = `${concluidos}/15 Temas`;
-      document.getElementById('general-progress-bar').style.width = `${(concluidos/15)*100}%`;
-      let maxScore = Math.max(...Object.values(userState.scores),0);
-      document.getElementById('stat-best').innerText = `${maxScore.toFixed(1)}/10`;
-      updateChart();
-    }
-
-    function updateChart() {
-      const cats = ["Agro","Veg.","Água","Cult.","Anim.","Gen.","Tech","Bônus"];
-      const map = { "Agro":["TEMA_1"], "Veg.":["TEMA_2","TEMA_3"], "Água":["TEMA_5"], "Cult.":["TEMA_4","TEMA_6"], "Anim.":["TEMA_7","TEMA_8","TEMA_9","TEMA_10"], "Gen.":["TEMA_11"], "Tech":["TEMA_12","TEMA_13","TEMA_14"], "Bônus":["TEMA_15"] };
-      const ids = { "Agro":"bar-agro","Veg.":"bar-veg","Água":"bar-agua","Cult.":"bar-cult","Anim.":"bar-anim","Gen.":"bar-gen","Tech":"bar-tech","Bônus":"bar-bonus" };
-      cats.forEach(cat => {
-        let totalScore = 0, count = 0;
-        map[cat].forEach(t => { if(userState.scores[t]) { totalScore += userState.scores[t]; count++; } });
-        let percent = count ? (totalScore/(count*10))*100 : 0;
-        let bar = document.getElementById(ids[cat]);
-        if(bar) bar.style.height = `${percent}%`;
-      });
-    }
-
-    // ========== QUIZ ==========
+    // Quiz
     let activeQuiz = null;
-
-    function startQuiz(themeId) {
-      let list = QUESTIONS_DB[themeId];
-      if(!list || !list.length) { alert("Nenhuma questão disponível."); return; }
+    function startQuiz(tema) {
+      let q = QUESTIONS[tema];
+      if(!q) { showToast("Erro: questão não encontrada"); return; }
       activeQuiz = {
-        themeId: themeId,
-        questions: JSON.parse(JSON.stringify(list)), // cópia (1 questão)
-        current: 0,
-        hits: 0,
-        answered: false
+        tema: tema,
+        pergunta: q.pergunta,
+        opcoes: q.opcoes,
+        correta: q.correta,
+        explicacao: q.explicacao,
+        pagina: q.pagina,
+        respondido: false,
+        acertou: false
       };
-      document.getElementById('quiz-theme-tag').innerText = TEMAS_INFO[themeId].nome;
-      switchScreen('quiz');
-      renderQuestion();
-    }
-
-    function renderQuestion() {
-      let q = activeQuiz.questions[activeQuiz.current];
-      activeQuiz.answered = false;
-      document.getElementById('quiz-question-number').innerText = `Questão ${activeQuiz.current+1} de ${activeQuiz.questions.length}`;
-      document.getElementById('quiz-question-text').innerText = q.pergunta;
-      let container = document.getElementById('quiz-options-container');
-      container.innerHTML = '';
-      document.getElementById('quiz-feedback-box').classList.add('hidden');
-      for(let key of ["A","B","C","D","E"]) {
-        let btn = document.createElement('button');
-        btn.id = `opt-${key}`;
-        btn.onclick = () => selectOption(key);
-        btn.className = "w-full text-left bg-cardbg hover:bg-slate-800 border border-white/5 p-4 rounded-xl text-xs flex items-center gap-3";
-        btn.innerHTML = `<span class="w-6 h-6 rounded-full bg-darkbg border border-gold/30 text-gold flex items-center justify-center font-bold text-xs">${key}</span><span class="leading-relaxed">${q.opcoes[key]}</span>`;
+      document.getElementById("quiz-theme").innerText = TEMAS_INFO[tema];
+      document.getElementById("quiz-counter").innerText = "Questão 1 de 1";
+      document.getElementById("quiz-question").innerText = q.pergunta;
+      let container = document.getElementById("quiz-options");
+      container.innerHTML = "";
+      for(let letra of ["A","B","C","D","E"]) {
+        let btn = document.createElement("button");
+        btn.className = "w-full text-left bg-cardbg hover:bg-slate-800 border border-white/10 p-3 rounded-xl text-xs flex gap-3 items-center";
+        btn.innerHTML = `<span class="w-6 h-6 rounded-full bg-darkbg border border-gold/30 text-gold flex items-center justify-center font-bold text-xs">${letra}</span><span>${q.opcoes[letra]}</span>`;
+        btn.onclick = () => selectOption(letra);
         container.appendChild(btn);
       }
-      let progress = (activeQuiz.current / activeQuiz.questions.length) * 100;
-      document.getElementById('quiz-progress-bar').style.width = `${100-progress}%`;
+      document.getElementById("quiz-feedback").classList.add("hidden");
+      document.getElementById("quiz-progress").style.width = "0%";
+      switchScreen("quiz");
     }
 
-    function selectOption(selected) {
-      if(activeQuiz.answered) return;
-      activeQuiz.answered = true;
-      let q = activeQuiz.questions[activeQuiz.current];
-      let isCorrect = (selected === q.correta);
-      if(isCorrect) {
-        activeQuiz.hits++;
-        showToast("Acertou! +100 XP", "success");
-        document.getElementById(`opt-${selected}`).classList.add('border-correct','bg-correct/10');
-        document.getElementById(`opt-${selected}`).querySelector('span').classList.add('bg-correct','text-white','border-correct');
-        document.getElementById('quiz-feedback-status').innerHTML = "✅ Resposta Correta!";
-        document.getElementById('quiz-feedback-status').className = "font-extrabold text-sm uppercase text-correct";
+    function selectOption(letra) {
+      if(activeQuiz.respondido) return;
+      activeQuiz.respondido = true;
+      let isCorreta = (letra === activeQuiz.correta);
+      if(isCorreta) {
+        activeQuiz.acertou = true;
+        showToast("✅ Acertou! +100 XP", "correct");
       } else {
-        showToast("Errou!", "error");
-        document.getElementById(`opt-${selected}`).classList.add('border-wrong','bg-wrong/10');
-        document.getElementById(`opt-${selected}`).querySelector('span').classList.add('bg-wrong','text-white','border-wrong');
-        document.getElementById(`opt-${q.correta}`).classList.add('border-correct','bg-correct/10');
-        document.getElementById('quiz-feedback-status').innerHTML = `❌ Alternativa correta: ${q.correta}`;
-        document.getElementById('quiz-feedback-status').className = "font-extrabold text-sm uppercase text-wrong";
-        userState.mistakes.push({
-          theme: TEMAS_INFO[activeQuiz.themeId].nome,
-          question: q.pergunta,
-          yourAnswer: `${selected}) ${q.opcoes[selected]}`,
-          correctAnswer: `${q.correta}) ${q.opcoes[q.correta]}`,
-          explanation: q.explicacao,
-          date: new Date().toLocaleDateString()
+        showToast("❌ Errou!", "wrong");
+        user.mistakes.push({
+          tema: TEMAS_INFO[activeQuiz.tema],
+          pergunta: activeQuiz.pergunta,
+          suaResposta: `${letra}) ${activeQuiz.opcoes[letra]}`,
+          correta: `${activeQuiz.correta}) ${activeQuiz.opcoes[activeQuiz.correta]}`,
+          explicacao: activeQuiz.explicacao,
+          data: new Date().toLocaleDateString()
         });
-        if(userState.mistakes.length > 10) userState.mistakes.shift();
-        saveState();
+        if(user.mistakes.length>10) user.mistakes.shift();
+        save();
       }
-      ["A","B","C","D","E"].forEach(k => document.getElementById(`opt-${k}`).disabled = true);
-      let feedback = q.explicacao;
-      if(q.pagina) feedback += `\n\n📖 Consulte a ${q.pagina} do material didático.`;
-      document.getElementById('quiz-explanation-text').innerText = feedback;
-      document.getElementById('quiz-feedback-box').classList.remove('hidden');
-      document.getElementById('quiz-next-btn').innerText = (activeQuiz.current === activeQuiz.questions.length-1) ? "Finalizar" : "Avançar";
+      // Desabilitar todos os botões
+      let btns = document.querySelectorAll("#quiz-options button");
+      btns.forEach(b => b.disabled = true);
+      // Destacar correta/errada
+      btns.forEach(b => {
+        let txt = b.innerText[0];
+        if(txt === activeQuiz.correta) b.classList.add("border-correct", "bg-correct/10");
+        if(txt === letra && !isCorreta) b.classList.add("border-wrong", "bg-wrong/10");
+      });
+      let feedback = activeQuiz.explicacao + (activeQuiz.pagina ? `\n\n📖 Consulte a ${activeQuiz.pagina} do material.` : "");
+      document.getElementById("fb-status").innerHTML = isCorreta ? "✅ Resposta correta!" : "❌ Resposta incorreta!";
+      document.getElementById("fb-text").innerHTML = feedback;
+      document.getElementById("quiz-feedback").classList.remove("hidden");
+      document.getElementById("quiz-progress").style.width = "100%";
     }
 
     function nextQuestion() {
-      if(activeQuiz.current < activeQuiz.questions.length-1) {
-        activeQuiz.current++;
-        renderQuestion();
-      } else {
-        finishQuiz();
-      }
-    }
-
-    function finishQuiz() {
-      let tema = activeQuiz.themeId;
-      let nota = (activeQuiz.hits / activeQuiz.questions.length) * 10;
-      let xpGanho = activeQuiz.hits * 100;
-      userState.xp += xpGanho;
-      userState.totalHits += activeQuiz.hits;
-      userState.totalQuestions += activeQuiz.questions.length;
-      if(!userState.completedThemes.includes(tema)) userState.completedThemes.push(tema);
-      if(!userState.scores[tema] || nota > userState.scores[tema]) userState.scores[tema] = nota;
-      saveState();
+      if(!activeQuiz) return;
+      let tema = activeQuiz.tema;
+      let ganhouXP = activeQuiz.acertou ? 100 : 0;
+      let acertou = activeQuiz.acertou ? 1 : 0;
+      user.xp += ganhouXP;
+      user.totalHits += acertou;
+      user.totalQuestions += 1;
+      if(!user.completed.includes(tema)) user.completed.push(tema);
+      let nota = acertou * 10; // pois só 1 questão
+      if(!user.scores[tema] || nota > user.scores[tema]) user.scores[tema] = nota;
+      save();
       activeQuiz = null;
-      alert(`🎉 Simulado finalizado!\nNota: ${nota.toFixed(1)}/10\nXP: +${xpGanho}`);
-      renderThemes();
-      updateDashboard();
-      switchScreen('dashboard');
+      renderDashboard();
+      renderTemas();
+      switchScreen("simulados");
+      showToast(`Simulado finalizado! Nota: ${nota}/10. XP ganho: ${ganhouXP}`);
     }
 
     function exitQuiz() {
-      if(confirm("Sair do simulado? Progresso será perdido.")) { activeQuiz = null; switchScreen('simulados'); }
+      if(confirm("Sair do simulado? Seu progresso será perdido.")) { activeQuiz = null; switchScreen("simulados"); }
     }
 
     function renderMistakes() {
-      let container = document.getElementById('mistakes-list');
-      if(!userState.mistakes.length) { container.innerHTML = '<div class="bg-cardbg p-8 rounded-2xl text-center">🎉 Nenhum erro registrado.</div>'; return; }
-      container.innerHTML = '';
-      [...userState.mistakes].reverse().forEach(m => {
-        let div = document.createElement('div');
-        div.className = "bg-cardbg p-4 rounded-2xl border border-white/5 space-y-3";
-        div.innerHTML = `<div class="flex justify-between border-b pb-2"><span class="text-xs text-gold font-bold">${m.theme}</span><span class="text-[9px] text-textgray">${m.date}</span></div>
-        <p class="text-xs text-white">${m.question}</p><div class="bg-darkbg/50 p-2.5 rounded-xl text-[11px]"><p class="text-wrong">Sua: ${m.yourAnswer}</p><p class="text-correct">Gabarito: ${m.correctAnswer}</p></div>
-        <p class="text-[10px] italic">${m.explanation}</p>`;
-        container.appendChild(div);
+      let container = document.getElementById("mistakes-list");
+      if(user.mistakes.length===0) { container.innerHTML = '<div class="text-center p-8">🎉 Nenhum erro registrado.</div>'; return; }
+      container.innerHTML = "";
+      [...user.mistakes].reverse().forEach(m => {
+        container.innerHTML += `<div class="bg-cardbg p-3 rounded-xl space-y-2"><div class="flex justify-between border-b pb-1"><span class="text-gold text-xs font-bold">${m.tema}</span><span class="text-[9px] text-textgray">${m.data}</span></div><p class="text-xs">${m.pergunta}</p><div class="bg-darkbg/50 p-2 rounded text-[11px]"><p class="text-wrong">Sua: ${m.suaResposta}</p><p class="text-correct">Correta: ${m.correta}</p></div><p class="text-[10px] italic">${m.explicacao}</p></div>`;
       });
     }
 
-    function clearMistakes() { if(confirm("Limpar todos os erros?")) { userState.mistakes = []; saveState(); renderMistakes(); showToast("Caderno limpo!"); } }
+    function clearMistakes() { if(confirm("Limpar todos os erros?")) { user.mistakes = []; save(); renderMistakes(); showToast("Caderno limpo!"); } }
 
     function renderRanking() {
-      let list = document.getElementById('ranking-list');
-      let nomeUser = document.getElementById('user-name').innerText;
-      let todos = [
-        { name: "Pedro Santos", xp: 4800, level: 5, isUser: false },
-        { name: "Camila Ribeiro", xp: 3200, level: 4, isUser: false },
-        { name: "Thiago Silva", xp: 1500, level: 2, isUser: false },
-        { name: "Aline Costa", xp: 800, level: 1, isUser: false },
-        { name: nomeUser, xp: userState.xp, level: userState.level, isUser: true }
+      let container = document.getElementById("ranking-list");
+      let nomeUser = document.getElementById("user-name").innerText;
+      let players = [
+        { nome: "Pedro Santos", xp: 4800, nivel: 5, isUser: false },
+        { nome: "Camila Ribeiro", xp: 3200, nivel: 4, isUser: false },
+        { nome: "Thiago Silva", xp: 1500, nivel: 2, isUser: false },
+        { nome: "Aline Costa", xp: 800, nivel: 1, isUser: false },
+        { nome: nomeUser, xp: user.xp, nivel: Math.floor(user.xp/1000)+1, isUser: true }
       ];
-      todos.sort((a,b)=>b.xp-a.xp);
-      list.innerHTML = '';
-      todos.forEach((c,i) => {
-        let rank = i+1;
-        let medal = rank===1?"🥇":rank===2?"🥈":rank===3?"🥉":`${rank}`;
-        let div = document.createElement('div');
-        div.className = `flex justify-between items-center p-3 ${c.isUser ? 'bg-gold/10 border border-gold/30 rounded-xl my-1' : ''}`;
-        div.innerHTML = `<div class="flex items-center gap-3"><span class="w-6 text-center text-gold font-bold">${medal}</span><div><p class="text-xs font-bold ${c.isUser?'text-gold':'text-white'}">${c.name}</p><span class="text-[9px] text-textgray">Nível ${c.level}</span></div></div><span class="text-xs font-bold">${c.xp} XP</span>`;
-        list.appendChild(div);
+      players.sort((a,b)=>b.xp-a.xp);
+      container.innerHTML = "";
+      players.forEach((p,i) => {
+        let medal = i===0?"🥇":i===1?"🥈":i===2?"🥉":`${i+1}`;
+        container.innerHTML += `<div class="flex justify-between items-center p-2 ${p.isUser?'bg-gold/10 border border-gold/30 rounded-lg my-1':''}"><div class="flex gap-3"><span class="text-gold w-6 text-center font-bold">${medal}</span><div><p class="text-xs font-bold ${p.isUser?'text-gold':'text-white'}">${p.nome}</p><span class="text-[9px] text-textgray">Nível ${p.nivel}</span></div></div><span class="text-xs font-bold">${p.xp} XP</span></div>`;
       });
     }
   </script>
