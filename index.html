@@ -3,6 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#060A13">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KRONA">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="msapplication-TileImage" content="icons/icon-144.png">
+<meta name="msapplication-TileColor" content="#060A13">
 <title>KRONA Analytics — Simulado Agronegócio</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -238,6 +247,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .q-timer.warn{color:var(--org);border-color:rgba(245,158,11,.3)}
 .q-timer.danger{color:var(--red);border-color:rgba(239,68,68,.3);animation:pulse .6s infinite alternate}
 @keyframes pulse{from{opacity:1}to{opacity:.6}}
+.q-timer-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:3px;min-width:80px}
+.q-timer-track{width:100%;height:3px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden}
+.q-timer-fill{height:100%;border-radius:4px;background:var(--gold);transition:width 1s linear,background .3s}
+.q-timer.warn+.q-timer-track .q-timer-fill{background:var(--org)}
+.q-timer.danger+.q-timer-track .q-timer-fill{background:var(--red)}
 
 /* Progress bar quiz */
 .q-prog-row{display:flex;align-items:center;gap:10px}
@@ -701,7 +715,10 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     <div class="qhdr-top">
       <button class="q-back" onclick="quitQuiz()">← Sair</button>
       <div class="q-tema-nm" id="qTemaNm">Tema</div>
-      <div class="q-timer" id="qTimer">⏱ 5:00</div>
+      <div class="q-timer-wrap" id="qTimerWrap">
+        <div class="q-timer" id="qTimer">⏱ 5:00</div>
+        <div class="q-timer-track"><div class="q-timer-fill" id="qTimerFill" style="width:100%"></div></div>
+      </div>
     </div>
     <div class="q-prog-row">
       <div class="q-prog-track"><div class="q-prog-fill" id="qProgFill" style="width:0%"></div></div>
@@ -753,6 +770,8 @@ const tg = window.Telegram?.WebApp || {
   setHeaderColor:()=>{}, setBackgroundColor:()=>{},
   sendData:(d)=>console.log('sendData:',d),
   showConfirm:(msg,cb)=>{cb(confirm(msg))},
+  showAlert:(msg,cb)=>{alert(msg);cb&&cb()},
+  HapticFeedback:{impactOccurred:()=>{},notificationOccurred:()=>{}},
   initDataUnsafe:{user:null}
 };
 tg.ready();
@@ -761,568 +780,121 @@ tg.setHeaderColor('#0B1120');
 tg.setBackgroundColor('#060A13');
 
 // ============================================================
-// STATE — localStorage keys
+// localStorage KEYS
 // ============================================================
 const LS = {
-  progress : 'krona_progress',   // {acertos, questoes, byTema:{TEMA_X:{acertos,total,done}}}
-  errors   : 'krona_errors',     // [{temaId,temaNome,pergunta,correta,data}]
-  streak   : 'krona_streak',     // {lastDate, days}
-  user     : 'krona_user',       // {name, initials}
+  progress : 'krona_progress',  // {acertos,questoes,byTema,history:[]}
+  errors   : 'krona_errors',    // [{temaId,temaNome,pergunta,correta,escolhida,data}]
+  streak   : 'krona_streak',    // {lastDate,days}
+  user     : 'krona_user',      // {name,initials,id}
+  session  : 'krona_session',   // active quiz session for resume
+  ranking  : 'krona_ranking',   // [{id,name,initials,xp,temas,acertos,questoes,pct}]
 };
 
 function loadState(key, def){
-  try { const v=localStorage.getItem(key); return v?JSON.parse(v):def; }
-  catch(e){ return def; }
+  try{ const v=localStorage.getItem(key); return v?JSON.parse(v):def; }catch(e){ return def; }
 }
-function saveState(key, val){
-  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e){}
+function saveState(key,val){
+  try{ localStorage.setItem(key,JSON.stringify(val)); }catch(e){}
 }
 
 // ============================================================
-// XP / LEVEL HELPERS
+// XP / LEVEL
 // ============================================================
-const LEVELS = [
-  {min:0,    label:'Semente',    icon:'🌱'},
-  {min:100,  label:'Broto',      icon:'🌿'},
-  {min:300,  label:'Agricultor', icon:'👨‍🌾'},
-  {min:600,  label:'Técnico',    icon:'🔬'},
+const LEVELS=[
+  {min:0,    label:'Semente',     icon:'🌱'},
+  {min:100,  label:'Broto',       icon:'🌿'},
+  {min:300,  label:'Agricultor',  icon:'👨‍🌾'},
+  {min:600,  label:'Técnico',     icon:'🔬'},
   {min:1000, label:'Especialista',icon:'🌾'},
-  {min:1500, label:'Mestre',     icon:'🏆'},
+  {min:1500, label:'Mestre',      icon:'🏆'},
 ];
 function calcXP(prog){
-  return (prog.acertos||0)*10 + Object.values(prog.byTema||{}).filter(t=>t.done).length*50;
+  const temasDone=Object.values(prog.byTema||{}).filter(t=>t.done).length;
+  return (prog.acertos||0)*10 + temasDone*50;
 }
-function calcLevel(xp){
-  let lv = LEVELS[0];
-  for(const l of LEVELS){ if(xp>=l.min) lv=l; }
-  return lv;
-}
-function lvIndex(xp){
-  let idx=0;
-  for(let i=0;i<LEVELS.length;i++){ if(xp>=LEVELS[i].min) idx=i; }
-  return idx+1;
-}
+function calcLevel(xp){ let l=LEVELS[0]; for(const v of LEVELS) if(xp>=v.min) l=v; return l; }
+function lvIndex(xp){ let i=0; for(let j=0;j<LEVELS.length;j++) if(xp>=LEVELS[j].min) i=j; return i+1; }
 
 // ============================================================
 // TEMA META
 // ============================================================
-const TEMA_META = {
-  TEMA_1 :{nome:'Contextualização do Agronegócio',        qtd:28},
-  TEMA_2 :{nome:'Sistemas de Produção Sustentável',        qtd:43},
-  TEMA_3 :{nome:'Fundamentos de Botânica',                 qtd:20},
-  TEMA_4 :{nome:'Nutrição Mineral e Fertilidade do Solo',  qtd:19},
-  TEMA_5 :{nome:'Irrigação e Drenagem',                    qtd:16},
-  TEMA_6 :{nome:'Principais Culturas do Agronegócio',      qtd:57},
-  TEMA_7 :{nome:'Produção Animal no Agronegócio',          qtd:31},
-  TEMA_8 :{nome:'Anatomia e Fisiologia Animal',            qtd:12},
-  TEMA_9 :{nome:'Alimentação e Nutrição Animal',           qtd:24},
-  TEMA_10:{nome:'Forragicultura e Pastagens',              qtd:25},
-  TEMA_11:{nome:'Melhoramento Genético Animal',            qtd:30},
-  TEMA_12:{nome:'Produção de Animais Monogástricos',       qtd:30},
-  TEMA_13:{nome:'Produção de Animais Ruminantes',          qtd:30},
-  TEMA_14:{nome:'Agricultura de Precisão',                 qtd:20},
+const TEMA_META={
+  TEMA_1 :{nome:'Contextualização do Agronegócio',       qtd:28},
+  TEMA_2 :{nome:'Sistemas de Produção Sustentável',       qtd:43},
+  TEMA_3 :{nome:'Fundamentos de Botânica',                qtd:20},
+  TEMA_4 :{nome:'Nutrição Mineral e Fertilidade do Solo', qtd:19},
+  TEMA_5 :{nome:'Irrigação e Drenagem',                   qtd:16},
+  TEMA_6 :{nome:'Principais Culturas do Agronegócio',     qtd:57},
+  TEMA_7 :{nome:'Produção Animal no Agronegócio',         qtd:31},
+  TEMA_8 :{nome:'Anatomia e Fisiologia Animal',           qtd:12},
+  TEMA_9 :{nome:'Alimentação e Nutrição Animal',          qtd:24},
+  TEMA_10:{nome:'Forragicultura e Pastagens',             qtd:25},
+  TEMA_11:{nome:'Melhoramento Genético Animal',           qtd:30},
+  TEMA_12:{nome:'Produção de Animais Monogástricos',      qtd:30},
+  TEMA_13:{nome:'Produção de Animais Ruminantes',         qtd:30},
+  TEMA_14:{nome:'Agricultura de Precisão',                qtd:20},
 };
-const MOD_TEMAS = {
-  A:['TEMA_1','TEMA_2'],
-  B:['TEMA_3','TEMA_4','TEMA_5'],
-  C:['TEMA_6'],
-  D:['TEMA_7','TEMA_8','TEMA_9','TEMA_10'],
-  E:['TEMA_11'],
-  F:['TEMA_12','TEMA_13'],
-  G:['TEMA_14'],
-};
-const CHART_LABELS = {
-  TEMA_1:'T1',TEMA_2:'T2',TEMA_3:'T3',TEMA_4:'T4',TEMA_5:'T5',
+const MOD_TEMAS={A:['TEMA_1','TEMA_2'],B:['TEMA_3','TEMA_4','TEMA_5'],C:['TEMA_6'],
+  D:['TEMA_7','TEMA_8','TEMA_9','TEMA_10'],E:['TEMA_11'],F:['TEMA_12','TEMA_13'],G:['TEMA_14']};
+const CHART_LABELS={TEMA_1:'T1',TEMA_2:'T2',TEMA_3:'T3',TEMA_4:'T4',TEMA_5:'T5',
   TEMA_6:'T6',TEMA_7:'T7',TEMA_8:'T8',TEMA_9:'T9',TEMA_10:'T10',
-  TEMA_11:'T11',TEMA_12:'T12',TEMA_13:'T13',TEMA_14:'T14',
-};
-const BAR_COLORS = [
-  '#22C55E','#3B82F6','#8B5CF6','#F59E0B','#EF4444',
-  '#14B8A6','#F97316','#EC4899','#6366F1','#10B981',
-  '#84CC16','#06B6D4','#A78BFA','#FB923C',
-];
+  TEMA_11:'T11',TEMA_12:'T12',TEMA_13:'T13',TEMA_14:'T14'};
+const BAR_COLORS=['#22C55E','#3B82F6','#8B5CF6','#F59E0B','#EF4444',
+  '#14B8A6','#F97316','#EC4899','#6366F1','#10B981','#84CC16','#06B6D4','#A78BFA','#FB923C'];
 
 // ============================================================
-// UI HELPERS
+// HELPERS
 // ============================================================
-function showToast(msg, duration=2200){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), duration);
-}
-
 function $(id){ return document.getElementById(id); }
 
-// ============================================================
-// UPDATE UI
-// ============================================================
-function updateUI(){
-  const prog  = loadState(LS.progress, {acertos:0, questoes:0, byTema:{}});
-  const erros = loadState(LS.errors, []);
-  const xp    = calcXP(prog);
-  const lv    = calcLevel(xp);
-  const lvIdx = lvIndex(xp);
-  const temasDone = Object.values(prog.byTema||{}).filter(t=>t.done).length;
-  const pct   = prog.questoes > 0 ? Math.round(prog.acertos/prog.questoes*100) : 0;
-  const progGeral = Math.round(temasDone/14*100);
-
-  // Header
-  const usr = loadState(LS.user, {name:'Aluno',initials:'A'});
-  $('uName').textContent = usr.name;
-  $('uAv').textContent   = usr.initials;
-  $('uXP').textContent   = xp + ' XP';
-  $('uLvl').textContent  = `Lv.${lvIdx}`;
-
-  // Progress strip
-  $('progPct').textContent  = progGeral + '%';
-  $('progBar').style.width  = progGeral + '%';
-  $('progInfo').textContent = `${temasDone} de 14 temas concluídos`;
-
-  // Stats
-  $('stAcertos').textContent  = prog.acertos||0;
-  $('stQuestoes').textContent = prog.questoes||0;
-  $('stPct').textContent      = pct + '%';
-
-  // Metrics
-  let bestNota = 0, bestTema = 'Nenhum tema';
-  for(const [tid, td] of Object.entries(prog.byTema||{})){
-    if(td.total > 0){
-      const nota = Math.round(td.acertos/td.total*10);
-      if(nota > bestNota){ bestNota=nota; bestTema=TEMA_META[tid]?.nome||tid; }
-    }
-  }
-  $('metBestNota').textContent = bestNota > 0 ? bestNota : '—';
-  $('metBestTema').textContent = bestNota > 0 ? bestTema.substring(0,22)+'...' : 'Nenhum tema';
-  $('metErros').textContent    = erros.length;
-  $('metTemas').textContent    = temasDone;
-  $('metTemasLeft').textContent = temasDone < 14 ? `Faltam ${14-temasDone}` : '✅ Completo!';
-
-  // Streak
-  updateStreak();
-
-  // Badges per tema
-  for(let i=1;i<=14;i++){
-    const b = $('badge'+i);
-    if(!b) continue;
-    const td = prog.byTema?.['TEMA_'+i];
-    if(td?.done){
-      b.textContent='Concluído'; b.className='badge-sc done';
-    } else if(td?.total > 0){
-      b.textContent='Em andamento'; b.className='badge-sc lock';
-    } else {
-      b.textContent='Pendente'; b.className='badge-sc wait';
-    }
-  }
-
-  // Module progress
-  for(const [mod, temas] of Object.entries(MOD_TEMAS)){
-    const done = temas.filter(t => prog.byTema?.[t]?.done).length;
-    $('prog'+mod).textContent = `${done}/${temas.length}`;
-  }
-
-  // Chart
-  buildChart(prog);
-
-  // Error badge
-  const eb=$('errBadge');
-  if(erros.length > 0){ eb.style.display='flex'; eb.textContent=erros.length; }
-  else { eb.style.display='none'; }
-}
-
-function updateStreak(){
-  const sk = loadState(LS.streak, {lastDate:null, days:0});
-  const today = new Date().toISOString().slice(0,10);
-  if(sk.lastDate === today){
-    $('metStreak').textContent = sk.days;
-    $('metStreakSub').textContent = 'Sequência ativa! 🔥';
-  } else if(sk.lastDate){
-    const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
-    if(sk.lastDate === yesterday){
-      $('metStreak').textContent = sk.days;
-      $('metStreakSub').textContent = 'Jogue hoje!';
-    } else {
-      $('metStreak').textContent = 0;
-      $('metStreakSub').textContent = 'Sequência perdida';
-    }
-  } else {
-    $('metStreak').textContent = 0;
-    $('metStreakSub').textContent = 'Comece hoje!';
-  }
-}
-
-function bumpStreak(){
-  const sk = loadState(LS.streak, {lastDate:null, days:0});
-  const today = new Date().toISOString().slice(0,10);
-  if(sk.lastDate === today) return;
-  const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
-  const days = sk.lastDate === yesterday ? sk.days+1 : 1;
-  saveState(LS.streak, {lastDate:today, days});
+function showToast(msg,duration=2400){
+  const t=$('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),duration);
 }
 
 // ============================================================
-// CHART
+// RANKING — persisted locally, sorted by XP
 // ============================================================
-function buildChart(prog){
-  const el=$('chartArea');
-  const keys = Object.keys(TEMA_META);
-  el.innerHTML = keys.map((tid, i)=>{
-    const td = prog.byTema?.[tid];
-    const pct = td?.total > 0 ? Math.round(td.acertos/td.total*100) : 0;
-    const h   = Math.max(4, Math.round(pct * 0.72));
-    const col = BAR_COLORS[i % BAR_COLORS.length];
-    return `<div class="cht-g">
-      <div class="cht-w">
-        <div class="cht-b" style="height:${h}px;background:${col};opacity:${pct>0?0.85:0.18}"></div>
-        ${pct>0?`<span class="cht-v">${pct}%</span>`:''}
-      </div>
-      <div class="cht-l">${CHART_LABELS[tid]}</div>
-    </div>`;
-  }).join('');
-}
-
-// ============================================================
-// ACCORDION
-// ============================================================
-let openMod = null;
-function tglMod(id){
-  const el=$('mod'+id);
-  if(openMod && openMod!==id){
-    const prev=$('mod'+openMod);
-    if(prev) prev.classList.remove('open');
-  }
-  if(openMod===id){
-    el.classList.remove('open');
-    openMod=null;
-  } else {
-    el.classList.add('open');
-    openMod=id;
-    setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),150);
-  }
-}
-
-// ============================================================
-// NAVIGATION
-// ============================================================
-const VIEWS = {home:'viewHome', rank:'viewRank', erros:'viewErros', perfil:'viewPerfil'};
-const NAVS  = {home:'nHome',    rank:'nRank',    erros:'nErr',      perfil:'nProf'};
-let curView = 'home';
-
-function navTo(view){
-  document.getElementById(VIEWS[curView])?.classList.remove('active');
-  document.getElementById(VIEWS[curView]).style.display=
-    view==='home'?'block':'none';
-
-  // all views off
-  for(const v of Object.values(VIEWS)){
-    const el=document.getElementById(v);
-    if(el){ el.style.display='none'; el.classList.remove('active'); }
-  }
-  // all nav off
-  for(const n of Object.values(NAVS)){
-    document.getElementById(n)?.classList.remove('act');
-  }
-
-  const target=document.getElementById(VIEWS[view]);
-  if(target){ target.style.display='block'; target.classList.add('active'); }
-  document.getElementById(NAVS[view])?.classList.add('act');
-  curView=view;
-
-  if(view==='home')  { updateUI(); window.scrollTo({top:0,behavior:'smooth'}); }
-  if(view==='rank')  { buildRanking(); }
-  if(view==='erros') { buildErros(); }
-  if(view==='perfil'){ buildPerfil(); }
-}
-
-// Fix initial display
-document.addEventListener('DOMContentLoaded',()=>{
-  for(const v of Object.values(VIEWS)){
-    const el=document.getElementById(v);
-    if(el) el.style.display='none';
-  }
-  $('viewHome').style.display='block';
-});
-
-// ============================================================
-// QUIZ ENGINE
-// ============================================================
-let QS = null; // active quiz state
-
-function startQuiz(temaId, temaNome){
-  const questions = QUESTIONS_DB[temaId];
-  if(!questions||!questions.length){ showToast('❌ Questões não encontradas!'); return; }
-
-  // Shuffle and pick up to 10 questions
-  const shuffled = [...questions].sort(()=>Math.random()-.5);
-  const qs = shuffled.slice(0, Math.min(10, shuffled.length));
-
-  QS = {
-    temaId, temaNome,
-    questions: qs,
-    idx: 0,
-    acertos: 0,
-    erros: 0,
-    answered: false,
-    timerSec: 5*60,
-    timerInterval: null,
-    sessionErrors: [],
-  };
-
-  bumpStreak();
-  openQuizScreen();
-  renderQuestion();
-  startTimer();
-}
-
-function openQuizScreen(){
-  const sc = document.getElementById('quizScreen');
-  sc.classList.add('active');
-  document.getElementById('qTemaNm').textContent = QS.temaNome;
-  document.getElementById('qAcertos').textContent = 0;
-  document.getElementById('qErros').textContent   = 0;
-  document.body.style.overflow = 'hidden';
-}
-
-function closeQuizScreen(){
-  const sc = document.getElementById('quizScreen');
-  sc.classList.remove('active');
-  document.body.style.overflow = '';
-  if(QS?.timerInterval) clearInterval(QS.timerInterval);
-}
-
-function startTimer(){
-  if(QS.timerInterval) clearInterval(QS.timerInterval);
-  QS.timerSec = 5*60;
-  updateTimerDisplay();
-  QS.timerInterval = setInterval(()=>{
-    QS.timerSec--;
-    updateTimerDisplay();
-    if(QS.timerSec <= 0){
-      clearInterval(QS.timerInterval);
-      timeUp();
-    }
-  }, 1000);
-}
-
-function updateTimerDisplay(){
-  const m = Math.floor(QS.timerSec/60);
-  const s = QS.timerSec % 60;
-  const el = document.getElementById('qTimer');
-  el.textContent = `⏱ ${m}:${String(s).padStart(2,'0')}`;
-  el.className = 'q-timer' +
-    (QS.timerSec<=30?' danger': QS.timerSec<=60?' warn':'');
-}
-
-function timeUp(){
-  showToast('⏱ Tempo esgotado!');
-  setTimeout(()=>showResult(), 1000);
-}
-
-function renderQuestion(){
-  const q   = QS.questions[QS.idx];
-  const tot = QS.questions.length;
-  const pct = Math.round((QS.idx/tot)*100);
-
-  document.getElementById('qProgFill').style.width = pct + '%';
-  document.getElementById('qProgCt').textContent   = `${QS.idx+1}/${tot}`;
-  QS.answered = false;
-
-  const letters = ['A','B','C','D','E'];
-  const opts = q.opcoes || {};
-
-  const optsHtml = letters.filter(l=>opts[l]).map(l=>`
-    <div class="q-opt" id="opt${l}" onclick="selectOpt('${l}')">
-      <div class="q-opt-lt">${l}</div>
-      <div class="q-opt-txt">${opts[l]}</div>
-    </div>
-  `).join('');
-
-  document.getElementById('qBody').innerHTML = `
-    <div class="q-num">Questão ${QS.idx+1} de ${tot}</div>
-    <div class="q-txt">${q.pergunta}</div>
-    <div class="q-opts">${optsHtml}</div>
-    <div class="q-fb" id="qFb">
-      <div class="q-fb-tt" id="qFbTt"></div>
-      <div class="q-fb-ex" id="qFbEx"></div>
-    </div>
-    <button class="q-next" id="qNext" onclick="nextQuestion()">
-      ${QS.idx+1 < tot ? 'Próxima questão →' : 'Ver resultado 🏁'}
-    </button>
-  `;
-
-  // Scroll to top of body
-  document.getElementById('qBody').scrollTop = 0;
-}
-
-function selectOpt(letter){
-  if(QS.answered) return;
-  QS.answered = true;
-
-  const q       = QS.questions[QS.idx];
-  const correta = q.correta;
-  const isOk    = letter === correta;
-
-  // Visual feedback on options
-  ['A','B','C','D','E'].forEach(l=>{
-    const el = document.getElementById('opt'+l);
-    if(!el) return;
-    el.classList.add('disabled');
-    if(l === correta) el.classList.add('correct');
-    else if(l === letter && !isOk) el.classList.add('wrong');
-  });
-
-  // Score
-  if(isOk){
-    QS.acertos++;
-    document.getElementById('qAcertos').textContent = QS.acertos;
-  } else {
-    QS.erros++;
-    document.getElementById('qErros').textContent = QS.erros;
-    // Save to error notebook
-    QS.sessionErrors.push({
-      temaId:   QS.temaId,
-      temaNome: QS.temaNome,
-      pergunta: q.pergunta,
-      correta:  `${correta}: ${q.opcoes[correta]}`,
-      data:     new Date().toISOString(),
-    });
-  }
-
-  // Feedback box
-  const fb   = document.getElementById('qFb');
-  const fbTt = document.getElementById('qFbTt');
-  const fbEx = document.getElementById('qFbEx');
-  fb.className = 'q-fb show ' + (isOk?'ok':'err');
-  fbTt.textContent = isOk ? '✅ Correto!' : `❌ Errado — Correta: ${correta}`;
-  fbEx.textContent = q.explicacao || '';
-
-  // Show next button
-  document.getElementById('qNext').classList.add('show');
-
-  // Haptic (Telegram)
-  try{
-    if(isOk) tg.HapticFeedback?.impactOccurred('light');
-    else     tg.HapticFeedback?.notificationOccurred('error');
-  }catch(e){}
-}
-
-function nextQuestion(){
-  QS.idx++;
-  if(QS.idx >= QS.questions.length){
-    clearInterval(QS.timerInterval);
-    showResult();
-  } else {
-    renderQuestion();
-  }
-}
-
-function showResult(){
-  clearInterval(QS.timerInterval);
-  const tot    = QS.questions.length;
-  const ac     = QS.acertos;
-  const er     = QS.erros + (tot - ac - QS.erros); // include unanswered as wrong
-  const pct    = Math.round(ac/tot*100);
-  const nota   = Math.round(ac/tot*10*10)/10;
-  const xpGain = ac*10 + (pct>=70?50:0);
-
-  let icon, msg;
-  if(pct>=90){ icon='🏆'; msg='Excelente! Domínio total!'; }
-  else if(pct>=70){ icon='🎉'; msg='Muito bem! Aprovado!'; }
-  else if(pct>=50){ icon='📚'; msg='Continue estudando!'; }
-  else { icon='💪'; msg='Não desanime, revise o tema!'; }
-
-  // Save progress
-  const prog = loadState(LS.progress, {acertos:0, questoes:0, byTema:{}});
-  if(!prog.byTema) prog.byTema = {};
-  const prev = prog.byTema[QS.temaId] || {acertos:0, total:0, done:false};
-  // Update only if this attempt is better
-  const newDone = pct >= 60;
-  prog.byTema[QS.temaId] = {
-    acertos: Math.max(prev.acertos, ac),
-    total:   tot,
-    done:    prev.done || newDone,
-    lastPct: pct,
-  };
-  prog.acertos  = (prog.acertos||0) + ac;
-  prog.questoes = (prog.questoes||0) + tot;
-  saveState(LS.progress, prog);
-
-  // Save errors
-  if(QS.sessionErrors.length){
-    const existing = loadState(LS.errors, []);
-    saveState(LS.errors, [...existing, ...QS.sessionErrors].slice(-50));
-  }
-
-  document.getElementById('qBody').innerHTML = `
-    <div class="q-result">
-      <div class="q-res-ic">${icon}</div>
-      <div class="q-res-tt">${msg}</div>
-      <div class="q-res-nota">${nota.toFixed(1)}</div>
-      <div class="q-res-sub">${pct}% de aproveitamento · ${ac}/${tot} acertos</div>
-      <div class="q-res-grid">
-        <div class="q-res-st"><div class="q-res-sv">${ac}</div><div class="q-res-sl">Acertos</div></div>
-        <div class="q-res-st"><div class="q-res-sv">${tot-ac}</div><div class="q-res-sl">Erros</div></div>
-        <div class="q-res-st"><div class="q-res-sv">${pct}%</div><div class="q-res-sl">Aproveit.</div></div>
-      </div>
-      <div class="q-res-xp">+${xpGain} XP ganhos! ✨</div>
-      <button class="q-next show" onclick="closeQuizScreen();updateUI();showToast('✅ Resultado salvo!')">
-        🏠 Voltar ao início
-      </button>
-      <button class="btn-quiz-home" onclick="restartQuiz()">🔄 Refazer simulado</button>
-    </div>
-  `;
-  document.getElementById('qProgFill').style.width = '100%';
-  document.getElementById('qProgCt').textContent = `${tot}/${tot}`;
-
-  // Hide timer
-  document.getElementById('qTimer').textContent = '✅ Concluído';
-  document.getElementById('qTimer').className = 'q-timer';
-}
-
-function restartQuiz(){
-  closeQuizScreen();
-  setTimeout(()=>startQuiz(QS.temaId, QS.temaNome), 150);
-}
-
-function quitQuiz(){
-  tg.showConfirm('Sair do simulado? O progresso desta sessão será perdido.', ok=>{
-    if(!ok) return;
-    closeQuizScreen();
-  });
-}
-
-// ============================================================
-// RANKING
-// ============================================================
-const MOCK_USERS = [
-  {name:'Pedro Oliveira',   initials:'PO', xp:1820, temas:12},
-  {name:'Mariana Costa',    initials:'MC', xp:1640, temas:11},
-  {name:'Lucas Santos',     initials:'LS', xp:1410, temas:10},
-  {name:'Ana Ferreira',     initials:'AF', xp:1200, temas:9},
-  {name:'Carlos Mendes',    initials:'CM', xp:980,  temas:8},
-  {name:'Fernanda Lima',    initials:'FL', xp:750,  temas:7},
-  {name:'Rafael Alves',     initials:'RA', xp:560,  temas:5},
-  {name:'Juliana Rocha',    initials:'JR', xp:340,  temas:4},
-  {name:'Bruno Soares',     initials:'BS', xp:210,  temas:3},
-];
-
-function buildRanking(){
-  const prog = loadState(LS.progress, {acertos:0,questoes:0,byTema:{}});
-  const usr  = loadState(LS.user, {name:'Você',initials:'EU'});
+function pushMyDataToRanking(){
+  const prog = loadState(LS.progress,{acertos:0,questoes:0,byTema:{}});
+  const usr  = loadState(LS.user,{name:'Aluno',initials:'A',id:'me'});
   const xp   = calcXP(prog);
   const temas= Object.values(prog.byTema||{}).filter(t=>t.done).length;
+  const pct  = prog.questoes>0?Math.round(prog.acertos/prog.questoes*100):0;
 
-  const all = [...MOCK_USERS, {name:usr.name, initials:usr.initials, xp, temas, isMe:true}];
-  all.sort((a,b)=>b.xp-a.xp);
+  let rank = loadState(LS.ranking,[]);
+  const myId = usr.id||'me';
+  rank = rank.filter(r=>r.id!==myId);
+  rank.push({id:myId,name:usr.name,initials:usr.initials,
+    xp,temas,acertos:prog.acertos||0,questoes:prog.questoes||0,pct,isMe:true});
+  rank.sort((a,b)=>b.xp-a.xp);
+  saveState(LS.ranking, rank.slice(0,50));
+}
 
-  const medals=['🥇','🥈','🥉'];
-  $('rankList').innerHTML = all.slice(0,10).map((u,i)=>{
+function buildRanking(){
+  pushMyDataToRanking();
+  const rank   = loadState(LS.ranking,[]);
+  const usr    = loadState(LS.user,{id:'me'});
+  const myId   = usr.id||'me';
+  const medals = ['🥇','🥈','🥉'];
+
+  if(!rank.length){
+    $('rankList').innerHTML=`<div class="empty"><div class="empty-ic">🏆</div>
+      <div class="empty-tt">Ranking vazio</div>
+      <div class="empty-sub">Conclua um simulado para aparecer aqui!</div></div>`;
+    return;
+  }
+
+  $('rankList').innerHTML = rank.slice(0,20).map((u,i)=>{
     const lv=calcLevel(u.xp); const li=lvIndex(u.xp);
-    return `<div class="rank-item${u.isMe?' me':''}">
+    const isMe = u.id===myId||u.isMe;
+    return `<div class="rank-item${isMe?' me':''}">
       <div class="rank-pos">${i<3?medals[i]:`#${i+1}`}</div>
-      <div class="rank-av">${u.initials}</div>
+      <div class="rank-av">${u.initials||'?'}</div>
       <div class="rank-info">
-        <div class="rank-nm">${u.name}${u.isMe?' <span style="font-size:9px;color:var(--gold)">(você)</span>':''}</div>
-        <div class="rank-sub">Lv.${li} · ${lv.label} · ${u.temas} temas</div>
+        <div class="rank-nm">${u.name}${isMe?' <span style="font-size:9px;color:var(--gold)">(você)</span>':''}</div>
+        <div class="rank-sub">Lv.${li} · ${lv.label} · ${u.temas} temas · ${u.pct||0}%</div>
       </div>
       <div class="rank-xp">${u.xp} XP</div>
     </div>`;
@@ -1333,60 +905,128 @@ function buildRanking(){
 // CADERNO DE ERROS
 // ============================================================
 function buildErros(){
-  const erros = loadState(LS.errors, []);
-  if(erros.length===0){
+  const erros=loadState(LS.errors,[]);
+  const eb=$('errBadge');
+  if(erros.length>0){ eb.style.display='flex'; eb.textContent=Math.min(erros.length,99); }
+  else eb.style.display='none';
+
+  if(!erros.length){
     $('errosList').innerHTML=`<div class="empty">
       <div class="empty-ic">📓</div>
       <div class="empty-tt">Caderno vazio!</div>
-      <div class="empty-sub">Suas questões erradas aparecerão aqui.</div>
-    </div>`;
+      <div class="empty-sub">Suas questões erradas aparecerão aqui.</div></div>`;
     return;
   }
-  const ultimos = erros.slice(-10).reverse();
-  $('errosList').innerHTML = ultimos.map(e=>`
+  const list=[...erros].reverse().slice(0,30);
+  $('errosList').innerHTML=`
+    <div style="font-size:11px;color:var(--tx3);margin-bottom:10px;padding:0 2px">
+      ${erros.length} erro(s) registrado(s) • Mostrando os últimos ${list.length}
+    </div>`+
+  list.map((e,i)=>`
     <div class="erro-item">
-      <div class="erro-tema">${TEMA_META[e.temaId]?.nome||e.temaId}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div class="erro-tema">${TEMA_META[e.temaId]?.nome||e.temaId||'—'}</div>
+        <div style="font-size:9px;color:var(--tx4)">${formatDate(e.data)}</div>
+      </div>
       <div class="erro-perg">${e.pergunta}</div>
+      ${e.escolhida?`<div style="font-size:11px;color:var(--red);margin-bottom:4px">❌ Sua resposta: ${e.escolhida}</div>`:''}
       <div class="erro-resp">✅ Correta: ${e.correta}</div>
     </div>
   `).join('');
 }
 
 function limparErros(){
-  tg.showConfirm('Limpar todo o caderno de erros?', ok=>{
+  tg.showConfirm('Limpar todo o caderno de erros?',ok=>{
     if(!ok) return;
-    saveState(LS.errors, []);
-    buildErros();
-    updateUI();
+    saveState(LS.errors,[]);
+    buildErros(); updateUI();
     showToast('🗑️ Caderno limpo!');
   });
+}
+
+function formatDate(iso){
+  if(!iso) return '';
+  try{
+    const d=new Date(iso);
+    return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+  }catch(e){ return ''; }
 }
 
 // ============================================================
 // PERFIL
 // ============================================================
 function buildPerfil(){
-  const prog  = loadState(LS.progress, {acertos:0,questoes:0,byTema:{}});
-  const usr   = loadState(LS.user, {name:'Aluno',initials:'A'});
+  const prog  = loadState(LS.progress,{acertos:0,questoes:0,byTema:{},history:[]});
+  const usr   = loadState(LS.user,{name:'Aluno',initials:'A'});
+  const erros = loadState(LS.errors,[]);
+  const sk    = loadState(LS.streak,{days:0});
   const xp    = calcXP(prog);
   const lv    = calcLevel(xp);
-  const lvIdx = lvIndex(xp);
-  const pct   = prog.questoes > 0 ? Math.round(prog.acertos/prog.questoes*100) : 0;
-  const temasDone = Object.values(prog.byTema||{}).filter(t=>t.done).length;
-  const erros = loadState(LS.errors, []);
+  const li    = lvIndex(xp);
+  const pct   = prog.questoes>0?Math.round(prog.acertos/prog.questoes*100):0;
+  const temasDone=Object.values(prog.byTema||{}).filter(t=>t.done).length;
 
-  const temaItems = Object.entries(prog.byTema||{})
-    .filter(([,td])=>td.done)
-    .map(([tid])=>`<div class="tema-done-item"><span class="chk">✅</span>${TEMA_META[tid]?.nome||tid}</div>`)
-    .join('') || '<div style="color:var(--tx4);font-size:12px;padding:8px 0">Nenhum tema concluído ainda.</div>';
+  // Best nota across all temas
+  let bestNota=0,bestTema='—';
+  for(const [tid,td] of Object.entries(prog.byTema||{})){
+    if(td.total>0){
+      const n=Math.round(td.acertos/td.total*100);
+      if(n>bestNota){ bestNota=n; bestTema=TEMA_META[tid]?.nome||tid; }
+    }
+  }
 
-  $('perfilContent').innerHTML = `
+  // XP next level
+  const nextLvMin = LEVELS[Math.min(li,LEVELS.length-1)].min;
+  const xpPct = li>=LEVELS.length ? 100 : Math.min(100,Math.round((xp-lv.min)/(nextLvMin-lv.min)*100));
+
+  // Per-tema detail rows
+  const temaRows = Object.entries(TEMA_META).map(([tid,meta])=>{
+    const td=prog.byTema?.[tid];
+    if(!td||!td.total) return `<div class="tema-done-item" style="opacity:.5">
+      <span style="font-size:14px">⬜</span>
+      <div style="flex:1"><div style="font-size:11px;color:var(--tx3)">${meta.nome}</div></div>
+      <span style="font-size:10px;color:var(--tx4)">Pendente</span>
+    </div>`;
+    const p=Math.round(td.acertos/td.total*100);
+    const col=p>=70?'var(--grn)':p>=50?'var(--org)':'var(--red)';
+    return `<div class="tema-done-item">
+      <span style="font-size:14px">${td.done?'✅':'🔄'}</span>
+      <div style="flex:1">
+        <div style="font-size:11px;color:var(--txt)">${meta.nome}</div>
+        <div style="font-size:9px;color:var(--tx3);margin-top:2px">${td.acertos}/${td.total} acertos</div>
+      </div>
+      <span style="font-size:12px;font-weight:800;color:${col}">${p}%</span>
+    </div>`;
+  }).join('');
+
+  // History (last 5 simulados)
+  const hist=(prog.history||[]).slice(-5).reverse();
+  const histHtml = hist.length ? hist.map(h=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg2);border-radius:var(--rs);margin-bottom:5px;border:1px solid var(--bd)">
+      <span style="font-size:16px">${h.pct>=70?'✅':'❌'}</span>
+      <div style="flex:1">
+        <div style="font-size:11px;color:var(--txt);font-weight:700">${TEMA_META[h.temaId]?.nome||h.temaId}</div>
+        <div style="font-size:10px;color:var(--tx3)">${h.acertos}/${h.total} acertos · ${formatDate(h.data)}</div>
+      </div>
+      <span style="font-size:13px;font-weight:900;color:${h.pct>=70?'var(--grn)':'var(--red)'}">${h.pct}%</span>
+    </div>
+  `).join('') : '<div style="font-size:12px;color:var(--tx4);padding:8px 0">Nenhum simulado ainda.</div>';
+
+  $('perfilContent').innerHTML=`
     <div class="sec-h"><div class="sec-l"><div class="sec-tt">👤 Perfil</div></div></div>
     <div class="prof-header">
       <div class="prof-av">${usr.initials}</div>
       <div class="prof-info">
         <div class="prof-nm">${usr.name}</div>
-        <div class="prof-lvl">${lv.icon} Lv.${lvIdx} — ${lv.label}</div>
+        <div class="prof-lvl">${lv.icon} Lv.${li} — ${lv.label}</div>
+        <div style="margin-top:6px">
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--tx3);margin-bottom:3px">
+            <span>XP para próximo nível</span><span>${xp} XP</span>
+          </div>
+          <div style="background:var(--sf);border-radius:20px;height:5px;overflow:hidden">
+            <div style="height:100%;width:${xpPct}%;background:linear-gradient(90deg,var(--gold3),var(--gold));border-radius:20px;transition:width .8s ease"></div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="prof-grid">
@@ -1394,101 +1034,611 @@ function buildPerfil(){
       <div class="prof-stat"><div class="prof-stat-v">${pct}%</div><div class="prof-stat-l">Aproveitamento</div></div>
       <div class="prof-stat"><div class="prof-stat-v">${prog.acertos||0}</div><div class="prof-stat-l">Acertos</div></div>
       <div class="prof-stat"><div class="prof-stat-v">${prog.questoes||0}</div><div class="prof-stat-l">Respondidas</div></div>
-      <div class="prof-stat"><div class="prof-stat-v">${temasDone}</div><div class="prof-stat-l">Temas Concluídos</div></div>
+      <div class="prof-stat"><div class="prof-stat-v">${temasDone}</div><div class="prof-stat-l">Temas OK</div></div>
       <div class="prof-stat"><div class="prof-stat-v">${erros.length}</div><div class="prof-stat-l">Erros Salvos</div></div>
+      <div class="prof-stat"><div class="prof-stat-v">${sk.days||0}</div><div class="prof-stat-l">Dias Seguidos</div></div>
+      <div class="prof-stat"><div class="prof-stat-v">${bestNota}%</div><div class="prof-stat-l">Melhor Nota</div></div>
     </div>
+
     <div class="pnl" style="margin-bottom:14px">
-      <div class="pnl-h"><div class="pnl-tg"><div class="pnl-ic">✅</div><div class="pnl-tt">Temas Concluídos</div></div></div>
-      <div class="pnl-b"><div class="temas-list">${temaItems}</div></div>
+      <div class="pnl-h"><div class="pnl-tg"><div class="pnl-ic">📊</div><div class="pnl-tt">Desempenho por Tema</div></div></div>
+      <div class="pnl-b"><div class="temas-list">${temaRows}</div></div>
     </div>
+
+    <div class="pnl" style="margin-bottom:14px">
+      <div class="pnl-h"><div class="pnl-tg"><div class="pnl-ic">📅</div><div class="pnl-tt">Últimos Simulados</div></div></div>
+      <div class="pnl-b">${histHtml}</div>
+    </div>
+
     <button class="btn-primary" onclick="exportarDados()">📥 Exportar Dados (JSON)</button>
     <button class="btn-danger" onclick="resetarProgresso()">⚠️ Resetar Todo o Progresso</button>
   `;
 }
 
 function exportarDados(){
-  const data = {
-    progresso: loadState(LS.progress, {}),
-    erros:     loadState(LS.errors, []),
-    streak:    loadState(LS.streak, {}),
-    usuario:   loadState(LS.user, {}),
-    exportado: new Date().toISOString(),
+  const data={
+    progresso:loadState(LS.progress,{}),
+    erros:loadState(LS.errors,[]),
+    streak:loadState(LS.streak,{}),
+    usuario:loadState(LS.user,{}),
+    ranking:loadState(LS.ranking,[]),
+    exportado:new Date().toISOString()
   };
-  const json = JSON.stringify(data, null, 2);
-  const blob = new Blob([json], {type:'application/json'});
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
+  const json=JSON.stringify(data,null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
   a.href=url; a.download='krona_dados.json'; a.click();
   URL.revokeObjectURL(url);
   showToast('📥 Dados exportados!');
 }
 
 function resetarProgresso(){
-  tg.showConfirm('⚠️ Resetar TODO o progresso?\n\nEsta ação não pode ser desfeita.', ok=>{
+  tg.showConfirm('⚠️ Resetar TODO o progresso?\n\nEsta ação não pode ser desfeita.',ok=>{
     if(!ok) return;
-    localStorage.removeItem(LS.progress);
-    localStorage.removeItem(LS.errors);
-    localStorage.removeItem(LS.streak);
-    updateUI();
-    buildPerfil();
+    [LS.progress,LS.errors,LS.streak,LS.session,LS.ranking].forEach(k=>localStorage.removeItem(k));
+    updateUI(); buildPerfil();
     showToast('🔄 Progresso resetado!');
   });
+}
+
+// ============================================================
+// UPDATE UI — synced with all data
+// ============================================================
+function updateUI(){
+  const prog  = loadState(LS.progress,{acertos:0,questoes:0,byTema:{},history:[]});
+  const erros = loadState(LS.errors,[]);
+  const xp    = calcXP(prog);
+  const lv    = calcLevel(xp);
+  const li    = lvIndex(xp);
+  const temasDone=Object.values(prog.byTema||{}).filter(t=>t.done).length;
+  const pct   = prog.questoes>0?Math.round(prog.acertos/prog.questoes*100):0;
+  const progGeral=Math.round(temasDone/14*100);
+
+  // Header
+  const usr=loadState(LS.user,{name:'Aluno',initials:'A'});
+  $('uName').textContent = usr.name;
+  $('uAv').textContent   = usr.initials;
+  $('uXP').textContent   = xp+' XP';
+  $('uLvl').textContent  = `Lv.${li}`;
+
+  // Progress strip
+  $('progPct').textContent = progGeral+'%';
+  $('progBar').style.width = progGeral+'%';
+  $('progInfo').textContent= `${temasDone} de 14 temas concluídos`;
+
+  // Stats cards
+  $('stAcertos').textContent  = prog.acertos||0;
+  $('stQuestoes').textContent = prog.questoes||0;
+  $('stPct').textContent      = pct+'%';
+
+  // Metrics
+  let bestNota=0,bestTema='Nenhum tema';
+  for(const [tid,td] of Object.entries(prog.byTema||{})){
+    if(td.total>0){
+      const n=Math.round(td.acertos/td.total*100);
+      if(n>bestNota){ bestNota=n; bestTema=TEMA_META[tid]?.nome||tid; }
+    }
+  }
+  $('metBestNota').textContent = bestNota>0?bestNota+'%':'—';
+  $('metBestTema').textContent = bestNota>0?(bestTema.length>24?bestTema.slice(0,22)+'…':bestTema):'Nenhum tema';
+  $('metErros').textContent    = erros.length;
+  $('metTemas').textContent    = temasDone;
+  $('metTemasLeft').textContent= temasDone<14?`Faltam ${14-temasDone}`:'✅ Completo!';
+
+  // Streak
+  const sk=loadState(LS.streak,{lastDate:null,days:0});
+  const today=new Date().toISOString().slice(0,10);
+  const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
+  const days=sk.days||0;
+  $('metStreak').textContent=days;
+  $('metStreakSub').textContent=
+    sk.lastDate===today ? '🔥 Sequência ativa!' :
+    sk.lastDate===yesterday ? '⚡ Jogue hoje!' : 'Comece hoje!';
+
+  // Badge por tema
+  for(let i=1;i<=14;i++){
+    const b=$('badge'+i); if(!b) continue;
+    const td=prog.byTema?.['TEMA_'+i];
+    if(td?.done){ b.textContent='Concluído'; b.className='badge-sc done'; }
+    else if(td?.total>0){ b.textContent=`${td.acertos}/${td.total}`; b.className='badge-sc lock'; }
+    else { b.textContent='Pendente'; b.className='badge-sc wait'; }
+  }
+
+  // Módule progress
+  for(const [mod,temas] of Object.entries(MOD_TEMAS)){
+    const done=temas.filter(t=>prog.byTema?.[t]?.done).length;
+    $('prog'+mod).textContent=`${done}/${temas.length}`;
+  }
+
+  // Chart
+  buildChart(prog);
+
+  // Error badge in nav
+  const eb=$('errBadge');
+  if(erros.length>0){ eb.style.display='flex'; eb.textContent=Math.min(erros.length,99); }
+  else eb.style.display='none';
+
+  // Push to ranking
+  pushMyDataToRanking();
+}
+
+// ============================================================
+// CHART
+// ============================================================
+function buildChart(prog){
+  const el=$('chartArea');
+  el.innerHTML=Object.keys(TEMA_META).map((tid,i)=>{
+    const td=prog.byTema?.[tid];
+    const pct=td?.total>0?Math.round(td.acertos/td.total*100):0;
+    const h=Math.max(4,Math.round(pct*.72));
+    const col=BAR_COLORS[i%BAR_COLORS.length];
+    return `<div class="cht-g">
+      <div class="cht-w">
+        <div class="cht-b" style="height:${h}px;background:${col};opacity:${pct>0?.85:.18}"></div>
+        ${pct>0?`<span class="cht-v">${pct}%</span>`:''}
+      </div>
+      <div class="cht-l">${CHART_LABELS[tid]}</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// ACCORDION
+// ============================================================
+let openMod=null;
+function tglMod(id){
+  const el=$('mod'+id);
+  if(openMod&&openMod!==id){ const p=$('mod'+openMod); if(p) p.classList.remove('open'); }
+  if(openMod===id){ el.classList.remove('open'); openMod=null; }
+  else{ el.classList.add('open'); openMod=id; setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),150); }
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+const VIEWS={home:'viewHome',rank:'viewRank',erros:'viewErros',perfil:'viewPerfil'};
+const NAVS ={home:'nHome',   rank:'nRank',   erros:'nErr',     perfil:'nProf'};
+let curView='home';
+
+function navTo(view){
+  for(const v of Object.values(VIEWS)){ const el=$(v); if(el) el.style.display='none'; }
+  for(const n of Object.values(NAVS)){ $(n)?.classList.remove('act'); }
+  const target=$(VIEWS[view]);
+  if(target) target.style.display='block';
+  $(NAVS[view])?.classList.add('act');
+  curView=view;
+  if(view==='home')  { updateUI(); window.scrollTo({top:0,behavior:'smooth'}); }
+  if(view==='rank')  { buildRanking(); }
+  if(view==='erros') { buildErros(); }
+  if(view==='perfil'){ buildPerfil(); }
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  for(const v of Object.values(VIEWS)){ const el=$(v); if(el) el.style.display='none'; }
+  $('viewHome').style.display='block';
+});
+
+// ============================================================
+// QUIZ ENGINE
+// ============================================================
+let QS=null;
+
+// --- START (new or resume) ---
+function startQuiz(temaId, temaNome){
+  // Check for saved session to resume
+  const saved=loadState(LS.session,null);
+  if(saved && saved.temaId===temaId && !saved.finished){
+    tg.showConfirm(
+      `📌 Você tem um simulado de "${temaNome}" em andamento!\n\nQuestão ${saved.idx+1}/${saved.questions.length}\n\nRetomar de onde parou?`,
+      ok=>{ ok ? resumeQuiz(saved) : startFreshQuiz(temaId,temaNome); }
+    );
+  } else {
+    startFreshQuiz(temaId,temaNome);
+  }
+}
+
+function startFreshQuiz(temaId,temaNome){
+  const questions=QUESTIONS_DB[temaId];
+  if(!questions?.length){ showToast('❌ Questões não encontradas!'); return; }
+  const qs=[...questions].sort(()=>Math.random()-.5).slice(0,Math.min(10,questions.length));
+  QS={
+    temaId, temaNome,
+    questions:qs,
+    idx:0,
+    acertos:0,
+    erros:0,
+    answered:false,
+    timerSec:5*60,
+    timerInterval:null,
+    sessionErrors:[],
+    finished:false,
+    startTime:Date.now(),
+  };
+  saveSession();
+  bumpStreak();
+  openQuizScreen();
+  renderQuestion();
+  startQuestionTimer();
+}
+
+function resumeQuiz(saved){
+  QS={...saved, timerInterval:null, answered:true};
+  // answered=true so we show the "next" button immediately after render
+  openQuizScreen();
+  // Re-render current question in answered state
+  renderQuestionAnswered();
+  // Don't restart timer since question was already answered before leaving
+}
+
+function saveSession(){
+  if(!QS) return;
+  saveState(LS.session,{
+    temaId:QS.temaId, temaNome:QS.temaNome,
+    questions:QS.questions, idx:QS.idx,
+    acertos:QS.acertos, erros:QS.erros,
+    sessionErrors:QS.sessionErrors, finished:QS.finished,
+    startTime:QS.startTime,
+  });
+}
+
+function clearSession(){ localStorage.removeItem(LS.session); }
+
+// --- SCREEN OPEN/CLOSE ---
+function openQuizScreen(){
+  const sc=$('quizScreen');
+  sc.classList.add('active');
+  $('qTemaNm').textContent=QS.temaNome;
+  $('qAcertos').textContent=QS.acertos;
+  $('qErros').textContent=QS.erros;
+  document.body.style.overflow='hidden';
+}
+
+function closeQuizScreen(){
+  $('quizScreen').classList.remove('active');
+  document.body.style.overflow='';
+  if(QS) stopQuestionTimer();
+}
+
+// --- TIMER POR QUESTÃO — 5 min cada, reinicia a cada nova pergunta ---
+const TIMER_MAX = 5 * 60; // segundos por questão
+
+function startQuestionTimer(){
+  if(QS.timerInterval) clearInterval(QS.timerInterval);
+  QS.timerSec = TIMER_MAX;
+  updateTimerDisplay();
+  QS.timerInterval = setInterval(()=>{
+    QS.timerSec--;
+    updateTimerDisplay();
+    if(QS.timerSec <= 0){
+      clearInterval(QS.timerInterval);
+      QS.timerInterval = null;
+      onQuestionTimeout();
+    }
+  }, 1000);
+}
+
+function stopQuestionTimer(){
+  if(QS.timerInterval){ clearInterval(QS.timerInterval); QS.timerInterval = null; }
+}
+
+function updateTimerDisplay(){
+  if(!QS) return;
+  const m = Math.floor(QS.timerSec / 60);
+  const s = QS.timerSec % 60;
+  const el = $('qTimer');
+  const fill = $('qTimerFill');
+  const pct  = Math.round(QS.timerSec / TIMER_MAX * 100);
+
+  el.textContent = `⏱ ${m}:${String(s).padStart(2,'0')}`;
+  el.className   = 'q-timer' + (QS.timerSec<=30?' danger': QS.timerSec<=60?' warn':'');
+
+  if(fill){
+    fill.style.width = pct + '%';
+    fill.style.background =
+      QS.timerSec <= 30 ? 'var(--red)' :
+      QS.timerSec <= 60 ? 'var(--org)' : 'var(--gold)';
+  }
+}
+
+function onQuestionTimeout(){
+  if(QS.answered) return;
+  QS.answered = true;
+  stopQuestionTimer();
+
+  const q = QS.questions[QS.idx];
+  QS.erros++;
+  $('qErros').textContent = QS.erros;
+
+  // Highlight correct answer
+  ['A','B','C','D','E'].forEach(l=>{
+    const e = $('opt'+l); if(!e) return;
+    e.classList.add('disabled');
+    if(l === q.correta) e.classList.add('correct');
+  });
+
+  // Show feedback
+  const fb=$('qFb'), fbTt=$('qFbTt'), fbEx=$('qFbEx');
+  if(fb){
+    fb.className = 'q-fb show err';
+    fbTt.textContent = `⏰ Tempo esgotado! Resposta correta: ${q.correta}`;
+    fbEx.textContent = q.explicacao || '';
+  }
+
+  // Save error
+  QS.sessionErrors.push({
+    temaId:    QS.temaId,
+    temaNome:  QS.temaNome,
+    pergunta:  q.pergunta,
+    correta:   `${q.correta}: ${q.opcoes[q.correta]}`,
+    escolhida: '⏰ tempo esgotado',
+    data:      new Date().toISOString()
+  });
+
+  // Update timer display to show expired
+  const el = $('qTimer');
+  if(el){ el.textContent='⏰ 0:00'; el.className='q-timer danger'; }
+  const fill = $('qTimerFill');
+  if(fill){ fill.style.width='0%'; fill.style.background='var(--red)'; }
+
+  saveSession();
+  showToast('⏰ Tempo esgotado!', 1800);
+
+  // Auto-advance after 2.5s so user can read the correct answer
+  setTimeout(()=>{
+    if(!QS || QS.finished) return;
+    nextQuestion();
+  }, 2500);
+}
+
+// --- RENDER QUESTION ---
+function renderQuestion(){
+  const q=QS.questions[QS.idx];
+  const tot=QS.questions.length;
+  $('qProgFill').style.width=Math.round(QS.idx/tot*100)+'%';
+  $('qProgCt').textContent=`${QS.idx+1}/${tot}`;
+  QS.answered=false;
+
+  const letters=['A','B','C','D','E'];
+  const opts=q.opcoes||{};
+  const optsHtml=letters.filter(l=>opts[l]).map(l=>`
+    <div class="q-opt" id="opt${l}" onclick="selectOpt('${l}')">
+      <div class="q-opt-lt">${l}</div>
+      <div class="q-opt-txt">${opts[l]}</div>
+    </div>`).join('');
+
+  $('qBody').innerHTML=`
+    <div class="q-num">Questão ${QS.idx+1} de ${tot} · ${QS.temaNome}</div>
+    <div class="q-txt">${q.pergunta}</div>
+    <div class="q-opts">${optsHtml}</div>
+    <div class="q-fb" id="qFb"><div class="q-fb-tt" id="qFbTt"></div><div class="q-fb-ex" id="qFbEx"></div></div>
+    <button class="q-next" id="qNext" onclick="nextQuestion()">
+      ${QS.idx+1<tot?'Próxima questão →':'Ver resultado 🏁'}
+    </button>`;
+  $('qBody').scrollTop=0;
+
+  // Start per-question timer
+  startQuestionTimer();
+}
+
+// Render already-answered question (for resume)
+function renderQuestionAnswered(){
+  renderQuestion();
+  // We can't know the previous answer, show next button immediately
+  QS.answered=true;
+  if(QS.timerInterval){ clearInterval(QS.timerInterval); QS.timerInterval=null; }
+  const rt=$('qTimer'); if(rt){ rt.textContent='▶ Retomado'; rt.className='q-timer'; }
+  const rf=$('qTimerFill'); if(rf){ rf.style.width='100%'; rf.style.background='var(--blu)'; }
+  const nb=$('qNext'); if(nb) nb.classList.add('show');
+}
+
+// --- SELECT OPTION ---
+function selectOpt(letter){
+  if(QS.answered) return;
+  if(QS.timerInterval){ clearInterval(QS.timerInterval); QS.timerInterval=null; }
+  QS.answered=true;
+
+  const q=QS.questions[QS.idx];
+  const correta=q.correta;
+  const isOk=letter===correta;
+
+  ['A','B','C','D','E'].forEach(l=>{
+    const el=$('opt'+l); if(!el) return;
+    el.classList.add('disabled');
+    if(l===correta) el.classList.add('correct');
+    else if(l===letter&&!isOk) el.classList.add('wrong');
+  });
+
+  if(isOk){ QS.acertos++; $('qAcertos').textContent=QS.acertos; }
+  else{
+    QS.erros++; $('qErros').textContent=QS.erros;
+    QS.sessionErrors.push({
+      temaId:QS.temaId,temaNome:QS.temaNome,
+      pergunta:q.pergunta,
+      correta:`${correta}: ${q.opcoes[correta]}`,
+      escolhida:`${letter}: ${q.opcoes[letter]||'?'}`,
+      data:new Date().toISOString()
+    });
+  }
+
+  const fb=$('qFb'),fbTt=$('qFbTt'),fbEx=$('qFbEx');
+  fb.className='q-fb show '+(isOk?'ok':'err');
+  fbTt.textContent=isOk?'✅ Correto!':`❌ Errado — Correta: ${correta}`;
+  fbEx.textContent=q.explicacao||'';
+  $('qNext').classList.add('show');
+
+  // Parar timer da questão ao responder
+  stopQuestionTimer();
+  const tf=$('qTimerFill');
+  if(tf) tf.style.background='var(--grn)';
+
+  try{
+    if(isOk) tg.HapticFeedback.impactOccurred('light');
+    else     tg.HapticFeedback.notificationOccurred('error');
+  }catch(e){}
+
+  saveSession();
+}
+
+// --- NEXT QUESTION ---
+function nextQuestion(){
+  stopQuestionTimer();
+  QS.idx++;
+  if(QS.idx >= QS.questions.length){ showResult(); }
+  else{ renderQuestion(); }
+}
+
+// --- SHOW RESULT ---
+function showResult(){
+  if(QS.timerInterval){ clearInterval(QS.timerInterval); QS.timerInterval=null; }
+  QS.finished=true;
+  clearSession();
+
+  const tot=QS.questions.length;
+  const ac=QS.acertos;
+  const pct=Math.round(ac/tot*100);
+  const nota=(ac/tot*10).toFixed(1);
+  const xpGain=ac*10+(pct>=70?50:0)+(pct>=90?50:0);
+
+  let icon,msg;
+  if(pct>=90){ icon='🏆'; msg='Excelente! Domínio total!'; }
+  else if(pct>=70){ icon='🎉'; msg='Muito bem! Aprovado!'; }
+  else if(pct>=50){ icon='📚'; msg='Continue estudando!'; }
+  else { icon='💪'; msg='Não desanime, revise o tema!'; }
+
+  // ---- PERSIST PROGRESS ----
+  const prog=loadState(LS.progress,{acertos:0,questoes:0,byTema:{},history:[]});
+  if(!prog.byTema) prog.byTema={};
+  if(!prog.history) prog.history=[];
+
+  const prev=prog.byTema[QS.temaId]||{acertos:0,total:0,done:false,attempts:0};
+  prog.byTema[QS.temaId]={
+    acertos:Math.max(prev.acertos,ac),
+    total:tot,
+    done:prev.done||(pct>=60),
+    lastPct:pct,
+    bestPct:Math.max(prev.bestPct||0,pct),
+    attempts:(prev.attempts||0)+1,
+  };
+
+  // Accumulate all-time stats
+  prog.acertos  =(prog.acertos||0)+ac;
+  prog.questoes =(prog.questoes||0)+tot;
+
+  // History entry
+  prog.history.push({temaId:QS.temaId,acertos:ac,total:tot,pct,data:new Date().toISOString()});
+  if(prog.history.length>100) prog.history=prog.history.slice(-100);
+
+  saveState(LS.progress,prog);
+
+  // ---- PERSIST ERRORS ----
+  if(QS.sessionErrors.length){
+    const existing=loadState(LS.errors,[]);
+    saveState(LS.errors,[...existing,...QS.sessionErrors].slice(-100));
+  }
+
+  // ---- UPDATE RANKING ----
+  pushMyDataToRanking();
+
+  // ---- RESULT HTML ----
+  $('qBody').innerHTML=`
+    <div class="q-result">
+      <div class="q-res-ic">${icon}</div>
+      <div class="q-res-tt">${msg}</div>
+      <div class="q-res-nota">${nota}</div>
+      <div class="q-res-sub">${pct}% de aproveitamento · ${ac}/${tot} acertos</div>
+      <div class="q-res-grid">
+        <div class="q-res-st"><div class="q-res-sv" style="color:var(--grn)">${ac}</div><div class="q-res-sl">Acertos</div></div>
+        <div class="q-res-st"><div class="q-res-sv" style="color:var(--red)">${tot-ac}</div><div class="q-res-sl">Erros</div></div>
+        <div class="q-res-st"><div class="q-res-sv" style="color:var(--gold)">${pct}%</div><div class="q-res-sl">Aproveit.</div></div>
+      </div>
+      <div class="q-res-xp">+${xpGain} XP ganhos! ✨</div>
+      <button class="q-next show" style="margin-bottom:8px" onclick="finishAndGoHome()">🏠 Voltar ao início</button>
+      <button class="btn-quiz-home" onclick="restartQuiz()">🔄 Refazer este simulado</button>
+    </div>`;
+  $('qProgFill').style.width='100%';
+  $('qProgCt').textContent=`${tot}/${tot}`;
+  const rt=$('qTimer'); if(rt){ rt.textContent='✅ Concluído'; rt.className='q-timer'; }
+  const rf=$('qTimerFill'); if(rf){ rf.style.width='100%'; rf.style.background='var(--grn)'; }
+}
+
+function finishAndGoHome(){
+  closeQuizScreen();
+  updateUI();
+  showToast('✅ Resultado salvo! Painel atualizado.');
+}
+
+function restartQuiz(){
+  const {temaId,temaNome}=QS;
+  closeQuizScreen();
+  setTimeout(()=>startFreshQuiz(temaId,temaNome),200);
+}
+
+function quitQuiz(){
+  tg.showConfirm('Sair do simulado?\n\nSeu progresso desta questão será salvo e você pode retomar depois.',ok=>{
+    if(!ok) return;
+    saveSession();
+    closeQuizScreen();
+    updateUI();
+    showToast('💾 Progresso salvo! Retome quando quiser.');
+  });
+}
+
+// ============================================================
+// STREAK
+// ============================================================
+function bumpStreak(){
+  const sk=loadState(LS.streak,{lastDate:null,days:0});
+  const today=new Date().toISOString().slice(0,10);
+  if(sk.lastDate===today) return;
+  const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
+  const days=sk.lastDate===yesterday?sk.days+1:1;
+  saveState(LS.streak,{lastDate:today,days});
 }
 
 // ============================================================
 // TELEGRAM USER DATA
 // ============================================================
 function initUserData(){
-  const tgUser = tg.initDataUnsafe?.user;
+  const tgUser=tg.initDataUnsafe?.user;
   if(tgUser){
-    const name     = tgUser.first_name + (tgUser.last_name?' '+tgUser.last_name:'');
-    const initials = (tgUser.first_name[0]+(tgUser.last_name?.[0]||'')).toUpperCase();
-    saveState(LS.user, {name, initials, id:tgUser.id});
+    const name=tgUser.first_name+(tgUser.last_name?' '+tgUser.last_name:'');
+    const initials=(tgUser.first_name[0]+(tgUser.last_name?.[0]||'')).toUpperCase();
+    saveState(LS.user,{name,initials,id:String(tgUser.id)});
   }
-}
-
-// ============================================================
-// RECEIVE DATA FROM BOT (webhook result updates)
-// ============================================================
-// Bot can redirect user back to Mini App with quiz results via
-// tg.sendData → bot processes → bot can reopen with startParam
-// We listen for initDataUnsafe.start_param to apply results
-function applyBotResult(){
-  const sp = tg.initDataUnsafe?.start_param;
-  if(!sp) return;
-  try{
-    const data = JSON.parse(decodeURIComponent(sp));
-    if(data.action === 'quiz_result'){
-      const prog = loadState(LS.progress, {acertos:0, questoes:0, byTema:{}});
-      if(!prog.byTema) prog.byTema={};
-      const tid = data.tema_id;
-      if(!prog.byTema[tid]) prog.byTema[tid]={acertos:0, total:0, done:false};
-      prog.byTema[tid].acertos = data.acertos;
-      prog.byTema[tid].total   = data.total;
-      prog.byTema[tid].done    = data.done || false;
-      prog.acertos  = (prog.acertos||0) + data.acertos;
-      prog.questoes = (prog.questoes||0) + data.total;
-      saveState(LS.progress, prog);
-
-      // Save errors if provided
-      if(data.erros?.length){
-        const existing = loadState(LS.errors, []);
-        const news = data.erros.map(e=>({...e, temaId:tid, data:new Date().toISOString()}));
-        saveState(LS.errors, [...existing, ...news].slice(-50));
-      }
-    }
-  } catch(e){}
 }
 
 // ============================================================
 // BOOT
 // ============================================================
 initUserData();
-applyBotResult();
 updateUI();
+setTimeout(()=>{ if(!openMod) tglMod('A'); },400);
 
-// Open first module by default
-setTimeout(()=>{ if(!openMod) tglMod('A'); }, 400);
+// Check for interrupted session on load
+(function checkPendingSession(){
+  const saved=loadState(LS.session,null);
+  if(saved&&!saved.finished){
+    setTimeout(()=>{
+      showToast(`💾 Simulado salvo: "${saved.temaNome}" (Q${saved.idx+1}/${saved.questions?.length}). Clique no tema para retomar.`,4000);
+    },1200);
+  }
+})();
+
+</script>
+
+<script>
+// KRONA PWA — Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js', { scope: '/' })
+      .then(reg => console.log('[KRONA] SW ativo:', reg.scope))
+      .catch(err => console.warn('[KRONA] SW falhou:', err));
+  });
+}
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; });
+window.addEventListener('appinstalled', () => { deferredPrompt = null; });
 </script>
 </body>
 </html>
