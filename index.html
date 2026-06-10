@@ -2,96 +2,108 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#060A13">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="KRONA">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-<meta name="msapplication-TileImage" content="icons/icon-144.png">
-<meta name="msapplication-TileColor" content="#060A13">
-<title>KRONA Analytics — Simulado Agronegócio</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>Gerador de Ícones — KRONA</title>
 <style>
-/* === TODO O SEU CSS ORIGINAL (mantido intacto) === */
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#060A13;--bg2:#0B1120;--sf:#101B2E;--sf2:#152238;--sf3:#1A2B48;
-  --bd:#1E3050;--bd2:#264070;
-  --gold:#D4A84B;--gold2:#E8C46E;--gold3:#C49A3C;
-  --goldG:rgba(212,168,75,.06);--goldG2:rgba(212,168,75,.12);
-  --grn:#22C55E;--grnD:#16A34A;--grnG:rgba(34,197,94,.08);
-  --red:#EF4444;--redG:rgba(239,68,68,.08);
-  --blu:#3B82F6;--vio:#8B5CF6;--org:#F59E0B;
-  --txt:#E2E8F0;--tx2:#94A3B8;--tx3:#64748B;--tx4:#475569;
-  --r:14px;--rs:10px;
-  --sh:0 2px 12px rgba(0,0,0,.3);--sh2:0 4px 24px rgba(0,0,0,.35);
-  --tr:.25s cubic-bezier(.4,0,.2,1)
-}
-html{background:var(--bg)}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;max-width:480px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:90px}
-/* ... todo o resto do seu CSS (copie exatamente como está no seu arquivo original) ... */
-/* Por brevidade, estou omitindo a repetição do CSS, mas você deve manter o seu original. */
+  body{font-family:sans-serif;background:#060A13;color:#E2E8F0;padding:30px;text-align:center}
+  h1{color:#D4A84B;margin-bottom:20px}
+  button{background:#D4A84B;color:#060A13;border:none;padding:12px 28px;border-radius:8px;
+    font-size:15px;font-weight:700;cursor:pointer;margin:10px}
+  button:hover{background:#E8C46E}
+  .grid{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:20px}
+  .item{background:#101B2E;border:1px solid #1E3050;border-radius:10px;padding:12px;text-align:center}
+  canvas{border-radius:8px;display:block;margin:0 auto 6px}
+  small{color:#64748B;font-size:11px}
+  a{color:#D4A84B;text-decoration:none;font-size:12px;font-weight:700}
 </style>
 </head>
 <body>
-<!-- TODO O SEU HTML (HEADER, MODULOS, RANKING, ETC.) -->
-<!-- Mantenha exatamente como está no seu index.html original -->
-<div class="hdr">...</div>
-<!-- ... todo o conteúdo do seu app ... -->
-
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<!-- BOTÃO DE INSTALAÇÃO CUSTOMIZADO (OPCIONAL, MAS RECOMENDADO) -->
-<div id="installBtn" style="position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #D4A84B; color: #060A13; border: none; border-radius: 40px; padding: 10px 20px; font-weight: bold; font-size: 14px; cursor: pointer; z-index: 300; display: none; box-shadow: 0 2px 12px rgba(0,0,0,0.3);">
-  📲 Instalar App KRONA
-</div>
+<h1>🌾 Gerador de Ícones KRONA</h1>
+<p style="color:#94A3B8;margin-bottom:20px">Gera todos os tamanhos necessários para o PWA/APK</p>
+<button onclick="generateAll()">⬇ Gerar e Baixar Todos os Ícones</button>
+<div class="grid" id="grid"></div>
 
 <script>
-// ============================================================
-// SEU CÓDIGO COMPLETO DO APP (QUESTIONS_DB, funções, etc.)
-// Mantenha exatamente como está no seu index.html original
-// ============================================================
-// (Aqui vai todo o seu JavaScript do app – o mesmo que você já tem)
-// ============================================================
-
-// ============================================================
-// PWA — REGISTRO DO SERVICE WORKER (CORRIGIDO)
-// ============================================================
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js', { scope: './' })
-      .then(reg => console.log('[KRONA] SW ativo, escopo:', reg.scope))
-      .catch(err => console.warn('[KRONA] SW falhou:', err));
-  });
+// POLYFILL para roundRect (corrige o erro)
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+    if (w < 2 * r) r = w / 2;
+    if (h < 2 * r) r = h / 2;
+    this.moveTo(x+r, y);
+    this.lineTo(x+w-r, y);
+    this.quadraticCurveTo(x+w, y, x+w, y+r);
+    this.lineTo(x+w, y+h-r);
+    this.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+    this.lineTo(x+r, y+h);
+    this.quadraticCurveTo(x, y+h, x, y+h-r);
+    this.lineTo(x, y+r);
+    this.quadraticCurveTo(x, y, x+r, y);
+    return this;
+  };
 }
 
-// ============================================================
-// BOTÃO DE INSTALAÇÃO CUSTOMIZADO
-// ============================================================
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const btn = document.getElementById('installBtn');
-  if (btn) btn.style.display = 'block';
-});
-document.getElementById('installBtn')?.addEventListener('click', async () => {
-  if (!deferredPrompt) return;
-  document.getElementById('installBtn').style.display = 'none';
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  console.log(`Instalação: ${outcome}`);
-  deferredPrompt = null;
-});
-window.addEventListener('appinstalled', () => {
-  deferredPrompt = null;
-  document.getElementById('installBtn').style.display = 'none';
-});
+const SIZES = [72, 96, 128, 144, 152, 192, 384, 512];
+
+function drawIcon(size) {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  const grad = ctx.createLinearGradient(0, 0, size, size);
+  grad.addColorStop(0, '#0D1525');
+  grad.addColorStop(1, '#152238');
+  ctx.fillStyle = grad;
+  ctx.roundRect(0, 0, size, size, size * 0.2);
+  ctx.fill();
+
+  // Borda dourada
+  ctx.strokeStyle = '#D4A84B';
+  ctx.lineWidth = Math.max(2, size * 0.025);
+  ctx.roundRect(ctx.lineWidth/2, ctx.lineWidth/2, size-ctx.lineWidth, size-ctx.lineWidth, size * 0.18);
+  ctx.stroke();
+
+  // Letra K
+  const fs = size * 0.52;
+  ctx.font = `900 ${fs}px 'Inter', Arial, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const tGrad = ctx.createLinearGradient(0, size*0.2, 0, size*0.8);
+  tGrad.addColorStop(0, '#E8C46E');
+  tGrad.addColorStop(1, '#C49A3C');
+  ctx.fillStyle = tGrad;
+  ctx.fillText('K', size/2, size/2 + size*0.03);
+
+  // "KRONA" para tamanhos >= 128
+  if(size >= 128) {
+    ctx.font = `800 ${size * 0.095}px 'Inter', Arial, sans-serif`;
+    ctx.fillStyle = 'rgba(212,168,75,0.6)';
+    ctx.fillText('KRONA', size/2, size * 0.84);
+  }
+  return canvas;
+}
+
+function generateAll() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  SIZES.forEach(size => {
+    const canvas = drawIcon(size);
+    const item = document.createElement('div');
+    item.className = 'item';
+    const preview = document.createElement('canvas');
+    preview.width = preview.height = Math.min(size, 96);
+    const pCtx = preview.getContext('2d');
+    pCtx.drawImage(canvas, 0, 0, preview.width, preview.height);
+    item.appendChild(preview);
+    item.innerHTML += `<small>${size}×${size}</small><br>`;
+    const link = document.createElement('a');
+    link.textContent = '⬇ Baixar';
+    link.href = canvas.toDataURL('image/png');
+    link.download = `icon-${size}.png`;
+    item.appendChild(link);
+    grid.appendChild(item);
+    setTimeout(() => link.click(), SIZES.indexOf(size) * 300);
+  });
+}
 </script>
 </body>
 </html>
