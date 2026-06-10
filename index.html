@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="KRONA">
-<title>KRONA — Simulado Agronegócio</title>
+<title>KRONA — Simulado & Áudio SENAR</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -21,14 +21,220 @@
   --red:#FF5A5A;--redD:#CC3838;
   --blu:#4B9EFF;--vio:#A855F7;--org:#FF8C42;--teal:#00C9C8;
   --txt:#F0F4FF;--tx2:#A0AFCC;--tx3:#607090;--tx4:#3D506A;
-  --r:18px;--rs:12px;
+  --r:20px;--rs:14px;
   --sh:0 4px 24px rgba(0,0,0,.4);--sh2:0 8px 40px rgba(0,0,0,.5);
-  --tr:.22s cubic-bezier(.4,0,.2,1);
+  --tr:.25s cubic-bezier(.4,0,.2,1);
   --free-end:2026-12-31;
 }
 
 html{background:var(--bg);height:100%}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;max-width:430px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:84px;position:relative}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;max-width:430px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:100px;position:relative}
+
+/* ── PREMIUM BUTTONS ── */
+.btn-primary {
+  background: linear-gradient(135deg, var(--gold3), var(--gold), var(--gold2));
+  color: #0A0F1E;
+  border: none;
+  border-radius: var(--rs);
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .3px;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(245,200,66,.25);
+  transition: all var(--tr);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(245,200,66,0.35);
+}
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #009E6A, var(--grn), #00F0A0);
+  color: #0E1628;
+  border: none;
+  border-radius: var(--rs);
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .3px;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(0,214,143,.25);
+  transition: all var(--tr);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+}
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(0,214,143,0.35);
+}
+.btn-success:active {
+  transform: translateY(1px);
+}
+
+.btn-accent {
+  background: linear-gradient(135deg, #7c3aed, var(--vio), #c084fc);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--rs);
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .3px;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(168,85,247,.25);
+  transition: all var(--tr);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+}
+.btn-accent:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(168,85,247,0.35);
+}
+.btn-accent:active {
+  transform: translateY(1px);
+}
+
+.btn-alert {
+  background: linear-gradient(135deg, var(--redD), var(--red), #ff7a7a);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--rs);
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .3px;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(255,90,90,.25);
+  transition: all var(--tr);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+}
+.btn-alert:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(255,90,90,0.35);
+}
+.btn-alert:active {
+  transform: translateY(1px);
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid var(--bd2);
+  color: var(--tx2);
+  border-radius: var(--rs);
+  padding: 13px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  cursor: pointer;
+  transition: all var(--tr);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+}
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--txt);
+  border-color: rgba(255,255,255,0.2);
+}
+.btn-secondary:active {
+  transform: scale(0.98);
+}
+
+/* ── PREMIUM CLASS IMPROVEMENTS ── */
+.hdr {
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+}
+.brand-mark {
+  background: linear-gradient(135deg, var(--gold3), var(--gold), var(--gold2));
+}
+.welcome-card {
+  background: linear-gradient(135deg, #111e35 0%, #070e1b 100%) !important;
+  border: 1px solid rgba(245,200,66,0.15) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+.mod {
+  background: #0f182a !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  border-radius: 20px !important;
+}
+.mod.open {
+  border-color: rgba(245,200,66,0.2) !important;
+}
+.tema {
+  background: #14213d !important;
+  border: 1.5px solid rgba(255,255,255,0.03) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.tema:hover {
+  border-color: rgba(245, 200, 66, 0.25) !important;
+  background: #182848 !important;
+}
+.bnav {
+  background: linear-gradient(180deg, rgba(10, 15, 30, 0) 0%, rgba(10, 15, 30, 0.95) 20%);
+  backdrop-filter: blur(20px);
+}
+.nav-i {
+  transition: all 0.25s ease;
+}
+.nav-i.act {
+  background: rgba(245,200,66,0.12) !important;
+}
+.nav-i.act .nav-lb {
+  color: var(--gold) !important;
+}
+.rank-row {
+  background: #111B2E !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  transition: all 0.25s ease;
+}
+.rank-row.me {
+  background: rgba(245,200,66,0.05) !important;
+  border-color: rgba(245,200,66,0.3) !important;
+}
+.erro-card {
+  background: #111B2E !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+.prof-stat, .badge-item, .admin-stat, .student-row {
+  background: #111B2E !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+.badge-item.earned {
+  border-color: rgba(245,200,66,0.25) !important;
+  background: rgba(245,200,66,0.03) !important;
+}
+
+/* ── SPINNING DISC ANIMATION ── */
+@keyframes spinDisc {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.spinning {
+  animation: spinDisc 8s linear infinite;
+}
 
 /* ── REGISTRATION SCREEN ── */
 #regScreen{position:fixed;inset:0;background:var(--bg);z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 24px;max-width:430px;left:50%;transform:translateX(-50%)}
@@ -41,319 +247,19 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .reg-input{background:var(--sf);border:1.5px solid var(--bd2);border-radius:var(--rs);padding:14px 16px;font-size:15px;color:var(--txt);font-family:inherit;outline:none;transition:border-color var(--tr)}
 .reg-input:focus{border-color:var(--gold)}
 .reg-input::placeholder{color:var(--tx3)}
-.btn-gold{width:100%;padding:15px;background:linear-gradient(135deg,var(--gold3),var(--gold),var(--gold2));color:#0A0F1E;font-size:15px;font-weight:900;border:none;border-radius:var(--r);cursor:pointer;letter-spacing:.2px;margin-top:6px;box-shadow:0 4px 20px rgba(245,200,66,.35);transition:all var(--tr)}
-.btn-gold:active{transform:scale(.97)}
-.reg-sms-row{display:flex;gap:10px}
-.reg-sms-row .reg-input{flex:1}
-.btn-sms{padding:14px 18px;background:var(--sf2);border:1.5px solid var(--bd2);border-radius:var(--rs);color:var(--gold);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all var(--tr)}
-.btn-sms:active{background:var(--sf3)}
 .reg-free-badge{background:rgba(0,214,143,.1);border:1px solid rgba(0,214,143,.25);border-radius:20px;padding:8px 16px;color:var(--grn);font-size:12px;font-weight:700;text-align:center;margin-top:4px}
 .step-dots{display:flex;gap:8px;justify-content:center;margin-bottom:24px}
 .step-dot{width:8px;height:8px;border-radius:50%;background:var(--bd2);transition:all var(--tr)}
 .step-dot.active{background:var(--gold);width:24px;border-radius:4px}
-
-/* ── HEADER ── */
-.hdr{background:linear-gradient(180deg,var(--bg2) 0%,rgba(14,22,40,.95) 100%);position:sticky;top:0;z-index:100;border-bottom:1px solid var(--bd);backdrop-filter:blur(12px)}
-.hdr-main{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px}
-.brand{display:flex;align-items:center;gap:10px}
-.brand-mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--gold3),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;color:#0A0F1E;box-shadow:0 2px 12px rgba(245,200,66,.3)}
-.brand-name{font-size:18px;font-weight:900;color:var(--gold);letter-spacing:2px;line-height:1}
-.brand-sub{font-size:8px;font-weight:700;color:var(--tx3);letter-spacing:2px;text-transform:uppercase}
-.hdr-right{display:flex;align-items:center;gap:10px}
-.usr-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--sf2),var(--sf3));border:2px solid rgba(245,200,66,.4);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--gold)}
-.xp-chip{background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.25);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:800;color:var(--gold)}
-
-/* FREE COUNTDOWN */
-.free-bar{background:linear-gradient(90deg,rgba(0,214,143,.08),rgba(0,214,143,.03));border-bottom:1px solid rgba(0,214,143,.15);padding:7px 18px;display:flex;align-items:center;justify-content:space-between}
-.free-label{font-size:10px;font-weight:700;color:var(--grn);text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;gap:6px}
-.free-time{font-size:11px;font-weight:800;color:var(--grn)}
-.free-dot{width:6px;height:6px;border-radius:50%;background:var(--grn);animation:blink 1.5s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* ── MAIN CONTENT ── */
-.ctn{padding:16px 14px 20px}
-
-/* WELCOME CARD */
-.welcome-card{background:linear-gradient(135deg,#1A2A42 0%,#0E1E36 100%);border:1px solid var(--bd2);border-radius:24px;padding:22px;margin-bottom:18px;position:relative;overflow:hidden}
-.welcome-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(245,200,66,.12),transparent 70%);pointer-events:none}
-.wc-greeting{font-size:13px;color:var(--tx2);font-weight:500;margin-bottom:4px}
-.wc-name{font-size:22px;font-weight:900;color:var(--txt);margin-bottom:14px;letter-spacing:-.3px}
-.wc-prog-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.wc-prog-t{font-size:11px;font-weight:700;color:var(--tx2)}
-.wc-prog-p{font-size:13px;font-weight:900;color:var(--gold)}
-.wc-prog-track{background:rgba(255,255,255,.06);border-radius:20px;height:8px;overflow:hidden}
-.wc-prog-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--gold3),var(--gold),var(--gold2));transition:width .9s cubic-bezier(.34,1.56,.64,1)}
-.wc-stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:16px}
-.wc-st{background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:var(--rs);padding:10px 8px;text-align:center}
-.wc-sv{font-size:20px;font-weight:900;color:var(--txt)}
-.wc-sl{font-size:9px;color:var(--tx3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
-
-/* STREAK & XP RIBBON */
-.ribbon{display:flex;gap:10px;margin-bottom:18px}
-.rib-card{flex:1;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:14px;display:flex;align-items:center;gap:10px}
-.rib-ic{font-size:26px;flex-shrink:0}
-.rib-info{}
-.rib-val{font-size:18px;font-weight:900;color:var(--txt);line-height:1}
-.rib-lbl{font-size:10px;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
-.rib-card.streak .rib-val{color:var(--org)}
-.rib-card.level .rib-val{color:var(--gold)}
-
-/* SECTION HEADER */
-.sec-h{display:flex;align-items:center;justify-content:space-between;margin:20px 0 12px;padding:0 2px}
-.sec-tt{font-size:11px;font-weight:800;color:var(--tx3);text-transform:uppercase;letter-spacing:1.5px;display:flex;align-items:center;gap:6px}
-.sec-tt::before{content:'';display:inline-block;width:3px;height:14px;background:var(--gold);border-radius:2px}
-.sec-ct{font-size:11px;color:var(--tx3);font-weight:600}
-
-/* MODULE CARDS */
-.mod{background:var(--sf);border:1px solid var(--bd);border-radius:20px;margin-bottom:10px;overflow:hidden;transition:border-color var(--tr),transform var(--tr)}
-.mod.open{border-color:rgba(245,200,66,.25)}
-.mod-h{display:flex;align-items:center;justify-content:space-between;padding:16px;cursor:pointer;user-select:none}
-.mod-h:active{background:rgba(255,255,255,.02)}
-.mod-left{display:flex;align-items:center;gap:12px}
-.mod-icon{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.mod-icon.agro{background:linear-gradient(135deg,rgba(0,214,143,.2),rgba(0,214,143,.05));box-shadow:0 0 0 1px rgba(0,214,143,.2)}
-.mod-icon.plant{background:linear-gradient(135deg,rgba(0,200,100,.2),rgba(0,200,100,.05));box-shadow:0 0 0 1px rgba(0,200,100,.2)}
-.mod-icon.soil{background:linear-gradient(135deg,rgba(255,140,66,.2),rgba(255,140,66,.05));box-shadow:0 0 0 1px rgba(255,140,66,.2)}
-.mod-icon.anim{background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(168,85,247,.05));box-shadow:0 0 0 1px rgba(168,85,247,.2)}
-.mod-icon.tech{background:linear-gradient(135deg,rgba(75,158,255,.2),rgba(75,158,255,.05));box-shadow:0 0 0 1px rgba(75,158,255,.2)}
-.mod-nm{font-size:14px;font-weight:800;color:var(--txt);letter-spacing:-.2px}
-.mod-sub{font-size:11px;color:var(--tx3);font-weight:500;margin-top:2px}
-.mod-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.mod-ring{width:36px;height:36px;position:relative;flex-shrink:0}
-.mod-ring svg{transform:rotate(-90deg)}
-.mod-ring-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:var(--gold)}
-.mod-chev{font-size:14px;color:var(--tx4);transition:transform var(--tr)}
-.mod.open .mod-chev{transform:rotate(90deg)}
-.mod-body{max-height:0;overflow:hidden;transition:max-height .38s cubic-bezier(.4,0,.2,1)}
-.mod.open .mod-body{max-height:1400px}
-.mod-inner{padding:0 12px 12px}
-
-/* TEMA ITEMS */
-.tema{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;cursor:pointer;transition:background var(--tr),transform var(--tr);border:1px solid transparent;margin-bottom:6px;position:relative;overflow:hidden}
-.tema:active{transform:scale(.98)}
-.tema:hover{background:var(--sf2);border-color:var(--bd)}
-.tema-ic{font-size:22px;flex-shrink:0}
-.tema-det{flex:1;min-width:0}
-.tema-tag{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;padding:2px 7px;border-radius:5px;display:inline-block;margin-bottom:4px}
-.tema-tag.agro{background:rgba(0,214,143,.12);color:var(--grn)}
-.tema-tag.soil{background:rgba(255,140,66,.12);color:var(--org)}
-.tema-tag.plant{background:rgba(0,214,143,.12);color:var(--grn)}
-.tema-tag.anim{background:rgba(168,85,247,.12);color:var(--vio)}
-.tema-tag.tech{background:rgba(75,158,255,.12);color:var(--blu)}
-.tema-nm{font-size:13px;font-weight:700;color:var(--txt);line-height:1.3}
-.tema-ct{font-size:11px;color:var(--tx3);font-weight:500;margin-top:3px}
-.tema-badge{font-size:9px;font-weight:700;padding:4px 9px;border-radius:20px;flex-shrink:0}
-.tema-badge.done{background:rgba(0,214,143,.12);color:var(--grn)}
-.tema-badge.partial{background:rgba(245,200,66,.12);color:var(--gold)}
-.tema-badge.pending{background:var(--sf3);color:var(--tx3)}
-.tema-arr{font-size:18px;color:var(--tx4);flex-shrink:0}
-
-/* ── BOTTOM NAV ── */
-.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:linear-gradient(180deg,rgba(10,15,30,0) 0%,rgba(10,15,30,.98) 20%);padding:8px 10px 16px;display:flex;justify-content:space-around;align-items:center;z-index:200}
-.nav-i{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 14px;cursor:pointer;border-radius:14px;transition:all var(--tr);position:relative;min-width:60px}
-.nav-i:active{transform:scale(.9)}
-.nav-ic{font-size:22px;transition:transform var(--tr)}
-.nav-lb{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px;transition:color var(--tr)}
-.nav-dot{position:absolute;top:4px;right:8px;background:var(--red);width:16px;height:16px;border-radius:50%;font-size:8px;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)}
-.nav-i.act{background:rgba(245,200,66,.08)}
-.nav-i.act .nav-lb{color:var(--gold)}
-.nav-i.act .nav-ic{transform:scale(1.1)}
-
-/* ── RANKING VIEW ── */
-.rank-header{background:linear-gradient(135deg,#1A2A42,#0E1E36);border:1px solid var(--bd2);border-radius:20px;padding:18px;margin-bottom:16px;text-align:center}
-.rank-header-title{font-size:16px;font-weight:900;color:var(--txt);margin-bottom:4px}
-.rank-header-sub{font-size:12px;color:var(--tx2)}
-.rank-podium{display:flex;align-items:flex-end;justify-content:center;gap:12px;margin-bottom:20px;padding:0 10px}
-.podium-item{display:flex;flex-direction:column;align-items:center;gap:6px}
-.podium-place-1{order:2}.podium-place-2{order:1}.podium-place-3{order:3}
-.podium-av{border-radius:50%;border:3px solid;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900}
-.podium-place-1 .podium-av{width:56px;height:56px;border-color:var(--gold);color:var(--gold);background:rgba(245,200,66,.1)}
-.podium-place-2 .podium-av{width:46px;height:46px;border-color:var(--tx2);color:var(--tx2);background:rgba(160,175,204,.1)}
-.podium-place-3 .podium-av{width:42px;height:42px;border-color:var(--org);color:var(--org);background:rgba(255,140,66,.1)}
-.podium-name{font-size:11px;font-weight:700;color:var(--txt);max-width:70px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.podium-xp{font-size:10px;color:var(--tx3);font-weight:600}
-.podium-base{border-radius:8px 8px 0 0;width:60px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900}
-.podium-place-1 .podium-base{height:50px;background:rgba(245,200,66,.15);color:var(--gold)}
-.podium-place-2 .podium-base{height:38px;background:rgba(160,175,204,.1);color:var(--tx2)}
-.podium-place-3 .podium-base{height:30px;background:rgba(255,140,66,.1);color:var(--org)}
-.rank-list{display:flex;flex-direction:column;gap:8px}
-.rank-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--sf);border:1px solid var(--bd);border-radius:14px;transition:border-color var(--tr)}
-.rank-row.me{border-color:rgba(245,200,66,.35);background:rgba(245,200,66,.04)}
-.rank-pos{font-size:14px;font-weight:900;color:var(--tx3);width:24px;text-align:center;flex-shrink:0}
-.rank-av{width:36px;height:36px;border-radius:50%;background:var(--sf3);border:1.5px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--gold);flex-shrink:0}
-.rank-info{flex:1}
-.rank-nm{font-size:13px;font-weight:700;color:var(--txt)}
-.rank-sub{font-size:10px;color:var(--tx3);margin-top:1px}
-.rank-xp{font-size:14px;font-weight:900;color:var(--gold)}
-
-/* ── ERRORS VIEW ── */
-.erro-card{padding:14px;background:var(--sf);border:1px solid var(--bd);border-radius:16px;margin-bottom:10px}
-.erro-tema{font-size:9px;font-weight:800;color:var(--org);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
-.erro-q{font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:8px}
-.erro-resp{font-size:12px;font-weight:700;color:var(--grn);display:flex;align-items:flex-start;gap:6px}
-
-/* ── PROFILE VIEW ── */
-.prof-av-big{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--gold3),var(--gold));display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#0A0F1E;border:3px solid rgba(245,200,66,.5);margin:0 auto 12px}
-.prof-name{font-size:20px;font-weight:900;color:var(--txt);text-align:center;margin-bottom:4px}
-.prof-level{font-size:13px;color:var(--gold);font-weight:700;text-align:center;margin-bottom:20px}
-.badges-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
-.badge-item{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:12px 6px;text-align:center}
-.badge-ic{font-size:22px;margin-bottom:4px}
-.badge-lbl{font-size:8px;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
-.badge-item.earned{border-color:rgba(245,200,66,.3);background:rgba(245,200,66,.04)}
-.badge-item.earned .badge-lbl{color:var(--gold)}
-.prof-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.prof-stat{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:14px;text-align:center}
-.prof-sv{font-size:22px;font-weight:900;color:var(--gold)}
-.prof-sl{font-size:10px;color:var(--tx3);font-weight:600;text-transform:uppercase;margin-top:4px}
-.btn-outline{width:100%;padding:13px;background:transparent;border:1.5px solid var(--bd2);color:var(--tx2);font-size:13px;font-weight:700;border-radius:var(--rs);cursor:pointer;margin-top:8px;transition:all var(--tr);font-family:inherit}
-.btn-outline:active{background:var(--sf)}
-.btn-danger{width:100%;padding:13px;background:rgba(255,90,90,.08);border:1.5px solid rgba(255,90,90,.25);color:var(--red);font-size:13px;font-weight:700;border-radius:var(--rs);cursor:pointer;margin-top:8px;transition:all var(--tr);font-family:inherit}
-.btn-danger:active{background:rgba(255,90,90,.15)}
-
-/* ── ADMIN PANEL ── */
-.admin-badge{background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.25);border-radius:20px;padding:4px 12px;font-size:10px;font-weight:700;color:var(--vio);display:inline-flex;align-items:center;gap:5px}
-.upload-zone{background:var(--sf);border:2px dashed var(--bd2);border-radius:20px;padding:32px 20px;text-align:center;cursor:pointer;transition:border-color var(--tr);margin-bottom:16px}
-.upload-zone:hover,.upload-zone.drag{border-color:var(--gold);background:rgba(245,200,66,.04)}
-.upload-ic{font-size:40px;margin-bottom:10px}
-.upload-tt{font-size:14px;font-weight:700;color:var(--txt);margin-bottom:4px}
-.upload-sub{font-size:12px;color:var(--tx3)}
-.upload-input{display:none}
-.ai-progress{background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:18px;margin-bottom:12px;display:none}
-.ai-progress.active{display:block}
-.ai-step{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:13px;color:var(--tx2);border-bottom:1px solid var(--bd)}
-.ai-step:last-child{border-bottom:none}
-.ai-step-ic{font-size:16px;flex-shrink:0;width:20px;text-align:center}
-.ai-step.done{color:var(--grn)}
-.ai-step.active{color:var(--gold);font-weight:600}
-.ai-step.wait{color:var(--tx4)}
-.admin-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.admin-stat{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:14px;text-align:center}
-.admin-sv{font-size:22px;font-weight:900;color:var(--vio)}
-.admin-sl{font-size:10px;color:var(--tx3);font-weight:600;text-transform:uppercase;margin-top:4px}
-.students-list{display:flex;flex-direction:column;gap:8px}
-.student-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--sf);border:1px solid var(--bd);border-radius:14px}
-.student-av{width:36px;height:36px;border-radius:50%;background:var(--sf3);border:1.5px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--blu);flex-shrink:0}
-.student-info{flex:1}
-.student-nm{font-size:13px;font-weight:700;color:var(--txt)}
-.student-sub{font-size:10px;color:var(--tx3);margin-top:1px}
-.student-xp{font-size:13px;font-weight:800;color:var(--vio)}
-
-/* ── TOAST ── */
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--sf2);border:1px solid var(--bd2);color:var(--txt);font-size:13px;font-weight:600;padding:11px 22px;border-radius:20px;opacity:0;transition:all .3s ease;z-index:600;white-space:nowrap;box-shadow:var(--sh2);pointer-events:none}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ── QUIZ SCREEN ── */
-#quizScreen{position:fixed;inset:0;background:var(--bg);z-index:500;display:none;flex-direction:column;overflow:hidden;max-width:430px;left:50%;transform:translateX(-50%)}
-#quizScreen.active{display:flex}
-
-/* Quiz Header */
-.qhdr{background:var(--bg2);border-bottom:1px solid var(--bd);padding:12px 16px;flex-shrink:0}
-.qhdr-row1{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.q-back{background:var(--sf);border:1px solid var(--bd);color:var(--tx2);font-size:12px;font-weight:700;padding:7px 14px;border-radius:20px;cursor:pointer;font-family:inherit;transition:all var(--tr)}
-.q-back:active{background:var(--sf2)}
-.q-tema-nm{font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;flex:1;margin:0 10px}
-.q-timer-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:4px;min-width:76px}
-.q-timer{font-size:13px;font-weight:900;color:var(--txt);background:var(--sf);padding:5px 10px;border-radius:20px;border:1px solid var(--bd);display:inline-flex;align-items:center;gap:4px}
-.q-timer.warn{color:var(--org);border-color:rgba(255,140,66,.3)}
-.q-timer.danger{color:var(--red);border-color:rgba(255,90,90,.3);animation:tpulse .5s infinite alternate}
-@keyframes tpulse{from{opacity:1}to{opacity:.5}}
-.q-timer-track{width:76px;height:3px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
-.q-timer-fill{height:100%;border-radius:4px;background:var(--gold);transition:width 1s linear,background .5s}
-.q-prog-row{display:flex;align-items:center;gap:10px}
-.q-prog-track{flex:1;background:var(--sf);border-radius:20px;height:5px;overflow:hidden}
-.q-prog-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--gold3),var(--gold));transition:width .4s ease}
-.q-prog-ct{font-size:11px;font-weight:800;color:var(--tx3)}
-.q-score-row{display:flex;gap:14px;margin-top:6px;justify-content:flex-end}
-.q-sc{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700}
-.q-sc.ok{color:var(--grn)}.q-sc.err{color:var(--red)}
-
-/* CARROSSEL DE QUESTÃO */
-.q-body{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
-.q-question-fixed{padding:16px 16px 10px;flex-shrink:0}
-.q-num{font-size:9px;font-weight:800;color:var(--tx4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
-.q-txt{font-size:15px;font-weight:600;color:var(--txt);line-height:1.65;padding:16px;background:var(--sf);border-radius:16px;border:1px solid var(--bd)}
-.q-hint{font-size:11px;color:var(--tx3);font-weight:500;text-align:center;margin-top:8px;padding-bottom:4px}
-
-/* SWIPE CAROUSEL */
-.q-carousel-wrap{flex:1;overflow:hidden;position:relative;margin:0 16px;padding-bottom:12px}
-.q-carousel{display:flex;height:100%;transition:transform .3s cubic-bezier(.4,0,.2,1);align-items:stretch}
-.q-opt-slide{min-width:100%;padding:6px 2px;display:flex;flex-direction:column;justify-content:center}
-.q-opt-card{background:var(--sf);border:2px solid var(--bd);border-radius:20px;padding:18px 20px;cursor:pointer;transition:all .2s ease;user-select:none;display:flex;align-items:flex-start;gap:14px;min-height:100px}
-.q-opt-card:active:not(.disabled){transform:scale(.97)}
-.q-opt-card:hover:not(.disabled):not(.correct):not(.wrong):not(.selected){border-color:var(--bd2);background:var(--sf2)}
-.q-opt-card.selected{border-color:var(--gold);background:rgba(245,200,66,.08)}
-.q-opt-card.correct{border-color:var(--grn)!important;background:rgba(0,214,143,.08)!important}
-.q-opt-card.wrong{border-color:var(--red)!important;background:rgba(255,90,90,.08)!important}
-.q-opt-card.disabled{cursor:default}
-.q-opt-letter{width:32px;height:32px;border-radius:10px;background:var(--sf3);border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:var(--tx3);flex-shrink:0;transition:all .2s}
-.q-opt-card.selected .q-opt-letter{background:rgba(245,200,66,.15);border-color:var(--gold);color:var(--gold)}
-.q-opt-card.correct .q-opt-letter{background:rgba(0,214,143,.15);border-color:var(--grn);color:var(--grn)}
-.q-opt-card.wrong .q-opt-letter{background:rgba(255,90,90,.15);border-color:var(--red);color:var(--red)}
-.q-opt-txt{font-size:14px;color:var(--tx2);line-height:1.55;flex:1;padding-top:4px}
-.q-opt-card.correct .q-opt-txt,.q-opt-card.wrong .q-opt-txt{color:var(--txt)}
-.q-swipe-hint{display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 0;font-size:11px;color:var(--tx4);font-weight:500}
-.q-dots{display:flex;gap:5px;align-items:center}
-.q-dot{width:6px;height:6px;border-radius:50%;background:var(--bd2);transition:all .2s}
-.q-dot.active{background:var(--gold);width:14px;border-radius:3px}
-
-/* FEEDBACK OVERLAY */
-.q-fb-overlay{position:absolute;bottom:0;left:0;right:0;padding:16px;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:10;border-radius:20px 20px 0 0}
-.q-fb-overlay.show{transform:translateY(0)}
-.q-fb-overlay.ok{background:linear-gradient(180deg,rgba(0,214,143,.15),rgba(0,214,143,.1));border-top:1px solid rgba(0,214,143,.25)}
-.q-fb-overlay.err{background:linear-gradient(180deg,rgba(255,90,90,.12),rgba(255,90,90,.08));border-top:1px solid rgba(255,90,90,.2)}
-.q-fb-tt{font-size:15px;font-weight:900;margin-bottom:6px}
-.q-fb-overlay.ok .q-fb-tt{color:var(--grn)}
-.q-fb-overlay.err .q-fb-tt{color:var(--red)}
-.q-fb-ex{font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:14px}
-.q-next{width:100%;padding:14px;font-size:14px;font-weight:900;border:none;border-radius:14px;cursor:pointer;font-family:inherit;transition:all var(--tr)}
-.q-next.ok{background:linear-gradient(135deg,var(--grnD),var(--grn));color:#fff}
-.q-next.err{background:linear-gradient(135deg,var(--red),#ff7a7a);color:#fff}
-.q-next:active{transform:scale(.97)}
-
-/* RESULT */
-.q-result{padding:28px 20px;text-align:center;overflow-y:auto;flex:1}
-.q-res-emoji{font-size:72px;margin-bottom:14px;display:block;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
-@keyframes popIn{from{transform:scale(0) rotate(-10deg)}to{transform:scale(1) rotate(0)}}
-.q-res-title{font-size:24px;font-weight:900;color:var(--txt);margin-bottom:6px}
-.q-res-nota{font-size:56px;font-weight:900;color:var(--gold);line-height:1;margin:16px 0 4px}
-.q-res-pct{font-size:14px;color:var(--tx2);margin-bottom:20px}
-.q-res-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:18px}
-.q-rs{padding:14px 6px;background:var(--sf);border:1px solid var(--bd);border-radius:14px;text-align:center}
-.q-rs-v{font-size:22px;font-weight:900}
-.q-rs-l{font-size:9px;color:var(--tx3);font-weight:700;text-transform:uppercase;margin-top:4px}
-.q-res-grid .q-rs:nth-child(1) .q-rs-v{color:var(--grn)}
-.q-res-grid .q-rs:nth-child(2) .q-rs-v{color:var(--red)}
-.q-res-grid .q-rs:nth-child(3) .q-rs-v{color:var(--gold)}
-.q-xp-banner{background:linear-gradient(135deg,rgba(245,200,66,.15),rgba(245,200,66,.08));border:1px solid rgba(245,200,66,.3);border-radius:16px;padding:16px;margin-bottom:18px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:17px;font-weight:900;color:var(--gold)}
-.q-btn-home{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold3),var(--gold));color:#0A0F1E;font-size:15px;font-weight:900;border:none;border-radius:16px;cursor:pointer;margin-bottom:10px;font-family:inherit;box-shadow:0 4px 20px rgba(245,200,66,.3)}
-.q-btn-home:active{transform:scale(.97)}
-.q-btn-retry{width:100%;padding:13px;background:var(--sf);border:1.5px solid var(--bd2);color:var(--txt);font-size:14px;font-weight:700;border-radius:16px;cursor:pointer;font-family:inherit}
-
-/* CONFETTI */
-#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999}
-
-/* ACHIEVEMENT POPUP */
-.achieve-pop{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);background:linear-gradient(135deg,var(--sf2),var(--sf3));border:1px solid rgba(245,200,66,.3);border-radius:20px;padding:14px 20px;z-index:800;display:flex;align-items:center;gap:12px;box-shadow:var(--sh2);transition:transform .4s cubic-bezier(.34,1.56,.64,1);max-width:340px;width:90%}
-.achieve-pop.show{transform:translateX(-50%) translateY(0)}
-.achieve-ic{font-size:28px;flex-shrink:0}
-.achieve-txt{}
-.achieve-lbl{font-size:10px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.8px}
-.achieve-name{font-size:14px;font-weight:700;color:var(--txt)}
-
-/* UTIL */
-.view{display:none}.view.active{display:block}
-.hidden{display:none!important}
-.empty-state{text-align:center;padding:50px 20px}
-.empty-ic{font-size:48px;margin-bottom:14px}
-.empty-tt{font-size:16px;font-weight:700;color:var(--tx2);margin-bottom:6px}
-.empty-sub{font-size:13px;color:var(--tx3)}
 </style>
 </head>
 <body>
 
 <!-- CONFETTI CANVAS -->
 <canvas id="confetti-canvas"></canvas>
+
+<!-- NATIVE AUDIO ELEMENT -->
+<audio id="kronaAudio" preload="auto"></audio>
 
 <!-- ACHIEVEMENT POPUP -->
 <div class="achieve-pop" id="achievePop">
@@ -372,7 +278,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     <div style="font-size:13.5px; color:#A0AFCC; margin-bottom:24px; line-height:1.5;" id="kronaConfirmText">Seu progresso atual será salvo.</div>
     <div style="display:flex; flex-direction:column; gap:12px;">
       <button style="width:100%; padding:14px; background:linear-gradient(135deg,#D4A820,#F5C842,#FFD966); color:#0A0F1E; border:none; border-radius:14px; font-size:14px; font-weight:800; cursor:pointer; font-family:inherit; box-shadow:0 4px 20px rgba(245,200,66,0.3); transition: transform 0.1s;" id="kronaConfirmBtnCancel" onclick="handleKronaConfirm(false)">Continuar Simulado</button>
-      <button style="width:100%; padding:14px; background:transparent; border:1.5px solid rgba(255,90,90,0.3); color:#FF5A5A; border-radius:14px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; transition: background 0.1s;" id="kronaConfirmBtnOk" onclick="handleKronaConfirm(true)">Sair e Salvar</button>
+      <button style="width:100%; padding:14px; background:transparent; border:1.5px solid rgba(255,90,90,0.3); color:#FF5A5A; border-radius:14px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit;" id="kronaConfirmBtnOk" onclick="handleKronaConfirm(true)">Sair e Salvar</button>
     </div>
   </div>
 </div>
@@ -401,7 +307,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
         <div class="reg-label">E-mail</div>
         <input class="reg-input" id="regEmail" type="email" placeholder="seu@email.com" autocomplete="email">
       </div>
-      <button class="btn-gold" onclick="regStep1Next()">Continuar →</button>
+      <button class="btn-primary" onclick="regStep1Next()">Continuar →</button>
       <div class="reg-free-badge">🎁 Acesso gratuito até 31/12/2026</div>
     </div>
   </div>
@@ -413,17 +319,17 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     <div class="reg-form">
       <div class="reg-field">
         <div class="reg-label">Telefone</div>
-        <div class="reg-sms-row">
-          <input class="reg-input" id="regFone" type="tel" placeholder="(11) 99999-9999" autocomplete="tel">
-          <button class="btn-sms" onclick="sendSMS()">Enviar código</button>
+        <div class="reg-sms-row" style="display:flex; gap:10px;">
+          <input class="reg-input" id="regFone" type="tel" placeholder="(11) 99999-9999" autocomplete="tel" style="flex:1;">
+          <button class="btn-secondary" onclick="sendSMS()" style="white-space:nowrap;">Enviar código</button>
         </div>
       </div>
       <div class="reg-field" id="regCodeField" style="display:none">
         <div class="reg-label">Código recebido</div>
         <input class="reg-input" id="regCode" type="number" placeholder="000000" maxlength="6">
       </div>
-      <button class="btn-gold" onclick="regStep2Next()">Verificar e entrar →</button>
-      <button class="btn-outline" style="margin-top:0" onclick="regSkipPhone()">Pular verificação (demo)</button>
+      <button class="btn-primary" onclick="regStep2Next()">Verificar e entrar →</button>
+      <button class="btn-secondary" style="margin-top:0" onclick="regSkipPhone()">Pular verificação (demo)</button>
     </div>
   </div>
 
@@ -433,7 +339,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
       <div style="font-size:56px;margin-bottom:16px">🎉</div>
       <div class="reg-title">Tudo pronto!</div>
       <div class="reg-sub" style="margin-bottom:28px">Sua conta foi criada com sucesso.<br>Você tem acesso gratuito até 31/12/2026.</div>
-      <button class="btn-gold" onclick="finishReg()">Começar a estudar →</button>
+      <button class="btn-primary" onclick="finishReg()">Começar a estudar →</button>
     </div>
   </div>
 </div>
@@ -529,7 +435,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
       </div>
     </div>
     <div class="mod-body"><div class="mod-inner">
-      <div class="tema" onclick="startQuiz('TEMA_1','Contextualização do Agronegócio')">
+      <div class="tema" onclick="openAula('TEMA_1')">
         <div class="tema-ic">🌾</div>
         <div class="tema-det">
           <div class="tema-tag agro">Tema 1</div>
@@ -539,7 +445,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
         <span class="tema-badge pending" id="badge1">Pendente</span>
         <span class="tema-arr">›</span>
       </div>
-      <div class="tema" onclick="startQuiz('TEMA_2','Sistemas de Produção Sustentável')">
+      <div class="tema" onclick="openAula('TEMA_2')">
         <div class="tema-ic">🌱</div>
         <div class="tema-det">
           <div class="tema-tag agro">Tema 2</div>
@@ -568,9 +474,9 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
       </div>
     </div>
     <div class="mod-body"><div class="mod-inner">
-      <div class="tema" onclick="startQuiz('TEMA_3','Fundamentos de Botânica')"><div class="tema-ic">🌿</div><div class="tema-det"><div class="tema-tag plant">Tema 3</div><div class="tema-nm">Fundamentos de Botânica</div><div class="tema-ct" id="ct3">1 questão disponível</div></div><span class="tema-badge pending" id="badge3">Pendente</span><span class="tema-arr">›</span></div>
-      <div class="tema" onclick="startQuiz('TEMA_4','Nutrição Mineral e Fertilidade do Solo')"><div class="tema-ic">🧪</div><div class="tema-det"><div class="tema-tag soil">Tema 4</div><div class="tema-nm">Nutrição Mineral e Fertilidade do Solo</div><div class="tema-ct" id="ct4">1 questão disponível</div></div><span class="tema-badge pending" id="badge4">Pendente</span><span class="tema-arr">›</span></div>
-      <div class="tema" onclick="startQuiz('TEMA_5','Irrigação e Drenagem')"><div class="tema-ic">💧</div><div class="tema-det"><div class="tema-tag soil">Tema 5</div><div class="tema-nm">Irrigação e Drenagem</div><div class="tema-ct" id="ct5">1 questão disponível</div></div><span class="tema-badge pending" id="badge5">Pendente</span><span class="tema-arr">›</span></div>
+      <div class="tema" onclick="openAula('TEMA_3')"><div class="tema-ic">🌿</div><div class="tema-det"><div class="tema-tag plant">Tema 3</div><div class="tema-nm">Fundamentos de Botânica</div><div class="tema-ct" id="ct3">1 questão disponível</div></div><span class="tema-badge pending" id="badge3">Pendente</span><span class="tema-arr">›</span></div>
+      <div class="tema" onclick="openAula('TEMA_4')"><div class="tema-ic">🧪</div><div class="tema-det"><div class="tema-tag soil">Tema 4</div><div class="tema-nm">Nutrição Mineral e Fertilidade do Solo</div><div class="tema-ct" id="ct4">1 questão disponível</div></div><span class="tema-badge pending" id="badge4">Pendente</span><span class="tema-arr">›</span></div>
+      <div class="tema" onclick="openAula('TEMA_5')"><div class="tema-ic">💧</div><div class="tema-det"><div class="tema-tag soil">Tema 5</div><div class="tema-nm">Irrigação e Drenagem</div><div class="tema-ct" id="ct5">1 questão disponível</div></div><span class="tema-badge pending" id="badge5">Pendente</span><span class="tema-arr">›</span></div>
     </div></div>
   </div>
 
@@ -581,7 +487,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
       <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringC" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValC">0%</div></div><div class="mod-chev">▸</div></div>
     </div>
     <div class="mod-body"><div class="mod-inner">
-      <div class="tema" onclick="startQuiz('TEMA_6','Principais Culturas do Agronegócio')"><div class="tema-ic">🌽</div><div class="tema-det"><div class="tema-tag soil">Tema 6</div><div class="tema-nm">Principais Culturas do Agronegócio</div><div class="tema-ct" id="ct6">1 questão disponível</div></div><span class="tema-badge pending" id="badge6">Pendente</span><span class="tema-arr">›</span></div>
+      <div class="tema" onclick="openAula('TEMA_6')"><div class="tema-ic">🌽</div><div class="tema-det"><div class="tema-tag soil">Tema 6</div><div class="tema-nm">Principais Culturas do Agronegócio</div><div class="tema-ct" id="ct6">1 questão disponível</div></div><span class="tema-badge pending" id="badge6">Pendente</span><span class="tema-arr">›</span></div>
     </div></div>
   </div>
 
@@ -592,10 +498,10 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
       <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringD" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValD">0%</div></div><div class="mod-chev">▸</div></div>
     </div>
     <div class="mod-body"><div class="mod-inner">
-      <div class="tema" onclick="startQuiz('TEMA_7','Produção Animal no Agronegócio')"><div class="tema-ic">🐄</div><div class="tema-det"><div class="tema-tag anim">Tema 7</div><div class="tema-nm">Produção Animal no Agronegócio</div><div class="tema-ct" id="ct7">1 questão disponível</div></div><span class="tema-badge pending" id="badge7">Pendente</span><span class="tema-arr">›</span></div>
-      <div class="tema" onclick="startQuiz('TEMA_8','Anatomia e Fisiologia Animal')"><div class="tema-ic">🔬</div><div class="tema-det"><div class="tema-tag anim">Tema 8</div><div class="tema-nm">Anatomia e Fisiologia Animal</div><div class="tema-ct" id="ct8">1 questão disponível</div></div><span class="tema-badge pending" id="badge8">Pendente</span><span class="tema-arr">›</span></div>
-      <div class="tema" onclick="startQuiz('TEMA_9','Alimentação e Nutrição Animal')"><div class="tema-ic">🍽️</div><div class="tema-det"><div class="tema-tag anim">Tema 9</div><div class="tema-nm">Alimentação e Nutrição Animal</div><div class="tema-ct" id="ct9">1 questão disponível</div></div><span class="tema-badge pending" id="badge9">Pendente</span><span class="tema-arr">›</span></div>
-      <div class="tema" onclick="startQuiz('TEMA_10','Forragicultura e Pastagens')"><div class="tema-ic">🌾</div><div class="tema-det"><div class="tema-tag plant">Tema 10</div><div class="tema-nm">Forragicultura e Pastagens</div><div class="tema-ct" id="ct10">1 questão disponível</div></div><span class="tema-badge pending" id="badge10">Pendente</span><span class="tema-arr">›</span></div>
+      <div class="tema" onclick="openAula('TEMA_7')"><div class="tema-ic">🐄</div><div class="tema-det"><div class="tema-tag anim">Tema 7</div><div class="tema-nm">Produção Animal no Agronegócio</div><div class="tema-ct" id="ct7">1 questão disponível</div></div><span class="tema-badge pending" id="badge7">Pendente</span><span class="tema-arr">›</span></div>
+      <div class="tema" onclick="openAula('TEMA_8')"><div class="tema-ic">🔬</div><div class="tema-det"><div class="tema-tag anim">Tema 8</div><div class="tema-nm">Anatomia e Fisiologia Animal</div><div class="tema-ct" id="ct8">1 questão disponível</div></div><span class="tema-badge pending" id="badge8">Pendente</span><span class="tema-arr">›</span></div>
+      <div class="tema" onclick="openAula('TEMA_9')"><div class="tema-ic">🍽️</div><div class="tema-det"><div class="tema-tag anim">Tema 9</div><div class="tema-nm">Alimentação e Nutrição Animal</div><div class="tema-ct" id="ct9">1 questão disponível</div></div><span class="tema-badge pending" id="badge9">Pendente</span><span class="tema-arr">›</span></div>
+      <div class="tema" onclick="openAula('TEMA_10')"><div class="tema-ic">🌾</div><div class="tema-det"><div class="tema-tag plant">Tema 10</div><div class="tema-nm">Forragicultura e Pastagens</div><div class="tema-ct" id="ct10">1 questão disponível</div></div><span class="tema-badge pending" id="badge10">Pendente</span><span class="tema-arr">›</span></div>
     </div></div>
   </div>
 
@@ -606,7 +512,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
       <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringE" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValE">0%</div></div><div class="mod-chev">▸</div></div>
     </div>
     <div class="mod-body"><div class="mod-inner">
-      <div class="tema" onclick="startQuiz('TEMA_11','Melhoramento Genético Animal')"><div class="tema-ic">🧬</div><div class="tema-det"><div class="tema-tag anim">Tema 11</div><div class="tema-nm">Melhoramento Genético Animal</div><div class="tema-ct" id="ct11">1 questão disponível</div></div><span class="tema-badge pending" id="badge11">Pendente</span><span class="tema-arr">›</span></div>
+      <div class="tema" onclick="openAula('TEMA_11')"><div class="tema-ic">🧬</div><div class="tema-det"><div class="tema-tag anim">Tema 11</div><div class="tema-nm">Melhoramento Genético Animal</div><div class="tema-ct" id="ct11">1 questão disponível</div></div><span class="tema-badge pending" id="badge11">Pendente</span><span class="tema-arr">›</span></div>
     </div></div>
   </div>
   <div class="mod" id="modF">
@@ -615,8 +521,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
       <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringF" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValF">0%</div></div><div class="mod-chev">▸</div></div>
     </div>
     <div class="mod-body"><div class="mod-inner">
-      <div class="tema" onclick="startQuiz('TEMA_12','Produção de Animais Monogástricos')"><div class="tema-ic">🐔</div><div class="tema-det"><div class="tema-tag anim">Tema 12</div><div class="tema-nm">Produção de Animais Monogástricos</div><div class="tema-ct" id="ct12">1 questão disponível</div></div><span class="tema-badge pending" id="badge12">Pendente</span><span class="tema-arr">›</span></div>
-      <div class="tema" onclick="startQuiz('TEMA_13','Produção de Animais Ruminantes')"><div class="tema-ic">🐮</div><div class="tema-det"><div class="tema-tag anim">Tema 13</div><div class="tema-nm">Produção de Animais Ruminantes</div><div class="tema-ct" id="ct13">1 questão disponível</div></div><span class="tema-badge pending" id="badge13">Pendente</span><span class="tema-arr">›</span></div>
+      <div class="tema" onclick="openAula('TEMA_12')"><div class="tema-ic">🐔</div><div class="tema-det"><div class="tema-tag anim">Tema 12</div><div class="tema-nm">Produção de Animais Monogástricos</div><div class="tema-ct" id="ct12">1 questão disponível</div></div><span class="tema-badge pending" id="badge12">Pendente</span><span class="tema-arr">›</span></div>
+      <div class="tema" onclick="openAula('TEMA_13')"><div class="tema-ic">🐮</div><div class="tema-det"><div class="tema-tag anim">Tema 13</div><div class="tema-nm">Produção de Animais Ruminantes</div><div class="tema-ct" id="ct13">1 questão disponível</div></div><span class="tema-badge pending" id="badge13">Pendente</span><span class="tema-arr">›</span></div>
     </div></div>
   </div>
   <div class="mod" id="modG">
@@ -625,10 +531,62 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
       <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringG" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValG">0%</div></div><div class="mod-chev">▸</div></div>
     </div>
     <div class="mod-body"><div class="mod-inner">
-      <div class="tema" onclick="startQuiz('TEMA_14','Agricultura de Precisão')"><div class="tema-ic">📡</div><div class="tema-det"><div class="tema-tag tech">Tema 14</div><div class="tema-nm">Agricultura de Precisão</div><div class="tema-ct" id="ct14">1 questão disponível</div></div><span class="tema-badge pending" id="badge14">Pendente</span><span class="tema-arr">›</span></div>
+      <div class="tema" onclick="openAula('TEMA_14')"><div class="tema-ic">📡</div><div class="tema-det"><div class="tema-tag tech">Tema 14</div><div class="tema-nm">Agricultura de Precisão</div><div class="tema-ct" id="ct14">1 questão disponível</div></div><span class="tema-badge pending" id="badge14">Pendente</span><span class="tema-arr">›</span></div>
     </div></div>
   </div>
 </div><!-- #viewHome -->
+
+<!-- AUDIO PLAYER VIEW (STUDY HUB) -->
+<div class="ctn view" id="viewAudioPlayer" style="display:none;">
+  <button class="btn-secondary" style="margin-bottom:16px; width:auto; align-self:flex-start;" onclick="closeAudioView()">← Voltar</button>
+  
+  <div style="background:var(--sf); border:1px solid var(--bd); border-radius:24px; padding:24px; text-align:center; box-shadow:var(--sh2); position:relative; overflow:hidden; margin-bottom:18px;">
+    <div style="position:absolute; top:-30px; left:-30px; width:120px; height:120px; background:radial-gradient(circle,rgba(245,200,66,0.08),transparent 70%); pointer-events:none;"></div>
+    
+    <!-- Vinyl-like Premium Spinning Disc -->
+    <div id="playerDisc" style="width:140px; height:140px; border-radius:50%; background:radial-gradient(circle, #203354 30%, #111b2e 70%, #000 100%); margin:0 auto 20px; display:flex; align-items:center; justify-content:center; border:4px solid var(--gold); box-shadow:0 8px 30px rgba(0,0,0,0.5); transition: transform 0.5s; position:relative;">
+      <div style="width:40px; height:40px; border-radius:50%; background:var(--bg); border:2px solid var(--gold); display:flex; align-items:center; justify-content:center; font-size:18px;">🌾</div>
+    </div>
+    
+    <div id="playerClassTitle" style="font-size:12px; font-weight:800; color:var(--gold); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:6px;">Aula 1</div>
+    <div id="playerTemaName" style="font-size:18px; font-weight:900; color:var(--txt); margin-bottom:4px; line-height:1.3;">Contextualização do Agronegócio</div>
+    <div id="playerTopicName" style="font-size:12px; font-weight:600; color:var(--tx3); margin-bottom:12px;">Contexto & Mercado</div>
+    <div id="playerSubtopic" style="font-size:13px; color:var(--tx2); line-height:1.5; padding:0 10px; margin-bottom:24px;">Carregando descrição da aula...</div>
+    
+    <!-- Progress Bar and Times -->
+    <div style="margin-bottom:20px;">
+      <div style="position:relative; width:100%; height:6px; background:rgba(255,255,255,0.06); border-radius:10px; cursor:pointer;" id="progressBarContainer" onclick="seekAudio(event)">
+        <div id="progressBarFill" style="width:0%; height:100%; background:linear-gradient(90deg, var(--gold3), var(--gold)); border-radius:10px; position:relative;">
+          <div style="width:12px; height:12px; border-radius:50%; background:var(--gold); border:2px solid #fff; position:absolute; right:-6px; top:-3px; box-shadow:0 2px 8px rgba(0,0,0,0.5);"></div>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:600; color:var(--tx3); margin-top:8px;">
+        <span id="playerCurrentTime">00:00</span>
+        <span id="playerTotalTime">00:00</span>
+      </div>
+    </div>
+    
+    <!-- Controls buttons row -->
+    <div style="display:flex; align-items:center; justify-content:center; gap:24px; margin-bottom:10px;">
+      <button style="background:transparent; border:none; color:var(--tx2); font-size:24px; cursor:pointer; outline:none;" onclick="playPrevAudio()" title="Anterior">⏮</button>
+      <button style="background:transparent; border:none; color:var(--tx2); font-size:20px; cursor:pointer; outline:none;" onclick="restartAudio()" title="Reiniciar">🔄</button>
+      
+      <!-- Master Play/Pause Button -->
+      <button id="playerMasterPlayPauseBtn" class="btn-primary" style="width:58px; height:58px; border-radius:50%; padding:0; display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow:0 6px 20px rgba(245,200,66,0.35); outline:none;" onclick="togglePlayPause()">
+        ▶
+      </button>
+      
+      <button style="background:transparent; border:none; color:var(--tx2); font-size:24px; cursor:pointer; outline:none;" onclick="playNextAudio()" title="Próximo">⏭</button>
+    </div>
+  </div>
+  
+  <!-- Interactive Exam Prompt -->
+  <div style="background:linear-gradient(135deg, #122544 0%, #0c1830 100%); border:1px solid rgba(245,200,66,0.25); border-radius:24px; padding:20px; text-align:center; box-shadow:var(--sh);">
+    <div style="font-size:15px; font-weight:800; color:var(--gold); margin-bottom:6px;">Pronto para testar seu conhecimento?</div>
+    <div style="font-size:12px; color:var(--tx2); margin-bottom:16px; line-height:1.4;">Assim que se sentir preparado, inicie o simulado de <b>múltipla escolha</b> correspondente a este tema!</div>
+    <button class="btn-success" style="width:100%;" onclick="startSimuladoFromPlayer()">📝 Iniciar Simulado →</button>
+  </div>
+</div>
 
 <!-- RANKING -->
 <div class="ctn view" id="viewRank">
@@ -644,7 +602,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 <div class="ctn view" id="viewErros">
   <div class="sec-h">
     <div class="sec-tt">Caderno de Erros</div>
-    <button class="btn-outline" style="width:auto;padding:6px 14px;font-size:11px;margin:0" onclick="limparErros()">Limpar tudo</button>
+    <button class="btn-secondary" style="width:auto;padding:6px 14px;font-size:11px;margin:0" onclick="limparErros()">Limpar tudo</button>
   </div>
   <div id="errosList"></div>
 </div>
@@ -659,6 +617,31 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   <div class="sec-h">
     <div class="sec-tt">Painel Admin</div>
     <div class="admin-badge">🔐 Admin</div>
+  </div>
+
+  <!-- Audio MP3 Upload Zone -->
+  <div style="background:var(--sf); border:1px solid var(--bd); border-radius:18px; padding:18px; margin-bottom:16px;">
+    <div style="font-size:14px; font-weight:800; color:var(--gold); margin-bottom:12px; display:flex; align-items:center; gap:8px;">🎵 Gerenciar Áudios das Aulas</div>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div>
+        <label style="font-size:11px; font-weight:700; color:var(--tx3); text-transform:uppercase; display:block; margin-bottom:4px;">Selecione o Tema</label>
+        <select id="adminAudioTemaSelect" style="width:100%; background:var(--bg2); border:1.5px solid var(--bd2); border-radius:10px; padding:10px; color:var(--txt); font-family:inherit; outline:none;">
+          <!-- Opções geradas dinamicamente -->
+        </select>
+      </div>
+      <div>
+        <label style="font-size:11px; font-weight:700; color:var(--tx3); text-transform:uppercase; display:block; margin-bottom:4px;">Link do Áudio MP3 (URL)</label>
+        <input type="url" id="adminAudioUrl" placeholder="https://exemplo.com/aula.mp3" style="width:100%; background:var(--bg2); border:1.5px solid var(--bd2); border-radius:10px; padding:10px; color:var(--txt); font-family:inherit; outline:none;">
+      </div>
+      <div style="text-align:center; margin:5px 0;">
+        <span style="font-size:12px; color:var(--tx3);">ou envie o arquivo MP3 localmente:</span>
+      </div>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <button class="btn-secondary" style="flex:1;" onclick="document.getElementById('adminAudioFileInput').click()">📁 Enviar Arquivo</button>
+        <input type="file" id="adminAudioFileInput" accept="audio/*" style="display:none;" onchange="uploadLocalAudioFile(this.files[0])">
+        <button class="btn-primary" onclick="saveAdminAudioSettings()">Salvar Link</button>
+      </div>
+    </div>
   </div>
 
   <!-- Upload PDF -->
@@ -744,6 +727,146 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 
 <script>
 // ══════════════════════════════════════════════
+// AUDIO PLAYER DATABASE OVERRIDES
+// ══════════════════════════════════════════════
+const AUDIO_METADATA = {
+  "TEMA_1": {
+    aula: "Aula 1",
+    tema: "Contextualização do Agronegócio",
+    topico: "Contexto & Mercado",
+    subtopico: "Introdução à cadeia produtiva global do agronegócio.",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+  },
+  "TEMA_2": {
+    aula: "Aula 2",
+    tema: "Sistemas de Produção Sustentável",
+    topico: "Contexto & Mercado",
+    subtopico: "Sistemas orgânicos, sustentabilidade e integração lavoura-pecuária.",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+  },
+  "TEMA_3": {
+    aula: "Aula 3",
+    tema: "Fundamentos de Botânica",
+    topico: "Ciências Agrárias",
+    subtopico: "Anatomia vegetal, fisiologia e fotossíntese.",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+  },
+  "TEMA_4": {
+    aula: "Aula 4",
+    tema: "Nutrição Mineral e Fertilidade",
+    topico: "Ciências Agrárias",
+    subtopico: "Macronutrientes, micronutrientes e correção de acidez de solo.",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"
+  },
+  "TEMA_5": {
+    aula: "Aula 5",
+    tema: "Irrigação e Drenagem",
+    topico: "Ciências Agrárias",
+    subtopico: "Métodos de irrigação localizada, aspersão e manejo hídrico.",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
+  },
+  "TEMA_6": {
+    aula: "Aula 6",
+    tema: "Principais Culturas do Agronegócio",
+    topico: "Principais Culturas",
+    subtopico: "Cotonicultura, soja, milho e grandes culturas do Cerrado.",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3"
+  },
+  "TEMA_7": {
+    aula: "Aula 7",
+    tema: "Produção Animal no Agronegócio",
+    topico: "Produção Animal I",
+    subtopico: "Pecuária de corte, de leite e zootecnia básica.",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3"
+  },
+  "TEMA_8": {
+    aula: "Aula 8",
+    tema: "Anatomia e Fisiologia Animal",
+    topico: "Produção Animal I",
+    subtopico: "Organização sistêmica, digestão ruminal e metabolismo.",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3"
+  },
+  "TEMA_9": {
+    aula: "Aula 9",
+    tema: "Alimentação e Nutrição Animal",
+    topico: "Produção Animal I",
+    subtopico: "Formulações de ração, aditivos e balanço de silagem.",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3"
+  },
+  "TEMA_10": {
+    aula: "Aula 10",
+    tema: "Forragicultura e Pastagens",
+    topico: "Produção Animal I",
+    subtopico: "Manejo de pastagem rotacionada e forrageiras tropicais.",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3"
+  },
+  "TEMA_11": {
+    aula: "Aula 11",
+    tema: "Melhoramento Genético Animal",
+    topico: "Genética & Melhoramento",
+    subtopico: "DEP, seleção genômica e cruzamentos industriais.",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3"
+  },
+  "TEMA_12": {
+    aula: "Aula 12",
+    tema: "Produção de Animais Monogástricos",
+    topico: "Produção Animal II",
+    subtopico: "Avicultura de corte, postura e suinocultura intensiva.",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3"
+  },
+  "TEMA_13": {
+    aula: "Aula 13",
+    tema: "Produção de Animais Ruminantes",
+    topico: "Produção Animal II",
+    subtopico: "Confinamento de bovinos de corte e caprinovinocultura.",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3"
+  },
+  "TEMA_14": {
+    aula: "Aula 14",
+    tema: "Agricultura de Precisão",
+    topico: "Tecnologia & Precisão",
+    subtopico: "Drones, telemetria, sensores de solo e taxa variável.",
+    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3"
+  }
+};
+
+// ══════════════════════════════════════════════
+// INDEXEDDB FOR LARGE FILES STORAGE
+// ══════════════════════════════════════════════
+const dbName = "KronaAudioDB";
+let db;
+const dbRequest = indexedDB.open(dbName, 1);
+dbRequest.onupgradeneeded = (e) => {
+  db = e.target.result;
+  if (!db.objectStoreNames.contains("audios")) {
+    db.createObjectStore("audios");
+  }
+};
+dbRequest.onsuccess = (e) => {
+  db = e.target.result;
+};
+function saveAudioFile(temaId, file) {
+  return new Promise((resolve, reject) => {
+    if (!db) { reject(new Error("Database not ready")); return; }
+    const transaction = db.transaction(["audios"], "readwrite");
+    const store = transaction.objectStore("audios");
+    const req = store.put(file, temaId);
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  });
+}
+function getAudioFile(temaId) {
+  return new Promise((resolve) => {
+    if (!db) { resolve(null); return; }
+    const transaction = db.transaction(["audios"], "readonly");
+    const store = transaction.objectStore("audios");
+    const req = store.get(temaId);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => resolve(null);
+  });
+}
+
+// ══════════════════════════════════════════════
 // BANCO DE QUESTÕES
 // ══════════════════════════════════════════════
 const QUESTIONS_DB = {
@@ -770,19 +893,6 @@ const QUESTIONS_DB = {
   "TEMA_13": [{"pergunta":"Qual é o papel social da atividade leiteira e seu principal desafio?","opcoes":{"A":"Commodity restrita à alta renda; desafio é elevar margens via tabelamento.","B":"Garante renda mensal, emprega famílias e combate êxodo rural. Desafio: mão de obra escassa e envelhecida.","C":"Governada por multinacionais; desafio é conter importações.","D":"Baixo impacto em empregos; desafio é a mecanização integral.","E":"Baixa relevância rural; foco na expansão de pastagens."},"correta":"B","explicacao":"O leite gera fluxo de caixa mensal e emprego no campo. O grande desafio é a escassez de mão de obra qualificada e o envelhecimento dos produtores."}],
   "TEMA_14": [{"pergunta":"Qual é a definição correta de Agricultura de Precisão (AP)?","opcoes":{"A":"Uso exclusivo de maquinários pesados automatizados.","B":"Usa recursos mecânicos, eletrônicos e informáticos para gerenciamento localizado de sistemas agrícolas, com aplicação localizada de insumos.","C":"Substituição integral do trabalho humano por robôs.","D":"Emprego de insumos orgânicos em áreas de preservação.","E":"Aplicação de defensivos em dose única uniforme em toda a lavoura."},"correta":"B","explicacao":"A AP integra mecânica, eletrônica e informática para mapear variabilidade e aplicar insumos na dose certa, no local e momento adequados."}]
 };
-
-// ══════════════════════════════════════════════
-// TELEGRAM INIT
-// ══════════════════════════════════════════════
-const tg = window.Telegram?.WebApp || {
-  ready:()=>{},expand:()=>{},setHeaderColor:()=>{},setBackgroundColor:()=>{},
-  showConfirm:(msg,cb)=>{cb(confirm(msg))},
-  showAlert:(msg,cb)=>{alert(msg);cb&&cb()},
-  HapticFeedback:{impactOccurred:()=>{},notificationOccurred:()=>{}},
-  initDataUnsafe:{user:null}
-};
-tg.ready();tg.expand();
-try{tg.setHeaderColor('#0A0F1E');tg.setBackgroundColor('#0A0F1E');}catch(e){}
 
 // ══════════════════════════════════════════════
 // STORAGE
@@ -999,7 +1109,7 @@ function pushRanking(){
 // ══════════════════════════════════════════════
 // NAVIGATION
 // ══════════════════════════════════════════════
-const VIEWS={home:'viewHome',rank:'viewRank',erros:'viewErros',perfil:'viewPerfil',admin:'viewAdmin'};
+const VIEWS={home:'viewHome',rank:'viewRank',erros:'viewErros',perfil:'viewPerfil',admin:'viewAdmin',audioPlayer:'viewAudioPlayer'};
 const NAVS={home:'nHome',rank:'nRank',erros:'nErr',perfil:'nProf',admin:'nAdmin'};
 let curView='home';
 function navTo(view){
@@ -1027,34 +1137,229 @@ function tglMod(id){
 }
 
 // ══════════════════════════════════════════════
-// QUIZ ENGINE
+// AUDIO PLAYER LOGIC & CONTROLLER
 // ══════════════════════════════════════════════
-let QS=null;
+let curTemaId = null;
+const audioEl = $('kronaAudio');
 
-function startQuiz(temaId,temaNome){
-  const saved=load(LS.session,null);
-  if(saved&&saved.temaId===temaId&&!saved.finished){
-    showKronaConfirm(
-      'Simulado em andamento',
-      'Deseja retomar de onde parou ou iniciar um novo simulado?',
-      'Iniciar Novo',
-      'Retomar Progresso',
-      (restart) => {
-        if (restart) {
-          startFreshQuiz(temaId, temaNome);
-        } else {
-          resumeQuiz(saved);
-        }
-      },
-      '📚'
-    );
-  }else{startFreshQuiz(temaId,temaNome);}
+function openAula(temaId) {
+  setupAudioPlayer(temaId);
+  navTo('audioPlayer');
 }
 
+function setupAudioPlayer(temaId) {
+  curTemaId = temaId;
+  const metadata = AUDIO_METADATA[temaId];
+  if (!metadata) return;
+
+  $('playerClassTitle').textContent = metadata.aula;
+  $('playerTemaName').textContent = metadata.tema;
+  $('playerTopicName').textContent = metadata.topico;
+  $('playerSubtopic').textContent = metadata.subtopico;
+
+  // Stop currently playing
+  audioEl.pause();
+
+  // Load custom admin overriding URL if present
+  const customUrls = load('kr_custom_audios', {});
+  let finalUrl = customUrls[temaId] || metadata.url;
+
+  if (finalUrl.startsWith('file://local_indexeddb/')) {
+    getAudioFile(temaId).then(file => {
+      if (file) {
+        const fileUrl = URL.createObjectURL(file);
+        audioEl.src = fileUrl;
+        prepareAudioSource(temaId);
+      } else {
+        audioEl.src = metadata.url;
+        prepareAudioSource(temaId);
+      }
+    });
+  } else {
+    audioEl.src = finalUrl;
+    prepareAudioSource(temaId);
+  }
+}
+
+function prepareAudioSource(temaId) {
+  // Seek to previously saved audio lesson position
+  const savedPos = load(`kr_audio_pos_${temaId}`, 0);
+  audioEl.currentTime = savedPos;
+  updatePlayerProgress();
+
+  // Configure navigator background/lock screen media controller
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: AUDIO_METADATA[temaId].aula + ": " + AUDIO_METADATA[temaId].tema,
+      artist: "KRONA Analytics · SENAR",
+      album: AUDIO_METADATA[temaId].topico,
+      artwork: [{ src: 'https://cdn-icons-png.flaticon.com/512/3039/3039386.png', sizes: '512x512', type: 'image/png' }]
+    });
+
+    navigator.mediaSession.setActionHandler('play', () => togglePlayPause());
+    navigator.mediaSession.setActionHandler('pause', () => togglePlayPause());
+    navigator.mediaSession.setActionHandler('previoustrack', () => playPrevAudio());
+    navigator.mediaSession.setActionHandler('nexttrack', () => playNextAudio());
+  }
+}
+
+function updatePlayerProgress() {
+  if (!audioEl.duration) {
+    $('playerTotalTime').textContent = "00:00";
+    $('progressBarFill').style.width = "0%";
+    return;
+  }
+  const cur = audioEl.currentTime;
+  const dur = audioEl.duration;
+
+  $('playerCurrentTime').textContent = formatAudioTime(cur);
+  $('playerTotalTime').textContent = formatAudioTime(dur);
+  $('progressBarFill').style.width = (cur / dur * 100) + "%";
+
+  // Periodic position persist
+  if (curTemaId) {
+    save(`kr_audio_pos_${curTemaId}`, cur);
+  }
+}
+
+function formatAudioTime(secs) {
+  if (isNaN(secs)) return "00:00";
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = Math.floor(secs % 60);
+  if (h > 0) {
+    return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function togglePlayPause() {
+  if (audioEl.paused) {
+    audioEl.play().catch(() => {
+      showToast('🔊 Toque novamente para confirmar a reprodução.');
+    });
+  } else {
+    audioEl.pause();
+  }
+}
+
+function restartAudio() {
+  audioEl.currentTime = 0;
+  audioEl.play().catch(() => {});
+}
+
+function playNextAudio() {
+  if (!curTemaId) return;
+  const match = curTemaId.match(/\d+/);
+  if (match) {
+    const nextId = parseInt(match[0]) + 1;
+    if (nextId <= 14) {
+      setupAudioPlayer('TEMA_' + nextId);
+      audioEl.play().catch(() => {});
+    } else {
+      showToast('🏁 Este é o último tema do curso!');
+    }
+  }
+}
+
+function playPrevAudio() {
+  if (!curTemaId) return;
+  const match = curTemaId.match(/\d+/);
+  if (match) {
+    const prevId = parseInt(match[0]) - 1;
+    if (prevId >= 1) {
+      setupAudioPlayer('TEMA_' + prevId);
+      audioEl.play().catch(() => {});
+    } else {
+      showToast('⏮ Este é o primeiro tema do curso!');
+    }
+  }
+}
+
+function seekAudio(e) {
+  const container = $('progressBarContainer');
+  const rect = container.getBoundingClientRect();
+  const clickX = e.clientX - rect.left;
+  const width = rect.width;
+  if (audioEl.duration) {
+    audioEl.currentTime = (clickX / width) * audioEl.duration;
+    updatePlayerProgress();
+  }
+}
+
+function startSimuladoFromPlayer() {
+  if (!curTemaId) return;
+  const metadata = AUDIO_METADATA[curTemaId];
+  closeAudioView();
+  startQuiz(curTemaId, metadata.tema);
+}
+
+function closeAudioView() {
+  audioEl.pause();
+  navTo('home');
+}
+
+audioEl.addEventListener('timeupdate', updatePlayerProgress);
+audioEl.addEventListener('loadedmetadata', updatePlayerProgress);
+audioEl.addEventListener('play', () => {
+  $('playerMasterPlayPauseBtn').textContent = "⏸";
+  $('playerDisc').classList.add('spinning');
+});
+audioEl.addEventListener('pause', () => {
+  $('playerMasterPlayPauseBtn').textContent = "▶";
+  $('playerDisc').classList.remove('spinning');
+});
+
+// ══════════════════════════════════════════════
+// ADMIN AUDIO HANDLERS
+// ══════════════════════════════════════════════
+async function uploadLocalAudioFile(file) {
+  if (!file) return;
+  const temaId = $('adminAudioTemaSelect').value;
+  showToast('⚡ Lendo arquivo de áudio...');
+  try {
+    await saveAudioFile(temaId, file);
+    showToast('✅ Áudio local salvo para este tema!');
+    $('adminAudioUrl').value = `file://local_indexeddb/${temaId}`;
+  } catch (e) {
+    showToast('❌ Erro ao salvar arquivo local.');
+    console.error(e);
+  }
+}
+
+function saveAdminAudioSettings() {
+  const temaId = $('adminAudioTemaSelect').value;
+  const url = $('adminAudioUrl').value.trim();
+  if (!url) {
+    showToast('⚠️ Insira uma URL ou envie um arquivo');
+    return;
+  }
+  const customUrls = load('kr_custom_audios', {});
+  customUrls[temaId] = url;
+  save('kr_custom_audios', customUrls);
+  showToast('✅ Configurações de áudio salvas!');
+}
+
+function populateAdminAudioSelect() {
+  const select = $('adminAudioTemaSelect');
+  if (!select) return;
+  select.innerHTML = '';
+  for (let i = 1; i <= 14; i++) {
+    const tId = 'TEMA_' + i;
+    const metadata = AUDIO_METADATA[tId];
+    const opt = document.createElement('option');
+    opt.value = tId;
+    opt.textContent = `Tema ${i} - ${metadata.tema}`;
+    select.appendChild(opt);
+  }
+}
+
+// ══════════════════════════════════════════════
+// QUIZ ENGINE
+// ══════════════════════════════════════════════
 function startFreshQuiz(temaId,temaNome){
   const qs=QUESTIONS_DB[temaId];
   if(!qs?.length){showToast('❌ Questões não encontradas!');return;}
-  // ALL questions, shuffled
   const questions=[...qs].sort(()=>Math.random()-.5);
   QS={temaId,temaNome,questions,idx:0,acertos:0,erros:0,answered:false,timerSec:300,timerInterval:null,sessionErrors:[],finished:false,curSlide:0};
   saveSession();bumpStreak();
@@ -1082,46 +1387,10 @@ function saveSession(){
   });
 }
 
-function openQuizScreen(){
-  $('quizScreen').classList.add('active');
-  $('qTemaNm').textContent=QS.temaNome;
-  $('qAcertos').textContent=QS.acertos;
-  $('qErros').textContent=QS.erros;
-  document.body.style.overflow='hidden';
-}
-
-function closeQuizScreen(){
-  $('quizScreen').classList.remove('active');
-  document.body.style.overflow='';
-  stopTimer();
-}
-
-function startTimer(){
-  stopTimer();
-  updateTimerUI();
-  QS.timerInterval=setInterval(()=>{
-    QS.timerSec--;updateTimerUI();
-    if(QS.timerSec<=0){stopTimer();onTimeout();}
-  },1000);
-}
-
-function stopTimer(){if(QS?.timerInterval){clearInterval(QS.timerInterval);QS.timerInterval=null;}}
-
-function updateTimerUI(){
-  if(!QS)return;
-  const m=Math.floor(QS.timerSec/60);const s=QS.timerSec%60;
-  const el=$('qTimer');const fill=$('qTimerFill');
-  el.textContent=`⏱ ${m}:${String(s).padStart(2,'0')}`;
-  const pct=Math.round(QS.timerSec/300*100);
-  el.className='q-timer'+(QS.timerSec<=30?' danger':QS.timerSec<=60?' warn':'');
-  if(fill){fill.style.width=pct+'%';fill.style.background=QS.timerSec<=30?'var(--red)':QS.timerSec<=60?'var(--org)':'var(--gold)';}
-}
-
 function onTimeout(){
   if(QS.answered)return;
   QS.answered=true;QS.erros++;$('qErros').textContent=QS.erros;
   const q=QS.questions[QS.idx];
-  // mark correct answer
   const card=$(`optCard${q.correta}`);if(card)card.classList.add('correct');
   document.querySelectorAll('.q-opt-card').forEach(c=>c.classList.add('disabled'));
   showFeedback(false,`⏰ Tempo esgotado! Resposta: ${q.correta}`,q.explicacao||'');
@@ -1181,7 +1450,6 @@ function initSwipe(){
   wrap.addEventListener('touchstart',e=>{isDragging=true;startX=e.touches[0].clientX;car.style.transition='none';});
   wrap.addEventListener('touchmove',e=>{if(!isDragging)return;offsetX=e.touches[0].clientX-startX;car.style.transform=`translateX(calc(-${QS.curSlide*100}% + ${offsetX}px))`;});
   wrap.addEventListener('touchend',()=>{isDragging=false;if(Math.abs(offsetX)>50)goTo(offsetX<0?QS.curSlide+1:QS.curSlide-1);else goTo(QS.curSlide);offsetX=0;});
-  // click nav
   document.querySelectorAll('.q-dot').forEach((d,i)=>d.addEventListener('click',()=>goTo(i)));
 }
 
@@ -1379,8 +1647,8 @@ function buildPerfil(){
       <div class="prof-stat"><div class="prof-sv">${pct}%</div><div class="prof-sl">Aproveitamento</div></div>
       <div class="prof-stat"><div class="prof-sv">${sk.days||0}</div><div class="prof-sl">Dias seguidos</div></div>
     </div>
-    <button class="btn-outline" onclick="exportData()">📊 Exportar meus dados</button>
-    <button class="btn-danger" onclick="resetarProgresso()">🔄 Resetar progresso</button>
+    <button class="btn-secondary" style="width:100%;" onclick="exportData()">📊 Exportar meus dados</button>
+    <button class="btn-alert" style="width:100%;" onclick="resetarProgresso()">🔄 Resetar progresso</button>
   `;
 }
 function exportData(){
@@ -1397,10 +1665,12 @@ function resetarProgresso(){
     'Esta ação apagará todo o seu histórico e não pode ser desfeita.',
     'Confirmar Reset',
     'Cancelar',
-    (confirmed) => {
-      if (confirmed) {
+    ok => {
+      if (ok) {
         [LS.prog,LS.errors,LS.streak,LS.session,'kr_earned'].forEach(k=>localStorage.removeItem(k));
-        updateUI();buildPerfil();showToast('🔄 Progresso resetado!');
+        updateUI();
+        buildPerfil();
+        showToast('🔄 Progresso resetado!');
       }
     }
   );
@@ -1416,6 +1686,9 @@ function buildAdmin(){
   $('adminAlunos').textContent=rank.length;
   $('adminQuestoes').textContent=aiqs+(Object.values(QUESTIONS_DB).reduce((a,b)=>a+b.length,0));
   $('adminPDFs').textContent=pdfcount;
+  
+  populateAdminAudioSelect();
+
   $('studentsList').innerHTML=rank.slice(0,10).map(u=>`
     <div class="student-row">
       <div class="student-av">${u.initials}</div>
@@ -1444,7 +1717,6 @@ async function processPDF(file){
     for(let j=0;j<i;j++){const el=$(`aistep${j}`);el.className='ai-step done';el.querySelector('.ai-step-ic').textContent='✅';}
     const cur=$(`aistep${i}`);cur.className='ai-step active';cur.querySelector('.ai-step-ic').textContent='⚡';
     if(i===2){
-      // Call Claude API to extract content and generate questions
       await generateQuestionsFromPDF(file,cur);
     }
   }
@@ -1477,7 +1749,6 @@ async function generateQuestionsFromPDF(file,stepEl){
     const novas=JSON.parse(text);
     if(Array.isArray(novas)&&novas.length){
       const cur=load(LS.aiqs,0);save(LS.aiqs,cur+novas.length);
-      // Add to a new AI theme
       const aiTemaId='AI_'+Date.now();
       QUESTIONS_DB[aiTemaId]=novas;
       showAchievement(`${novas.length} novas questões geradas!`,'🤖');
