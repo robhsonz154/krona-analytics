@@ -243,32 +243,12 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--sf2);border:1px solid var(--bd2);color:var(--txt);font-size:13px;font-weight:600;padding:11px 22px;border-radius:20px;opacity:0;transition:all .3s ease;z-index:600;white-space:nowrap;box-shadow:var(--sh2);pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ── REVISED QUIZ SCREEN & SCROLLING ── */
-#quizScreen{
-  position:fixed;
-  inset:0;
-  background:var(--bg);
-  z-index:500;
-  display:none;
-  flex-direction:column;
-  overflow-y:auto;
-  max-width:430px;
-  left:50%;
-  transform:translateX(-50%);
-  -webkit-overflow-scrolling:touch;
-}
+/* ── QUIZ SCREEN ── */
+#quizScreen{position:fixed;inset:0;background:var(--bg);z-index:500;display:none;flex-direction:column;overflow:hidden;max-width:430px;left:50%;transform:translateX(-50%)}
 #quizScreen.active{display:flex}
 
-/* Sticky Quiz Header */
-.qhdr{
-  background:var(--bg2);
-  border-bottom:1px solid var(--bd);
-  padding:12px 16px;
-  flex-shrink:0;
-  position:sticky;
-  top:0;
-  z-index:100;
-}
+/* Quiz Header */
+.qhdr{background:var(--bg2);border-bottom:1px solid var(--bd);padding:12px 16px;flex-shrink:0}
 .qhdr-row1{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .q-back{background:var(--sf);border:1px solid var(--bd);color:var(--tx2);font-size:12px;font-weight:700;padding:7px 14px;border-radius:20px;cursor:pointer;font-family:inherit;transition:all var(--tr)}
 .q-back:active{background:var(--sf2)}
@@ -288,73 +268,44 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .q-sc{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700}
 .q-sc.ok{color:var(--grn)}.q-sc.err{color:var(--red)}
 
-/* VERTICAL QUESTION LAYOUT */
-.q-body{flex:1;padding:16px;display:flex;flex-direction:column;gap:14px}
-.q-question-box{padding:18px;background:var(--sf);border-radius:18px;border:1px solid var(--bd)}
+/* CARROSSEL DE QUESTÃO */
+.q-body{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.q-question-fixed{padding:16px 16px 10px;flex-shrink:0}
 .q-num{font-size:9px;font-weight:800;color:var(--tx4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
-.q-txt{font-size:15px;font-weight:600;color:var(--txt);line-height:1.65}
+.q-txt{font-size:15px;font-weight:600;color:var(--txt);line-height:1.65;padding:16px;background:var(--sf);border-radius:16px;border:1px solid var(--bd)}
+.q-hint{font-size:11px;color:var(--tx3);font-weight:500;text-align:center;margin-top:8px;padding-bottom:4px}
 
-.q-opts-list{display:flex;flex-direction:column;gap:10px}
-.q-opt-card{
-  background:var(--sf);
-  border:2px solid var(--bd);
-  border-radius:16px;
-  padding:14px 16px;
-  cursor:pointer;
-  transition:all .2s ease;
-  user-select:none;
-  display:flex;
-  align-items:center;
-  gap:14px;
-  min-height:64px;
-  text-align:left;
-  width:100%;
-  font-family:inherit;
-}
-.q-opt-card:active:not(.disabled){transform:scale(.98)}
+/* SWIPE CAROUSEL */
+.q-carousel-wrap{flex:1;overflow:hidden;position:relative;margin:0 16px;padding-bottom:12px}
+.q-carousel{display:flex;height:100%;transition:transform .3s cubic-bezier(.4,0,.2,1);align-items:stretch}
+.q-opt-slide{min-width:100%;padding:6px 2px;display:flex;flex-direction:column;justify-content:center}
+.q-opt-card{background:var(--sf);border:2px solid var(--bd);border-radius:20px;padding:18px 20px;cursor:pointer;transition:all .2s ease;user-select:none;display:flex;align-items:flex-start;gap:14px;min-height:100px}
+.q-opt-card:active:not(.disabled){transform:scale(.97)}
 .q-opt-card:hover:not(.disabled):not(.correct):not(.wrong):not(.selected){border-color:var(--bd2);background:var(--sf2)}
 .q-opt-card.selected{border-color:var(--gold);background:rgba(245,200,66,.08)}
 .q-opt-card.correct{border-color:var(--grn)!important;background:rgba(0,214,143,.08)!important}
 .q-opt-card.wrong{border-color:var(--red)!important;background:rgba(255,90,90,.08)!important}
 .q-opt-card.disabled{cursor:default}
-
-.q-opt-letter{
-  width:32px;
-  height:32px;
-  border-radius:50%;
-  background:var(--sf3);
-  border:1.5px solid var(--bd);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:13px;
-  font-weight:900;
-  color:var(--tx3);
-  flex-shrink:0;
-  transition:all .2s;
-}
+.q-opt-letter{width:32px;height:32px;border-radius:10px;background:var(--sf3);border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:var(--tx3);flex-shrink:0;transition:all .2s}
 .q-opt-card.selected .q-opt-letter{background:rgba(245,200,66,.15);border-color:var(--gold);color:var(--gold)}
 .q-opt-card.correct .q-opt-letter{background:rgba(0,214,143,.15);border-color:var(--grn);color:var(--grn)}
 .q-opt-card.wrong .q-opt-letter{background:rgba(255,90,90,.15);border-color:var(--red);color:var(--red)}
-.q-opt-txt{font-size:14px;color:var(--tx2);line-height:1.5;flex:1}
+.q-opt-txt{font-size:14px;color:var(--tx2);line-height:1.55;flex:1;padding-top:4px}
 .q-opt-card.correct .q-opt-txt,.q-opt-card.wrong .q-opt-txt{color:var(--txt)}
+.q-swipe-hint{display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 0;font-size:11px;color:var(--tx4);font-weight:500}
+.q-dots{display:flex;gap:5px;align-items:center}
+.q-dot{width:6px;height:6px;border-radius:50%;background:var(--bd2);transition:all .2s}
+.q-dot.active{background:var(--gold);width:14px;border-radius:3px}
 
-/* FEEDBACK BOX (STATIC, IN-FLOW) */
-.q-fb-box{
-  background:var(--sf);
-  border-radius:18px;
-  padding:18px;
-  border:1.5px solid var(--bd);
-  margin-top:10px;
-  display:none;
-}
-.q-fb-box.show{display:block}
-.q-fb-box.ok{background:linear-gradient(180deg,rgba(0,214,143,.12),rgba(0,214,143,.06));border-color:rgba(0,214,143,.25)}
-.q-fb-box.err{background:linear-gradient(180deg,rgba(255,90,90,0.1),rgba(255,90,90,0.05));border-color:rgba(255,90,90,.2)}
+/* FEEDBACK OVERLAY */
+.q-fb-overlay{position:absolute;bottom:0;left:0;right:0;padding:16px;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:10;border-radius:20px 20px 0 0}
+.q-fb-overlay.show{transform:translateY(0)}
+.q-fb-overlay.ok{background:linear-gradient(180deg,rgba(0,214,143,.15),rgba(0,214,143,.1));border-top:1px solid rgba(0,214,143,.25)}
+.q-fb-overlay.err{background:linear-gradient(180deg,rgba(255,90,90,.12),rgba(255,90,90,.08));border-top:1px solid rgba(255,90,90,.2)}
 .q-fb-tt{font-size:15px;font-weight:900;margin-bottom:6px}
-.q-fb-box.ok .q-fb-tt{color:var(--grn)}
-.q-fb-box.err .q-fb-tt{color:var(--red)}
-.q-fb-ex{font-size:12.5px;color:var(--tx2);line-height:1.6;margin-bottom:14px}
+.q-fb-overlay.ok .q-fb-tt{color:var(--grn)}
+.q-fb-overlay.err .q-fb-tt{color:var(--red)}
+.q-fb-ex{font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:14px}
 .q-next{width:100%;padding:14px;font-size:14px;font-weight:900;border:none;border-radius:14px;cursor:pointer;font-family:inherit;transition:all var(--tr)}
 .q-next.ok{background:linear-gradient(135deg,var(--grnD),var(--grn));color:#fff}
 .q-next.err{background:linear-gradient(135deg,var(--red),#ff7a7a);color:#fff}
@@ -413,15 +364,15 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   </div>
 </div>
 
-<!-- CUSTOM CONFIRMATION MODAL -->
-<div id="customConfirmModal" style="display:none; position:fixed; inset:0; background:rgba(10,15,30,0.9); z-index:9999; justify-content:center; align-items:center; padding:20px;">
-  <div style="background:var(--bg2); border:1.5px solid var(--bd2); border-radius:24px; padding:28px 22px; max-width:360px; width:100%; text-align:center; box-shadow:var(--sh2);">
-    <div style="font-size:42px; margin-bottom:14px;" id="customConfirmIcon">⚠️</div>
-    <div style="font-size:18px; font-weight:800; color:var(--txt); margin-bottom:8px; line-height:1.4;" id="customConfirmTitle">Tem certeza que deseja sair?</div>
-    <div style="font-size:13.5px; color:var(--tx2); margin-bottom:24px; line-height:1.5;" id="customConfirmSub">Seu progresso atual será salvo e você poderá continuar de onde parou.</div>
+<!-- FAILSAFE IN-APP CONFIRMATION MODAL -->
+<div id="kronaConfirmModal" style="display:none; position:fixed; inset:0; background:rgba(10,15,30,0.9); z-index:9999; justify-content:center; align-items:center; padding:20px;">
+  <div style="background:#0E1628; border:1.5px solid rgba(255,255,255,0.1); border-radius:24px; padding:28px 24px; max-width:340px; width:100%; text-align:center; box-shadow:0 12px 40px rgba(0,0,0,0.6); font-family:'Inter',system-ui,sans-serif;">
+    <div style="font-size:42px; margin-bottom:14px;" id="kronaConfirmIcon">⚠️</div>
+    <div style="font-size:18px; font-weight:800; color:#F0F4FF; margin-bottom:8px; line-height:1.4;" id="kronaConfirmTitle">Tem certeza que deseja sair?</div>
+    <div style="font-size:13.5px; color:#A0AFCC; margin-bottom:24px; line-height:1.5;" id="kronaConfirmText">Seu progresso atual será salvo.</div>
     <div style="display:flex; flex-direction:column; gap:12px;">
-      <button class="btn-gold" style="margin-top:0;" id="customConfirmBtnCancel" onclick="closeCustomConfirm(false)">Continuar Simulado</button>
-      <button class="btn-outline" style="margin-top:0; border-color:var(--red); color:var(--red);" id="customConfirmBtnOk" onclick="closeCustomConfirm(true)">Sair e Salvar</button>
+      <button style="width:100%; padding:14px; background:linear-gradient(135deg,#D4A820,#F5C842,#FFD966); color:#0A0F1E; border:none; border-radius:14px; font-size:14px; font-weight:800; cursor:pointer; font-family:inherit; box-shadow:0 4px 20px rgba(245,200,66,0.3); transition: transform 0.1s;" id="kronaConfirmBtnCancel" onclick="handleKronaConfirm(false)">Continuar Simulado</button>
+      <button style="width:100%; padding:14px; background:transparent; border:1.5px solid rgba(255,90,90,0.3); color:#FF5A5A; border-radius:14px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; transition: background 0.1s;" id="kronaConfirmBtnOk" onclick="handleKronaConfirm(true)">Sair e Salvar</button>
     </div>
   </div>
 </div>
@@ -592,7 +543,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
         <div class="tema-ic">🌱</div>
         <div class="tema-det">
           <div class="tema-tag agro">Tema 2</div>
-          <div class="tema-nm">Sistemas de Production Sustentável</div>
+          <div class="tema-nm">Sistemas de Produção Sustentável</div>
           <div class="tema-ct" id="ct2">1 questão disponível</div>
         </div>
         <span class="tema-badge pending" id="badge2">Pendente</span>
@@ -759,7 +710,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   </div>
 
   <div class="q-body" id="qBody">
-    <!-- Renderizado dinamicamente em formato vertical -->
+    <!-- Rendered dynamically -->
   </div>
 </div>
 
@@ -835,7 +786,7 @@ try{tg.setHeaderColor('#0A0F1E');tg.setBackgroundColor('#0A0F1E');}catch(e){}
 
 // ══════════════════════════════════════════════
 // STORAGE
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════════
 const LS={user:'kr_user',prog:'kr_prog',errors:'kr_err',streak:'kr_streak',session:'kr_sess',ranking:'kr_rank',pdfcount:'kr_pdfc',aiqs:'kr_aiqs'};
 const load=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;}};
 const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}};
@@ -886,21 +837,25 @@ function checkAchievements(){
 }
 
 // ══════════════════════════════════════════════
-// CUSTOM CONFIRMATION DIALOG
+// CUSTOM CONFIRM MODAL CONTROLLER (FAILSAFE)
 // ══════════════════════════════════════════════
-let customConfirmCallback = null;
-function showCustomConfirm(title, sub, btnOkText, btnCancelText, callback, icon = '⚠️') {
-  $('customConfirmTitle').textContent = title;
-  $('customConfirmSub').textContent = sub;
-  $('customConfirmBtnOk').textContent = btnOkText;
-  $('customConfirmBtnCancel').textContent = btnCancelText;
-  $('customConfirmIcon').textContent = icon;
-  $('customConfirmModal').style.display = 'flex';
-  customConfirmCallback = callback;
+let kronaConfirmCallback = null;
+function showKronaConfirm(title, text, okBtnText, cancelBtnText, cb, icon = '⚠️') {
+  $('kronaConfirmTitle').textContent = title;
+  $('kronaConfirmText').textContent = text;
+  $('kronaConfirmBtnOk').textContent = okBtnText;
+  $('kronaConfirmBtnCancel').textContent = cancelBtnText;
+  $('kronaConfirmIcon').textContent = icon;
+  $('kronaConfirmModal').style.display = 'flex';
+  kronaConfirmCallback = cb;
 }
-function closeCustomConfirm(isOk) {
-  $('customConfirmModal').style.display = 'none';
-  if(customConfirmCallback) customConfirmCallback(isOk);
+
+function handleKronaConfirm(choice) {
+  $('kronaConfirmModal').style.display = 'none';
+  if (kronaConfirmCallback) {
+    kronaConfirmCallback(choice);
+    kronaConfirmCallback = null;
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -1072,20 +1027,20 @@ function tglMod(id){
 }
 
 // ══════════════════════════════════════════════
-// QUIZ ENGINE (REFACTORED WITH VERTICAL SCROLL)
+// QUIZ ENGINE
 // ══════════════════════════════════════════════
 let QS=null;
 
 function startQuiz(temaId,temaNome){
   const saved=load(LS.session,null);
   if(saved&&saved.temaId===temaId&&!saved.finished){
-    showCustomConfirm(
-      'Retomar simulado?',
-      `Você deseja continuar de onde parou (questão ${saved.idx + 1}) ou iniciar um novo simulado?`,
+    showKronaConfirm(
+      'Simulado em andamento',
+      'Deseja retomar de onde parou ou iniciar um novo simulado?',
       'Iniciar Novo',
-      'Continuar Simulado',
-      (startNew) => {
-        if (startNew) {
+      'Retomar Progresso',
+      (restart) => {
+        if (restart) {
           startFreshQuiz(temaId, temaNome);
         } else {
           resumeQuiz(saved);
@@ -1099,34 +1054,17 @@ function startQuiz(temaId,temaNome){
 function startFreshQuiz(temaId,temaNome){
   const qs=QUESTIONS_DB[temaId];
   if(!qs?.length){showToast('❌ Questões não encontradas!');return;}
+  // ALL questions, shuffled
   const questions=[...qs].sort(()=>Math.random()-.5);
-  QS={
-    temaId,
-    temaNome,
-    questions,
-    idx:0,
-    acertos:0,
-    erros:0,
-    answered:false,
-    selectedLetter:null,
-    timerSec:300,
-    timerInterval:null,
-    sessionErrors:[],
-    finished:false
-  };
+  QS={temaId,temaNome,questions,idx:0,acertos:0,erros:0,answered:false,timerSec:300,timerInterval:null,sessionErrors:[],finished:false,curSlide:0};
   saveSession();bumpStreak();
   openQuizScreen();renderQuestion();startTimer();
 }
 
 function resumeQuiz(saved){
-  QS={...saved,timerInterval:null};
-  openQuizScreen();
-  renderQuestion();
-  if(QS.answered){
-    applyAnswerVisuals(QS.selectedLetter);
-  } else {
-    startTimer();
-  }
+  QS={...saved,timerInterval:null,answered:false,curSlide:0};
+  openQuizScreen();renderQuestion();startTimer();
+  const nb=$('qNext');if(nb)nb.style.display='block';
 }
 
 function saveSession(){
@@ -1140,24 +1078,19 @@ function saveSession(){
     erros:QS.erros,
     sessionErrors:QS.sessionErrors,
     finished:QS.finished,
-    timerSec:QS.timerSec,
-    answered:QS.answered,
-    selectedLetter:QS.selectedLetter
+    timerSec:QS.timerSec || 300
   });
 }
 
 function openQuizScreen(){
-  $('quizScreen').style.display='flex';
   $('quizScreen').classList.add('active');
   $('qTemaNm').textContent=QS.temaNome;
   $('qAcertos').textContent=QS.acertos;
   $('qErros').textContent=QS.erros;
   document.body.style.overflow='hidden';
-  $('quizScreen').scrollTo(0,0);
 }
 
 function closeQuizScreen(){
-  $('quizScreen').style.display='none';
   $('quizScreen').classList.remove('active');
   document.body.style.overflow='';
   stopTimer();
@@ -1179,36 +1112,22 @@ function updateTimerUI(){
   const m=Math.floor(QS.timerSec/60);const s=QS.timerSec%60;
   const el=$('qTimer');const fill=$('qTimerFill');
   el.textContent=`⏱ ${m}:${String(s).padStart(2,'0')}`;
-  const pct=Math.max(0,Math.round(QS.timerSec/300*100));
+  const pct=Math.round(QS.timerSec/300*100);
   el.className='q-timer'+(QS.timerSec<=30?' danger':QS.timerSec<=60?' warn':'');
-  if(fill){
-    fill.style.width=pct+'%';
-    fill.style.background=QS.timerSec<=30?'var(--red)':QS.timerSec<=60?'var(--org)':'var(--gold)';
-  }
+  if(fill){fill.style.width=pct+'%';fill.style.background=QS.timerSec<=30?'var(--red)':QS.timerSec<=60?'var(--org)':'var(--gold)';}
 }
 
 function onTimeout(){
   if(QS.answered)return;
-  QS.answered=true;
-  QS.selectedLetter='⏰';
-  QS.erros++;$('qErros').textContent=QS.erros;
+  QS.answered=true;QS.erros++;$('qErros').textContent=QS.erros;
   const q=QS.questions[QS.idx];
-  
-  const cor=$(`optCard${q.correta}`);
-  if(cor)cor.classList.add('correct');
+  // mark correct answer
+  const card=$(`optCard${q.correta}`);if(card)card.classList.add('correct');
   document.querySelectorAll('.q-opt-card').forEach(c=>c.classList.add('disabled'));
-  
   showFeedback(false,`⏰ Tempo esgotado! Resposta: ${q.correta}`,q.explicacao||'');
-  
-  QS.sessionErrors.push({
-    temaId:QS.temaId,
-    temaNome:QS.temaNome,
-    pergunta:q.pergunta,
-    correta:`${q.correta}: ${q.opcoes[q.correta]}`,
-    escolhida:'⏰ tempo esgotado',
-    data:new Date().toISOString()
-  });
+  QS.sessionErrors.push({temaId:QS.temaId,temaNome:QS.temaNome,pergunta:q.pergunta,correta:`${q.correta}: ${q.opcoes[q.correta]}`,escolhida:'⏰ tempo esgotado',data:new Date().toISOString()});
   saveSession();
+  setTimeout(()=>{if(QS&&!QS.finished)nextQuestion();},3000);
 }
 
 function renderQuestion(){
@@ -1216,104 +1135,90 @@ function renderQuestion(){
   const tot=QS.questions.length;
   $('qProgFill').style.width=Math.round(QS.idx/tot*100)+'%';
   $('qProgCt').textContent=`${QS.idx+1}/${tot}`;
-  
+  QS.answered=false;QS.curSlide=0;
   const letters=Object.keys(q.opcoes||{});
-  const optsHtml=letters.map(l=>`
-    <button class="q-opt-card" id="optCard${l}" onclick="selectOpt('${l}')">
-      <div class="q-opt-letter">${l}</div>
-      <div class="q-opt-txt">${q.opcoes[l]}</div>
-    </button>`).join('');
+  const slides=letters.map((l,i)=>`
+    <div class="q-opt-slide">
+      <div class="q-opt-card" id="optCard${l}" onclick="selectOpt('${l}')">
+        <div class="q-opt-letter">${l}</div>
+        <div class="q-opt-txt">${q.opcoes[l]}</div>
+      </div>
+    </div>`).join('');
+  const dots=letters.map((_,i)=>`<div class="q-dot${i===0?' active':''}" id="dot${i}"></div>`).join('');
 
   $('qBody').innerHTML=`
-    <div class="q-question-box">
+    <div class="q-question-fixed">
       <div class="q-num">Questão ${QS.idx+1} de ${tot}</div>
       <div class="q-txt">${q.pergunta}</div>
+      <div class="q-hint">← Deslize para ver alternativas →</div>
     </div>
-    <div class="q-opts-list">
-      ${optsHtml}
+    <div class="q-carousel-wrap" id="carouselWrap">
+      <div class="q-carousel" id="carousel">${slides}</div>
+      <div class="q-swipe-hint"><span>←</span><div class="q-dots" id="qDots">${dots}</div><span>→</span></div>
     </div>
-    <div class="q-fb-box" id="qFbBox">
+    <div class="q-fb-overlay" id="qFbOv">
       <div class="q-fb-tt" id="qFbTt"></div>
       <div class="q-fb-ex" id="qFbEx"></div>
       <button class="q-next" id="qNextBtn" onclick="nextQuestion()">${QS.idx+1<tot?'Próxima questão →':'Ver resultado 🏁'}</button>
     </div>`;
-  
-  if(QS.answered && QS.selectedLetter){
-    applyAnswerVisuals(QS.selectedLetter);
+
+  initSwipe();
+}
+
+function initSwipe(){
+  const wrap=$('carouselWrap');const car=$('carousel');
+  if(!wrap||!car)return;
+  const qs=QS.questions[QS.idx];
+  const count=Object.keys(qs.opcoes||{}).length;
+  let startX=0,isDragging=false,offsetX=0;
+
+  function goTo(i){
+    QS.curSlide=Math.max(0,Math.min(i,count-1));
+    car.style.transition='transform .3s cubic-bezier(.4,0,.2,1)';
+    car.style.transform=`translateX(-${QS.curSlide*100}%)`;
+    document.querySelectorAll('.q-dot').forEach((d,j)=>{d.className='q-dot'+(j===QS.curSlide?' active':'');});
   }
+  wrap.addEventListener('touchstart',e=>{isDragging=true;startX=e.touches[0].clientX;car.style.transition='none';});
+  wrap.addEventListener('touchmove',e=>{if(!isDragging)return;offsetX=e.touches[0].clientX-startX;car.style.transform=`translateX(calc(-${QS.curSlide*100}% + ${offsetX}px))`;});
+  wrap.addEventListener('touchend',()=>{isDragging=false;if(Math.abs(offsetX)>50)goTo(offsetX<0?QS.curSlide+1:QS.curSlide-1);else goTo(QS.curSlide);offsetX=0;});
+  // click nav
+  document.querySelectorAll('.q-dot').forEach((d,i)=>d.addEventListener('click',()=>goTo(i)));
 }
 
 function selectOpt(letter){
   if(QS.answered)return;
-  stopTimer();
-  QS.answered=true;
-  QS.selectedLetter=letter;
+  stopTimer();QS.answered=true;
   const q=QS.questions[QS.idx];
   const isOk=letter===q.correta;
-  
+  document.querySelectorAll('.q-opt-card').forEach(c=>c.classList.add('disabled'));
+  const sel=$(`optCard${letter}`);const cor=$(`optCard${q.correta}`);
+  if(isOk){sel.classList.add('correct');}else{sel.classList.add('wrong');if(cor)cor.classList.add('correct');}
   if(isOk){
     QS.acertos++;$('qAcertos').textContent=QS.acertos;
+    showFeedback(true,'✅ Correto! Muito bem!',q.explicacao||'');
     launchConfetti();
     if(tg.HapticFeedback)tg.HapticFeedback.impactOccurred('light');
   }else{
     QS.erros++;$('qErros').textContent=QS.erros;
-    QS.sessionErrors.push({
-      temaId:QS.temaId,
-      temaNome:QS.temaNome,
-      pergunta:q.pergunta,
-      correta:`${q.correta}: ${q.opcoes[q.correta]}`,
-      escolhida:`${letter}: ${q.opcoes[letter]||'?'}`,
-      data:new Date().toISOString()
-    });
+    showFeedback(false,`❌ Resposta incorreta — Correta: ${q.correta}`,q.explicacao||'');
+    QS.sessionErrors.push({temaId:QS.temaId,temaNome:QS.temaNome,pergunta:q.pergunta,correta:`${q.correta}: ${q.opcoes[q.correta]}`,escolhida:`${letter}: ${q.opcoes[letter]||'?'}`,data:new Date().toISOString()});
     if(tg.HapticFeedback)tg.HapticFeedback.notificationOccurred('error');
   }
-  
-  applyAnswerVisuals(letter);
   saveSession();
-}
-
-function applyAnswerVisuals(letter){
-  const q=QS.questions[QS.idx];
-  const isOk=letter===q.correta;
-  document.querySelectorAll('.q-opt-card').forEach(c=>c.classList.add('disabled'));
-  
-  const sel=$(`optCard${letter}`);
-  const cor=$(`optCard${q.correta}`);
-  
-  if(isOk){
-    if(sel)sel.classList.add('correct');
-  }else{
-    if(sel)sel.classList.add('wrong');
-    if(cor)cor.classList.add('correct');
-  }
-  
-  showFeedback(isOk, isOk ? '✅ Correto! Muito bem!' : `❌ Resposta incorreta — Correta: ${q.correta}`, q.explicacao||'');
 }
 
 function showFeedback(ok,title,ex){
-  const box=$('qFbBox');const tt=$('qFbTt');const exEl=$('qFbEx');
-  if(!box)return;
-  box.className='q-fb-box show '+(ok?'ok':'err');
+  const ov=$('qFbOv');const tt=$('qFbTt');const exEl=$('qFbEx');const btn=$('qNextBtn');
+  ov.className='q-fb-overlay show '+(ok?'ok':'err');
   tt.textContent=title;exEl.textContent=ex;
-  
-  setTimeout(()=>{
-    box.scrollIntoView({behavior:'smooth',block:'nearest'});
-  },120);
+  btn.className='q-next '+(ok?'ok':'err');
+  btn.textContent=(QS.idx+1<QS.questions.length)?'Próxima questão →':'Ver resultado 🏁';
 }
 
 function nextQuestion(){
-  stopTimer();
-  QS.idx++;
-  QS.answered=false;
-  QS.selectedLetter=null;
-  saveSession();
-  if(QS.idx>=QS.questions.length){
-    showResult();
-  }else{
-    renderQuestion();
-    startTimer();
-    $('quizScreen').scrollTo({top:0,behavior:'smooth'});
-  }
+  stopTimer();QS.idx++;
+  if(QS.idx>=QS.questions.length){showResult();}
+  else{renderQuestion();startTimer();}
 }
 
 function showResult(){
@@ -1361,20 +1266,19 @@ function showResult(){
   $('qProgCt').textContent=`${tot}/${tot}`;
   $('qTimer').textContent='✅ Concluído';$('qTimer').className='q-timer';
   $('qTimerFill').style.width='100%';$('qTimerFill').style.background='var(--grn)';
-  $('quizScreen').scrollTo({top:0,behavior:'smooth'});
 }
 
 function finishAndGoHome(){closeQuizScreen();updateUI();showToast('✅ Resultado salvo!');}
 function restartQuiz(){const{temaId,temaNome}=QS;closeQuizScreen();setTimeout(()=>startFreshQuiz(temaId,temaNome),200);}
 
 function quitQuiz(){
-  showCustomConfirm(
+  showKronaConfirm(
     'Tem certeza que deseja sair?',
-    'Seu progresso atual será salvo para que você possa continuar de onde parou.',
+    'Seu progresso atual será salvo para que você possa continuar de onde parou a qualquer momento.',
     'Sair e Salvar',
     'Continuar Simulado',
-    (exitConfirmed) => {
-      if (exitConfirmed) {
+    (exit) => {
+      if (exit) {
         saveSession();
         closeQuizScreen();
         updateUI();
@@ -1488,9 +1392,9 @@ function exportData(){
   showToast('📊 Dados exportados!');
 }
 function resetarProgresso(){
-  showCustomConfirm(
+  showKronaConfirm(
     'Resetar todo o progresso?',
-    'Seu progresso será reiniciado permanentemente. Esta ação não pode ser desfeita.',
+    'Esta ação apagará todo o seu histórico e não pode ser desfeita.',
     'Confirmar Reset',
     'Cancelar',
     (confirmed) => {
@@ -1540,6 +1444,7 @@ async function processPDF(file){
     for(let j=0;j<i;j++){const el=$(`aistep${j}`);el.className='ai-step done';el.querySelector('.ai-step-ic').textContent='✅';}
     const cur=$(`aistep${i}`);cur.className='ai-step active';cur.querySelector('.ai-step-ic').textContent='⚡';
     if(i===2){
+      // Call Claude API to extract content and generate questions
       await generateQuestionsFromPDF(file,cur);
     }
   }
@@ -1572,6 +1477,7 @@ async function generateQuestionsFromPDF(file,stepEl){
     const novas=JSON.parse(text);
     if(Array.isArray(novas)&&novas.length){
       const cur=load(LS.aiqs,0);save(LS.aiqs,cur+novas.length);
+      // Add to a new AI theme
       const aiTemaId='AI_'+Date.now();
       QUESTIONS_DB[aiTemaId]=novas;
       showAchievement(`${novas.length} novas questões geradas!`,'🤖');
@@ -1621,7 +1527,7 @@ function launchConfetti(duration=1500){
     setTimeout(()=>{if(!openMod)tglMod('A');},500);
     const saved=load(LS.session,null);
     if(saved&&!saved.finished){
-      setTimeout(()=>showToast(`💾 Simulado salvo: "${saved.temaNome}". Clique no tema para retomar.`,4000),1200);
+      setTimeout(()=>showToast(`💾 Simulado salvo: "${saved.temaNome}". Clique para retomar.`,4000),1200);
     }
   }
 })();
