@@ -28,7 +28,83 @@
 }
 
 html{background:var(--bg);height:100%}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;max-width:430px;margin:0 auto;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:100px;position:relative}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+
+/* ── LAYOUT RESPONSIVO (DESKTOP SIDEBAR / MOBILE NAV) ── */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+.sidebar {
+  width: 270px;
+  background: var(--bg2);
+  border-right: 1.5px solid var(--bd);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 16px 16px 100px;
+}
+.side-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  color: var(--tx2);
+  border-radius: var(--rs);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all var(--tr);
+  margin-bottom: 6px;
+  gap: 12px;
+}
+.side-link:hover {
+  background: rgba(255,255,255,0.03);
+  color: var(--txt);
+}
+.side-link.active {
+  background: rgba(245,200,66,0.08);
+  color: var(--gold);
+}
+.badge-count {
+  background: var(--red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: auto;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none !important;
+  }
+  .app-container {
+    display: block;
+  }
+  .main-content {
+    max-width: 430px;
+    margin: 0 auto;
+    padding-bottom: 110px;
+  }
+}
+@media (min-width: 769px) {
+  .bnav {
+    display: none !important;
+  }
+}
 
 /* ── PREMIUM BUTTONS ── */
 .btn-primary {
@@ -62,8 +138,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   color: #0E1628;
   border: none;
   border-radius: var(--rs);
-  padding: 14px 20px;
-  font-size: 14px;
+  padding: 12px 18px;
+  font-size: 13.5px;
   font-weight: 800;
   letter-spacing: .3px;
   cursor: pointer;
@@ -80,58 +156,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   box-shadow: 0 6px 22px rgba(0,214,143,0.35);
 }
 .btn-success:active {
-  transform: translateY(1px);
-}
-
-.btn-accent {
-  background: linear-gradient(135deg, #7c3aed, var(--vio), #c084fc);
-  color: #ffffff;
-  border: none;
-  border-radius: var(--rs);
-  padding: 14px 20px;
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: .3px;
-  cursor: pointer;
-  box-shadow: 0 4px 18px rgba(168,85,247,.25);
-  transition: all var(--tr);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-family: inherit;
-}
-.btn-accent:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(168,85,247,0.35);
-}
-.btn-accent:active {
-  transform: translateY(1px);
-}
-
-.btn-alert {
-  background: linear-gradient(135deg, var(--redD), var(--red), #ff7a7a);
-  color: #ffffff;
-  border: none;
-  border-radius: var(--rs);
-  padding: 14px 20px;
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: .3px;
-  cursor: pointer;
-  box-shadow: 0 4px 18px rgba(255,90,90,.25);
-  transition: all var(--tr);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-family: inherit;
-}
-.btn-alert:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(255,90,90,0.35);
-}
-.btn-alert:active {
   transform: translateY(1px);
 }
 
@@ -161,13 +185,254 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   transform: scale(0.98);
 }
 
-/* ── PREMIUM CLASS IMPROVEMENTS ── */
+.btn-alert {
+  background: linear-gradient(135deg, var(--redD), var(--red), #ff7a7a);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--rs);
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .3px;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(255,90,90,.25);
+  transition: all var(--tr);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+}
+.btn-alert:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(255,90,90,0.35);
+}
+.btn-alert:active {
+  transform: translateY(1px);
+}
+
+/* ── PREMIUM WIDGET CARDS ── */
+.premium-widget-card {
+  background: var(--sf);
+  border: 1.5px solid rgba(255,255,255,0.04);
+  border-radius: var(--r);
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: var(--sh);
+}
+.widget-header {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  border-bottom: 1.5px solid rgba(255,255,255,0.04);
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+.widget-body {
+  color: var(--tx2);
+}
+.widget-item-link {
+  padding: 10px 12px;
+  border-radius: var(--rs);
+  background: rgba(255,255,255,0.02);
+  border: 1px solid transparent;
+  transition: all var(--tr);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.widget-item-link:hover {
+  background: var(--sf2);
+  border-color: rgba(245,200,66,0.15);
+}
+.widget-action-arrow {
+  color: var(--tx4);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.free-badge-premium {
+  background: rgba(0,214,143,0.08);
+  border: 1.5px solid rgba(0,214,143,0.25);
+  border-radius: 20px;
+  padding: 4px 12px;
+  color: var(--grn);
+  font-size: 11px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── STRUCTURAL TEMA CARDS & PLAYERS ── */
+.tema-card {
+  background: rgba(255,255,255,0.02);
+  border: 1.5px solid rgba(255,255,255,0.04);
+  border-radius: var(--rs);
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: all var(--tr);
+}
+.tema-card:hover {
+  border-color: rgba(255,255,255,0.08);
+}
+.tema-card.expanded {
+  border-color: rgba(245,200,66,0.25);
+  background: rgba(255,255,255,0.04);
+}
+.tema-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  cursor: pointer;
+  user-select: none;
+}
+.tema-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+}
+.tema-icon {
+  font-size: 20px;
+}
+.tema-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--txt);
+  line-height: 1.3;
+}
+.tema-meta {
+  font-size: 11px;
+  color: var(--tx3);
+  margin-top: 3px;
+}
+.tema-content {
+  padding: 16px;
+  border-top: 1.5px solid rgba(255,255,255,0.04);
+  background: rgba(10,15,30,0.4);
+}
+
+.sub-mod {
+  background: var(--sf);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: var(--rs);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.sub-mod:last-child {
+  margin-bottom: 0;
+}
+.sub-mod-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 12px;
+}
+
+/* INLINE AUDIO PLAYER */
+.inline-player {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.inline-progress-wrap {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+}
+.inline-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold3), var(--gold));
+  border-radius: 4px;
+  width: 0%;
+  position: relative;
+}
+.inline-player-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--tx3);
+}
+.inline-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 4px;
+}
+.player-btn {
+  background: transparent;
+  border: none;
+  color: var(--tx2);
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+  transition: color var(--tr);
+}
+.player-btn:hover {
+  color: var(--txt);
+}
+.player-btn.play-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(245,200,66,0.1);
+  border: 1px solid rgba(245,200,66,0.25);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+.player-btn.play-btn:hover {
+  background: rgba(245,200,66,0.15);
+  transform: scale(1.05);
+}
+
+/* QUIZ BLOCK */
+.quiz-info-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.quiz-info-item {
+  background: rgba(255,255,255,0.02);
+  border: 1.5px solid rgba(255,255,255,0.04);
+  border-radius: 10px;
+  padding: 8px;
+  text-align: center;
+}
+.qi-label {
+  font-size: 9px;
+  color: var(--tx3);
+  text-transform: uppercase;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 2px;
+}
+.qi-val {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--txt);
+}
+
+/* VISUAL POLISH */
 .hdr {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(20px);
-}
-.brand-mark {
-  background: linear-gradient(135deg, var(--gold3), var(--gold), var(--gold2));
 }
 .welcome-card {
   background: linear-gradient(135deg, #111e35 0%, #070e1b 100%) !important;
@@ -183,21 +448,9 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .mod.open {
   border-color: rgba(245,200,66,0.2) !important;
 }
-.tema {
-  background: #14213d !important;
-  border: 1.5px solid rgba(255,255,255,0.03) !important;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-}
-.tema:hover {
-  border-color: rgba(245, 200, 66, 0.25) !important;
-  background: #182848 !important;
-}
 .bnav {
   background: linear-gradient(180deg, rgba(10, 15, 30, 0) 0%, rgba(10, 15, 30, 0.95) 20%);
   backdrop-filter: blur(20px);
-}
-.nav-i {
-  transition: all 0.25s ease;
 }
 .nav-i.act {
   background: rgba(245,200,66,0.12) !important;
@@ -205,29 +458,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .nav-i.act .nav-lb {
   color: var(--gold) !important;
 }
-.rank-row {
-  background: #111B2E !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
-  transition: all 0.25s ease;
-}
-.rank-row.me {
-  background: rgba(245,200,66,0.05) !important;
-  border-color: rgba(245,200,66,0.3) !important;
-}
-.erro-card {
-  background: #111B2E !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
-}
-.prof-stat, .badge-item, .admin-stat, .student-row {
-  background: #111B2E !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
-}
-.badge-item.earned {
-  border-color: rgba(245,200,66,0.25) !important;
-  background: rgba(245,200,66,0.03) !important;
-}
 
-/* ── SPINNING DISC ANIMATION ── */
 @keyframes spinDisc {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -235,22 +466,6 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .spinning {
   animation: spinDisc 8s linear infinite;
 }
-
-/* ── REGISTRATION SCREEN ── */
-#regScreen{position:fixed;inset:0;background:var(--bg);z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 24px;max-width:430px;left:50%;transform:translateX(-50%)}
-.reg-logo{width:72px;height:72px;border-radius:22px;background:linear-gradient(135deg,var(--gold3),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#0A0F1E;margin-bottom:28px;box-shadow:0 8px 32px rgba(245,200,66,.3)}
-.reg-title{font-size:26px;font-weight:900;color:var(--txt);text-align:center;margin-bottom:6px;letter-spacing:-.5px}
-.reg-sub{font-size:14px;color:var(--tx2);text-align:center;margin-bottom:32px;line-height:1.5}
-.reg-form{width:100%;display:flex;flex-direction:column;gap:14px}
-.reg-field{display:flex;flex-direction:column;gap:6px}
-.reg-label{font-size:12px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px}
-.reg-input{background:var(--sf);border:1.5px solid var(--bd2);border-radius:var(--rs);padding:14px 16px;font-size:15px;color:var(--txt);font-family:inherit;outline:none;transition:border-color var(--tr)}
-.reg-input:focus{border-color:var(--gold)}
-.reg-input::placeholder{color:var(--tx3)}
-.reg-free-badge{background:rgba(0,214,143,.1);border:1px solid rgba(0,214,143,.25);border-radius:20px;padding:8px 16px;color:var(--grn);font-size:12px;font-weight:700;text-align:center;margin-top:4px}
-.step-dots{display:flex;gap:8px;justify-content:center;margin-bottom:24px}
-.step-dot{width:8px;height:8px;border-radius:50%;background:var(--bd2);transition:all var(--tr)}
-.step-dot.active{background:var(--gold);width:24px;border-radius:4px}
 </style>
 </head>
 <body>
@@ -258,7 +473,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 <!-- CONFETTI CANVAS -->
 <canvas id="confetti-canvas"></canvas>
 
-<!-- NATIVE AUDIO ELEMENT -->
+<!-- GLOBAL NATIVE AUDIO ELEMENT -->
 <audio id="kronaAudio" preload="auto"></audio>
 
 <!-- ACHIEVEMENT POPUP -->
@@ -284,428 +499,431 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 </div>
 
 <!-- ══════════════════════════════════════
-     REGISTRATION SCREEN
+     REGISTRATION SCREEN (STUDENT & ADMIN)
 ══════════════════════════════════════ -->
 <div id="regScreen">
   <div class="reg-logo">K</div>
-  <div class="step-dots" id="stepDots">
-    <div class="step-dot active"></div>
-    <div class="step-dot"></div>
-    <div class="step-dot"></div>
+  
+  <!-- LOGIN SWITCHER SELECTOR -->
+  <div id="loginSelector" style="width:100%; text-align:center;">
+    <div class="reg-title">Acesse a Plataforma</div>
+    <div class="reg-sub" style="margin-bottom:28px;">Escolha seu perfil de acesso para continuar.</div>
+    <div style="display:flex; flex-direction:column; gap:12px; width:100%;">
+      <button class="btn-primary" onclick="selectLoginProfile('student')">Estudante (Área do Aluno) 👨‍🌾</button>
+      <button class="btn-secondary" onclick="selectLoginProfile('admin')">Painel Administrativo 🔐</button>
+    </div>
+    <div class="reg-free-badge" style="margin-top:24px;">🎁 Acesso gratuito até 31/12/2026</div>
   </div>
 
-  <!-- STEP 1 -->
-  <div id="regStep1">
-    <div class="reg-title">Bem-vindo ao KRONA</div>
-    <div class="reg-sub">Sua plataforma de estudos para o SENAR.<br>Cadastre-se para começar.</div>
+  <!-- ADMIN CREDENTIALS INTERFACE -->
+  <div id="adminLoginFields" style="display:none; width:100%;">
+    <div class="reg-title">Acesso do Administrador</div>
+    <div class="reg-sub" style="margin-bottom:24px;">Credenciais fictícias de teste.</div>
     <div class="reg-form">
       <div class="reg-field">
-        <div class="reg-label">Nome completo</div>
-        <input class="reg-input" id="regNome" type="text" placeholder="Ex: Maria Silva" autocomplete="name">
+        <div class="reg-label">E-mail de Acesso</div>
+        <input class="reg-input" id="adminEmail" type="email" placeholder="admin@plataforma.com" value="admin@plataforma.com">
       </div>
       <div class="reg-field">
-        <div class="reg-label">E-mail</div>
-        <input class="reg-input" id="regEmail" type="email" placeholder="seu@email.com" autocomplete="email">
+        <div class="reg-label">Senha</div>
+        <input class="reg-input" id="adminPass" type="password" placeholder="••••••" value="123456">
       </div>
-      <button class="btn-primary" onclick="regStep1Next()">Continuar →</button>
-      <div class="reg-free-badge">🎁 Acesso gratuito até 31/12/2026</div>
+      <button class="btn-primary" style="margin-top:10px;" onclick="tryAdminLogin()">Entrar no Painel 🔐</button>
+      <button class="btn-secondary" style="margin-top:0;" onclick="cancelAdminLogin()">← Voltar</button>
     </div>
   </div>
 
-  <!-- STEP 2 -->
-  <div id="regStep2" style="display:none;width:100%">
-    <div class="reg-title">Verificar telefone</div>
-    <div class="reg-sub">Informe seu celular para receber o código de acesso.</div>
-    <div class="reg-form">
-      <div class="reg-field">
-        <div class="reg-label">Telefone</div>
-        <div class="reg-sms-row" style="display:flex; gap:10px;">
-          <input class="reg-input" id="regFone" type="tel" placeholder="(11) 99999-9999" autocomplete="tel" style="flex:1;">
-          <button class="btn-secondary" onclick="sendSMS()" style="white-space:nowrap;">Enviar código</button>
+  <!-- STANDARD STUDENT FLOW -->
+  <div id="studentFlowFields" style="display:none; width:100%; align-items:center; flex-direction:column;">
+    <div class="step-dots" id="stepDots">
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div id="regStep1" style="width:100%;">
+      <div class="reg-title">Crie sua Conta</div>
+      <div class="reg-sub">Sua plataforma de estudos para o SENAR.</div>
+      <div class="reg-form">
+        <div class="reg-field">
+          <div class="reg-label">Nome completo</div>
+          <input class="reg-input" id="regNome" type="text" placeholder="Ex: Maria Silva" autocomplete="name">
         </div>
+        <div class="reg-field">
+          <div class="reg-label">E-mail</div>
+          <input class="reg-input" id="regEmail" type="email" placeholder="seu@email.com" autocomplete="email">
+        </div>
+        <button class="btn-primary" onclick="regStep1Next()">Continuar →</button>
+        <button class="btn-secondary" style="margin-top:0;" onclick="cancelAdminLogin()">← Voltar</button>
       </div>
-      <div class="reg-field" id="regCodeField" style="display:none">
-        <div class="reg-label">Código recebido</div>
-        <input class="reg-input" id="regCode" type="number" placeholder="000000" maxlength="6">
-      </div>
-      <button class="btn-primary" onclick="regStep2Next()">Verificar e entrar →</button>
-      <button class="btn-secondary" style="margin-top:0" onclick="regSkipPhone()">Pular verificação (demo)</button>
     </div>
-  </div>
 
-  <!-- STEP 3 -->
-  <div id="regStep3" style="display:none;width:100%">
-    <div style="text-align:center">
-      <div style="font-size:56px;margin-bottom:16px">🎉</div>
-      <div class="reg-title">Tudo pronto!</div>
-      <div class="reg-sub" style="margin-bottom:28px">Sua conta foi criada com sucesso.<br>Você tem acesso gratuito até 31/12/2026.</div>
-      <button class="btn-primary" onclick="finishReg()">Começar a estudar →</button>
+    <!-- STEP 2 -->
+    <div id="regStep2" style="display:none; width:100%">
+      <div class="reg-title">Verificar celular</div>
+      <div class="reg-sub">Informe seu telefone para receber o código.</div>
+      <div class="reg-form">
+        <div class="reg-field">
+          <div class="reg-label">Telefone</div>
+          <div class="reg-sms-row" style="display:flex; gap:10px;">
+            <input class="reg-input" id="regFone" type="tel" placeholder="(11) 99999-9999" autocomplete="tel" style="flex:1;">
+            <button class="btn-secondary" onclick="sendSMS()" style="white-space:nowrap;">Enviar código</button>
+          </div>
+        </div>
+        <div class="reg-field" id="regCodeField" style="display:none">
+          <div class="reg-label">Código recebido</div>
+          <input class="reg-input" id="regCode" type="number" placeholder="000000" maxlength="6">
+        </div>
+        <button class="btn-primary" onclick="regStep2Next()">Verificar e entrar →</button>
+        <button class="btn-secondary" style="margin-top:0" onclick="regSkipPhone()">Pular verificação (demo)</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div id="regStep3" style="display:none; width:100%">
+      <div style="text-align:center">
+        <div style="font-size:56px;margin-bottom:16px">🎉</div>
+        <div class="reg-title">Tudo pronto!</div>
+        <div class="reg-sub" style="margin-bottom:28px">Sua conta de estudante foi criada com sucesso.<br>Acesso gratuito até 31/12/2026.</div>
+        <button class="btn-primary" onclick="finishReg()">Começar a estudar →</button>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- ══════════════════════════════════════
-     HEADER
+     RESPONSIVE CORE LAYOUT WRAPPER
 ══════════════════════════════════════ -->
-<div class="hdr" id="appHeader" style="display:none">
-  <div class="hdr-main">
-    <div class="brand">
+<div class="app-container">
+  
+  <!-- DESKTOP SIDEBAR DRAWER (RESPONSIVE) -->
+  <div class="sidebar" id="appSidebar" style="display:none;">
+    <div class="brand" style="padding-bottom:18px; border-bottom:1.5px solid var(--bd);">
       <div class="brand-mark">K</div>
       <div>
         <div class="brand-name">KRONA</div>
         <div class="brand-sub">Analytics · SENAR</div>
       </div>
     </div>
-    <div class="hdr-right">
-      <div class="xp-chip" id="hdrXP">0 XP</div>
-      <div class="usr-av" id="hdrAv">A</div>
-    </div>
-  </div>
-  <div class="free-bar" id="freeBar">
-    <div class="free-label"><div class="free-dot"></div>Versão Gratuita</div>
-    <div class="free-time" id="freeCountdown">—</div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════
-     VIEWS
-══════════════════════════════════════ -->
-
-<!-- HOME -->
-<div class="ctn view" id="viewHome">
-  <div class="welcome-card">
-    <div class="wc-greeting">Bom estudo,</div>
-    <div class="wc-name" id="wcName">Aluno 👋</div>
-    <div class="wc-prog-label">
-      <span class="wc-prog-t">Progresso geral</span>
-      <span class="wc-prog-p" id="wcPct">0%</span>
-    </div>
-    <div class="wc-prog-track"><div class="wc-prog-fill" id="wcProgBar" style="width:0%"></div></div>
-    <div class="wc-stats-row">
-      <div class="wc-st">
-        <div class="wc-sv" id="wcAcertos">0</div>
-        <div class="wc-sl">Acertos</div>
-      </div>
-      <div class="wc-st">
-        <div class="wc-sv" id="wcQuestoes">0</div>
-        <div class="wc-sl">Questões</div>
-      </div>
-      <div class="wc-st">
-        <div class="wc-sv" id="wcAprov">0%</div>
-        <div class="wc-sl">Aproveit.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="ribbon">
-    <div class="rib-card streak">
-      <div class="rib-ic">🔥</div>
-      <div class="rib-info">
-        <div class="rib-val" id="ribStreak">0</div>
-        <div class="rib-lbl">Dias seguidos</div>
-      </div>
-    </div>
-    <div class="rib-card level">
-      <div class="rib-ic">⭐</div>
-      <div class="rib-info">
-        <div class="rib-val" id="ribLevel">Semente</div>
-        <div class="rib-lbl">Nível atual</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="sec-h">
-    <div class="sec-tt">Módulos</div>
-    <div class="sec-ct" id="modCount">14 temas</div>
-  </div>
-
-  <!-- MÓDULO A -->
-  <div class="mod" id="modA">
-    <div class="mod-h" onclick="tglMod('A')">
-      <div class="mod-left">
-        <div class="mod-icon agro">🌾</div>
-        <div>
-          <div class="mod-nm">Contexto & Mercado</div>
-          <div class="mod-sub">Prof. Maria Alves</div>
-        </div>
-      </div>
-      <div class="mod-right">
-        <div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringA" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValA">0%</div></div>
-        <div class="mod-chev">▸</div>
-      </div>
-    </div>
-    <div class="mod-body"><div class="mod-inner">
-      <div class="tema" onclick="openAula('TEMA_1')">
-        <div class="tema-ic">🌾</div>
-        <div class="tema-det">
-          <div class="tema-tag agro">Tema 1</div>
-          <div class="tema-nm">Contextualização do Agronegócio</div>
-          <div class="tema-ct" id="ct1">7 questões disponíveis</div>
-        </div>
-        <span class="tema-badge pending" id="badge1">Pendente</span>
-        <span class="tema-arr">›</span>
-      </div>
-      <div class="tema" onclick="openAula('TEMA_2')">
-        <div class="tema-ic">🌱</div>
-        <div class="tema-det">
-          <div class="tema-tag agro">Tema 2</div>
-          <div class="tema-nm">Sistemas de Produção Sustentável</div>
-          <div class="tema-ct" id="ct2">1 questão disponível</div>
-        </div>
-        <span class="tema-badge pending" id="badge2">Pendente</span>
-        <span class="tema-arr">›</span>
-      </div>
-    </div></div>
-  </div>
-
-  <!-- MÓDULO B -->
-  <div class="mod" id="modB">
-    <div class="mod-h" onclick="tglMod('B')">
-      <div class="mod-left">
-        <div class="mod-icon plant">🌿</div>
-        <div>
-          <div class="mod-nm">Ciências Agrárias</div>
-          <div class="mod-sub">Prof. Carlos Pinheiro</div>
-        </div>
-      </div>
-      <div class="mod-right">
-        <div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringB" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValB">0%</div></div>
-        <div class="mod-chev">▸</div>
-      </div>
-    </div>
-    <div class="mod-body"><div class="mod-inner">
-      <div class="tema" onclick="openAula('TEMA_3')"><div class="tema-ic">🌿</div><div class="tema-det"><div class="tema-tag plant">Tema 3</div><div class="tema-nm">Fundamentos de Botânica</div><div class="tema-ct" id="ct3">1 questão disponível</div></div><span class="tema-badge pending" id="badge3">Pendente</span><span class="tema-arr">›</span></div>
-      <div class="tema" onclick="openAula('TEMA_4')"><div class="tema-ic">🧪</div><div class="tema-det"><div class="tema-tag soil">Tema 4</div><div class="tema-nm">Nutrição Mineral e Fertilidade do Solo</div><div class="tema-ct" id="ct4">1 questão disponível</div></div><span class="tema-badge pending" id="badge4">Pendente</span><span class="tema-arr">›</span></div>
-      <div class="tema" onclick="openAula('TEMA_5')"><div class="tema-ic">💧</div><div class="tema-det"><div class="tema-tag soil">Tema 5</div><div class="tema-nm">Irrigação e Drenagem</div><div class="tema-ct" id="ct5">1 questão disponível</div></div><span class="tema-badge pending" id="badge5">Pendente</span><span class="tema-arr">›</span></div>
-    </div></div>
-  </div>
-
-  <!-- MÓDULO C -->
-  <div class="mod" id="modC">
-    <div class="mod-h" onclick="tglMod('C')">
-      <div class="mod-left"><div class="mod-icon soil">🌽</div><div><div class="mod-nm">Principais Culturas</div><div class="mod-sub">Prof. Ana Figueiredo</div></div></div>
-      <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringC" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValC">0%</div></div><div class="mod-chev">▸</div></div>
-    </div>
-    <div class="mod-body"><div class="mod-inner">
-      <div class="tema" onclick="openAula('TEMA_6')"><div class="tema-ic">🌽</div><div class="tema-det"><div class="tema-tag soil">Tema 6</div><div class="tema-nm">Principais Culturas do Agronegócio</div><div class="tema-ct" id="ct6">1 questão disponível</div></div><span class="tema-badge pending" id="badge6">Pendente</span><span class="tema-arr">›</span></div>
-    </div></div>
-  </div>
-
-  <!-- MÓDULO D -->
-  <div class="mod" id="modD">
-    <div class="mod-h" onclick="tglMod('D')">
-      <div class="mod-left"><div class="mod-icon anim">🐄</div><div><div class="mod-nm">Produção Animal I</div><div class="mod-sub">Prof. Roberto Borges</div></div></div>
-      <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringD" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValD">0%</div></div><div class="mod-chev">▸</div></div>
-    </div>
-    <div class="mod-body"><div class="mod-inner">
-      <div class="tema" onclick="openAula('TEMA_7')"><div class="tema-ic">🐄</div><div class="tema-det"><div class="tema-tag anim">Tema 7</div><div class="tema-nm">Produção Animal no Agronegócio</div><div class="tema-ct" id="ct7">1 questão disponível</div></div><span class="tema-badge pending" id="badge7">Pendente</span><span class="tema-arr">›</span></div>
-      <div class="tema" onclick="openAula('TEMA_8')"><div class="tema-ic">🔬</div><div class="tema-det"><div class="tema-tag anim">Tema 8</div><div class="tema-nm">Anatomia e Fisiologia Animal</div><div class="tema-ct" id="ct8">1 questão disponível</div></div><span class="tema-badge pending" id="badge8">Pendente</span><span class="tema-arr">›</span></div>
-      <div class="tema" onclick="openAula('TEMA_9')"><div class="tema-ic">🍽️</div><div class="tema-det"><div class="tema-tag anim">Tema 9</div><div class="tema-nm">Alimentação e Nutrição Animal</div><div class="tema-ct" id="ct9">1 questão disponível</div></div><span class="tema-badge pending" id="badge9">Pendente</span><span class="tema-arr">›</span></div>
-      <div class="tema" onclick="openAula('TEMA_10')"><div class="tema-ic">🌾</div><div class="tema-det"><div class="tema-tag plant">Tema 10</div><div class="tema-nm">Forragicultura e Pastagens</div><div class="tema-ct" id="ct10">1 questão disponível</div></div><span class="tema-badge pending" id="badge10">Pendente</span><span class="tema-arr">›</span></div>
-    </div></div>
-  </div>
-
-  <!-- MÓDULO E-G -->
-  <div class="mod" id="modE">
-    <div class="mod-h" onclick="tglMod('E')">
-      <div class="mod-left"><div class="mod-icon anim">🧬</div><div><div class="mod-nm">Genética & Melhoramento</div><div class="mod-sub">Prof. João Silva</div></div></div>
-      <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringE" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValE">0%</div></div><div class="mod-chev">▸</div></div>
-    </div>
-    <div class="mod-body"><div class="mod-inner">
-      <div class="tema" onclick="openAula('TEMA_11')"><div class="tema-ic">🧬</div><div class="tema-det"><div class="tema-tag anim">Tema 11</div><div class="tema-nm">Melhoramento Genético Animal</div><div class="tema-ct" id="ct11">1 questão disponível</div></div><span class="tema-badge pending" id="badge11">Pendente</span><span class="tema-arr">›</span></div>
-    </div></div>
-  </div>
-  <div class="mod" id="modF">
-    <div class="mod-h" onclick="tglMod('F')">
-      <div class="mod-left"><div class="mod-icon anim">🐔</div><div><div class="mod-nm">Produção Animal II</div><div class="mod-sub">Prof. Thiago Ramos</div></div></div>
-      <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringF" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValF">0%</div></div><div class="mod-chev">▸</div></div>
-    </div>
-    <div class="mod-body"><div class="mod-inner">
-      <div class="tema" onclick="openAula('TEMA_12')"><div class="tema-ic">🐔</div><div class="tema-det"><div class="tema-tag anim">Tema 12</div><div class="tema-nm">Produção de Animais Monogástricos</div><div class="tema-ct" id="ct12">1 questão disponível</div></div><span class="tema-badge pending" id="badge12">Pendente</span><span class="tema-arr">›</span></div>
-      <div class="tema" onclick="openAula('TEMA_13')"><div class="tema-ic">🐮</div><div class="tema-det"><div class="tema-tag anim">Tema 13</div><div class="tema-nm">Produção de Animais Ruminantes</div><div class="tema-ct" id="ct13">1 questão disponível</div></div><span class="tema-badge pending" id="badge13">Pendente</span><span class="tema-arr">›</span></div>
-    </div></div>
-  </div>
-  <div class="mod" id="modG">
-    <div class="mod-h" onclick="tglMod('G')">
-      <div class="mod-left"><div class="mod-icon tech">📡</div><div><div class="mod-nm">Tecnologia & Precisão</div><div class="mod-sub">Prof. Lucas Andrade</div></div></div>
-      <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringG" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValG">0%</div></div><div class="mod-chev">▸</div></div>
-    </div>
-    <div class="mod-body"><div class="mod-inner">
-      <div class="tema" onclick="openAula('TEMA_14')"><div class="tema-ic">📡</div><div class="tema-det"><div class="tema-tag tech">Tema 14</div><div class="tema-nm">Agricultura de Precisão</div><div class="tema-ct" id="ct14">1 questão disponível</div></div><span class="tema-badge pending" id="badge14">Pendente</span><span class="tema-arr">›</span></div>
-    </div></div>
-  </div>
-</div><!-- #viewHome -->
-
-<!-- AUDIO PLAYER VIEW (STUDY HUB) -->
-<div class="ctn view" id="viewAudioPlayer" style="display:none;">
-  <button class="btn-secondary" style="margin-bottom:16px; width:auto; align-self:flex-start;" onclick="closeAudioView()">← Voltar</button>
-  
-  <div style="background:var(--sf); border:1px solid var(--bd); border-radius:24px; padding:24px; text-align:center; box-shadow:var(--sh2); position:relative; overflow:hidden; margin-bottom:18px;">
-    <div style="position:absolute; top:-30px; left:-30px; width:120px; height:120px; background:radial-gradient(circle,rgba(245,200,66,0.08),transparent 70%); pointer-events:none;"></div>
     
-    <!-- Vinyl-like Premium Spinning Disc -->
-    <div id="playerDisc" style="width:140px; height:140px; border-radius:50%; background:radial-gradient(circle, #203354 30%, #111b2e 70%, #000 100%); margin:0 auto 20px; display:flex; align-items:center; justify-content:center; border:4px solid var(--gold); box-shadow:0 8px 30px rgba(0,0,0,0.5); transition: transform 0.5s; position:relative;">
-      <div style="width:40px; height:40px; border-radius:50%; background:var(--bg); border:2px solid var(--gold); display:flex; align-items:center; justify-content:center; font-size:18px;">🌾</div>
+    <!-- Student Sidebar Links -->
+    <div id="sidebarStudent" style="display:block; flex:1; margin-top:20px;">
+      <div class="side-link active" id="sb_home" onclick="navTo('home')">🏠 Início / Dashboard</div>
+      <div class="side-link" id="sb_materias" onclick="navTo('materias')">📚 Matérias & Temas</div>
+      <div class="side-link" id="sb_rank" onclick="navTo('rank')">🏆 Ranking Líderes</div>
+      <div class="side-link" id="sb_erros" onclick="navTo('erros')">📓 Caderno de Erros <span class="badge-count" id="errBadgeSb" style="display:none;">0</span></div>
+      <div class="side-link" id="sb_perfil" onclick="navTo('perfil')">👤 Minha Conta</div>
     </div>
     
-    <div id="playerClassTitle" style="font-size:12px; font-weight:800; color:var(--gold); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:6px;">Aula 1</div>
-    <div id="playerTemaName" style="font-size:18px; font-weight:900; color:var(--txt); margin-bottom:4px; line-height:1.3;">Contextualização do Agronegócio</div>
-    <div id="playerTopicName" style="font-size:12px; font-weight:600; color:var(--tx3); margin-bottom:12px;">Contexto & Mercado</div>
-    <div id="playerSubtopic" style="font-size:13px; color:var(--tx2); line-height:1.5; padding:0 10px; margin-bottom:24px;">Carregando descrição da aula...</div>
+    <!-- Admin Sidebar Links -->
+    <div id="sidebarAdmin" style="display:none; flex:1; margin-top:20px;">
+      <div class="side-link active" id="sb_admin" onclick="navTo('admin')">⚙️ Painel Admin</div>
+      <div class="side-link" style="color:var(--red); margin-top:30px;" onclick="logoutAdmin()">🚪 Encerrar Sessão</div>
+    </div>
+
+    <div style="font-size:10px; color:var(--tx3); text-align:center; padding-top:10px; border-top:1.5px solid var(--bd);">
+      SENAR · Versão 4.2.1
+    </div>
+  </div>
+
+  <!-- MAIN SCROLLABLE WRAPPER -->
+  <div class="main-content">
     
-    <!-- Progress Bar and Times -->
-    <div style="margin-bottom:20px;">
-      <div style="position:relative; width:100%; height:6px; background:rgba(255,255,255,0.06); border-radius:10px; cursor:pointer;" id="progressBarContainer" onclick="seekAudio(event)">
-        <div id="progressBarFill" style="width:0%; height:100%; background:linear-gradient(90deg, var(--gold3), var(--gold)); border-radius:10px; position:relative;">
-          <div style="width:12px; height:12px; border-radius:50%; background:var(--gold); border:2px solid #fff; position:absolute; right:-6px; top:-3px; box-shadow:0 2px 8px rgba(0,0,0,0.5);"></div>
+    <!-- HEADER -->
+    <div class="hdr" id="appHeader" style="display:none">
+      <div class="hdr-main">
+        <div class="brand" id="mobileBrandHeader">
+          <div class="brand-mark">K</div>
+          <div>
+            <div class="brand-name">KRONA</div>
+            <div class="brand-sub">Analytics · SENAR</div>
+          </div>
+        </div>
+        <div class="hdr-right">
+          <div class="xp-chip" id="hdrXP">0 XP</div>
+          <div class="usr-av" id="hdrAv">A</div>
         </div>
       </div>
-      <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:600; color:var(--tx3); margin-top:8px;">
-        <span id="playerCurrentTime">00:00</span>
-        <span id="playerTotalTime">00:00</span>
-      </div>
     </div>
-    
-    <!-- Controls buttons row -->
-    <div style="display:flex; align-items:center; justify-content:center; gap:24px; margin-bottom:10px;">
-      <button style="background:transparent; border:none; color:var(--tx2); font-size:24px; cursor:pointer; outline:none;" onclick="playPrevAudio()" title="Anterior">⏮</button>
-      <button style="background:transparent; border:none; color:var(--tx2); font-size:20px; cursor:pointer; outline:none;" onclick="restartAudio()" title="Reiniciar">🔄</button>
-      
-      <!-- Master Play/Pause Button -->
-      <button id="playerMasterPlayPauseBtn" class="btn-primary" style="width:58px; height:58px; border-radius:50%; padding:0; display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow:0 6px 20px rgba(245,200,66,0.35); outline:none;" onclick="togglePlayPause()">
-        ▶
-      </button>
-      
-      <button style="background:transparent; border:none; color:var(--tx2); font-size:24px; cursor:pointer; outline:none;" onclick="playNextAudio()" title="Próximo">⏭</button>
-    </div>
-  </div>
-  
-  <!-- Interactive Exam Prompt -->
-  <div style="background:linear-gradient(135deg, #122544 0%, #0c1830 100%); border:1px solid rgba(245,200,66,0.25); border-radius:24px; padding:20px; text-align:center; box-shadow:var(--sh);">
-    <div style="font-size:15px; font-weight:800; color:var(--gold); margin-bottom:6px;">Pronto para testar seu conhecimento?</div>
-    <div style="font-size:12px; color:var(--tx2); margin-bottom:16px; line-height:1.4;">Assim que se sentir preparado, inicie o simulado de <b>múltipla escolha</b> correspondente a este tema!</div>
-    <button class="btn-success" style="width:100%;" onclick="startSimuladoFromPlayer()">📝 Iniciar Simulado →</button>
-  </div>
-</div>
 
-<!-- RANKING -->
-<div class="ctn view" id="viewRank">
-  <div class="rank-header">
-    <div class="rank-header-title">🏆 Ranking Geral</div>
-    <div class="rank-header-sub">Top estudantes do SENAR</div>
-  </div>
-  <div class="rank-podium" id="rankPodium"></div>
-  <div class="rank-list" id="rankList"></div>
-</div>
+    <!-- ══════════════════════════════════════
+         VIEWS STACK
+    ══════════════════════════════════════ -->
 
-<!-- ERROS -->
-<div class="ctn view" id="viewErros">
-  <div class="sec-h">
-    <div class="sec-tt">Caderno de Erros</div>
-    <button class="btn-secondary" style="width:auto;padding:6px 14px;font-size:11px;margin:0" onclick="limparErros()">Limpar tudo</button>
-  </div>
-  <div id="errosList"></div>
-</div>
-
-<!-- PERFIL -->
-<div class="ctn view" id="viewPerfil">
-  <div id="perfilContent"></div>
-</div>
-
-<!-- ADMIN -->
-<div class="ctn view" id="viewAdmin">
-  <div class="sec-h">
-    <div class="sec-tt">Painel Admin</div>
-    <div class="admin-badge">🔐 Admin</div>
-  </div>
-
-  <!-- Audio MP3 Upload Zone -->
-  <div style="background:var(--sf); border:1px solid var(--bd); border-radius:18px; padding:18px; margin-bottom:16px;">
-    <div style="font-size:14px; font-weight:800; color:var(--gold); margin-bottom:12px; display:flex; align-items:center; gap:8px;">🎵 Gerenciar Áudios das Aulas</div>
-    <div style="display:flex; flex-direction:column; gap:10px;">
-      <div>
-        <label style="font-size:11px; font-weight:700; color:var(--tx3); text-transform:uppercase; display:block; margin-bottom:4px;">Selecione o Tema</label>
-        <select id="adminAudioTemaSelect" style="width:100%; background:var(--bg2); border:1.5px solid var(--bd2); border-radius:10px; padding:10px; color:var(--txt); font-family:inherit; outline:none;">
-          <!-- Opções geradas dinamicamente -->
-        </select>
+    <!-- STUDENT DASHBOARD -->
+    <div class="ctn view" id="viewHome">
+      <div class="welcome-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <div class="wc-greeting">Bom estudo,</div>
+            <div class="wc-name" id="wcName">Aluno 👋</div>
+          </div>
+          <div class="free-badge-premium" id="freeCountdownBadge">
+            <span class="free-dot"></span> <span id="freeCountdownText">Carregando...</span>
+          </div>
+        </div>
+        
+        <div class="wc-prog-label" style="margin-top:16px;">
+          <span class="wc-prog-t">Progresso Geral do Curso</span>
+          <span class="wc-prog-p" id="wcPct">0%</span>
+        </div>
+        <div class="wc-prog-track"><div class="wc-prog-fill" id="wcProgBar" style="width:0%"></div></div>
+        
+        <div class="wc-stats-row">
+          <div class="wc-st">
+            <div class="wc-sv" id="wcAcertos">0</div>
+            <div class="wc-sl">Acertos</div>
+          </div>
+          <div class="wc-st">
+            <div class="wc-sv" id="wcQuestoes">0</div>
+            <div class="wc-sl">Questões</div>
+          </div>
+          <div class="wc-st">
+            <div class="wc-sv" id="wcAprov">0%</div>
+            <div class="wc-sl">Aproveit.</div>
+          </div>
+        </div>
       </div>
-      <div>
-        <label style="font-size:11px; font-weight:700; color:var(--tx3); text-transform:uppercase; display:block; margin-bottom:4px;">Link do Áudio MP3 (URL)</label>
-        <input type="url" id="adminAudioUrl" placeholder="https://exemplo.com/aula.mp3" style="width:100%; background:var(--bg2); border:1.5px solid var(--bd2); border-radius:10px; padding:10px; color:var(--txt); font-family:inherit; outline:none;">
+
+      <!-- Gamification -->
+      <div class="ribbon">
+        <div class="rib-card streak">
+          <div class="rib-ic">🔥</div>
+          <div class="rib-info">
+            <div class="rib-val" id="ribStreak">0</div>
+            <div class="rib-lbl">Dias seguidos</div>
+          </div>
+        </div>
+        <div class="rib-card level">
+          <div class="rib-ic">⭐</div>
+          <div class="rib-info">
+            <div class="rib-val" id="ribLevel">Semente</div>
+            <div class="rib-lbl">Nível atual</div>
+          </div>
+        </div>
       </div>
-      <div style="text-align:center; margin:5px 0;">
-        <span style="font-size:12px; color:var(--tx3);">ou envie o arquivo MP3 localmente:</span>
+
+      <!-- Simulados Pendentes Widget -->
+      <div class="premium-widget-card">
+        <div class="widget-header">📚 Simulados Pendentes</div>
+        <div id="pendingSimuladosList" class="widget-body">
+          <!-- Carregamento dinâmico de simulados -->
+        </div>
       </div>
-      <div style="display:flex; gap:10px; align-items:center;">
-        <button class="btn-secondary" style="flex:1;" onclick="document.getElementById('adminAudioFileInput').click()">📁 Enviar Arquivo</button>
-        <input type="file" id="adminAudioFileInput" accept="audio/*" style="display:none;" onchange="uploadLocalAudioFile(this.files[0])">
-        <button class="btn-primary" onclick="saveAdminAudioSettings()">Salvar Link</button>
+
+      <!-- Ranking Preview Widget -->
+      <div class="premium-widget-card" onclick="navTo('rank')" style="cursor:pointer;">
+        <div class="widget-header" style="display:flex; justify-content:space-between; align-items:center;">
+          <span>🏆 Ranking Líderes SENAR</span>
+          <span style="font-size:12px; color:var(--gold);">Ver tudo →</span>
+        </div>
+        <div id="miniRankingList" class="widget-body">
+          <!-- Preview dos líderes -->
+        </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Upload PDF -->
-  <div class="upload-zone" id="uploadZone" onclick="document.getElementById('pdfInput').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
-    <div class="upload-ic">📄</div>
-    <div class="upload-tt">Arraste o PDF aqui</div>
-    <div class="upload-sub">ou clique para selecionar · PDF · Qualquer tamanho</div>
-    <input type="file" id="pdfInput" class="upload-input" accept=".pdf" onchange="processPDF(this.files[0])">
-  </div>
-
-  <!-- AI Progress -->
-  <div class="ai-progress" id="aiProgress">
-    <div id="aiSteps"></div>
-  </div>
-
-  <!-- Stats admin -->
-  <div class="admin-stats-grid">
-    <div class="admin-stat"><div class="admin-sv" id="adminAlunos">0</div><div class="admin-sl">Alunos</div></div>
-    <div class="admin-stat"><div class="admin-sv" id="adminTemas">14</div><div class="admin-sl">Temas</div></div>
-    <div class="admin-stat"><div class="admin-sv" id="adminQuestoes">0</div><div class="admin-sl">Questões (IA)</div></div>
-    <div class="admin-stat"><div class="admin-sv" id="adminPDFs">0</div><div class="admin-sl">PDFs enviados</div></div>
-  </div>
-
-  <div class="sec-h"><div class="sec-tt">Alunos cadastrados</div></div>
-  <div class="students-list" id="studentsList"></div>
-</div>
-
-<!-- ══════════════════════════════════════
-     QUIZ SCREEN
-══════════════════════════════════════ -->
-<div id="quizScreen">
-  <div class="qhdr">
-    <div class="qhdr-row1">
-      <button class="q-back" onclick="quitQuiz()">← Sair</button>
-      <div class="q-tema-nm" id="qTemaNm">Tema</div>
-      <div class="q-timer-wrap">
-        <div class="q-timer" id="qTimer">⏱ 5:00</div>
-        <div class="q-timer-track"><div class="q-timer-fill" id="qTimerFill" style="width:100%"></div></div>
+      <!-- Última Atividade Widget -->
+      <div class="premium-widget-card">
+        <div class="widget-header">⏱️ Última Atividade</div>
+        <div id="lastActivityWidget" class="widget-body">
+          <!-- Histórico recente de estudo -->
+        </div>
       </div>
-    </div>
-    <div class="q-prog-row">
-      <div class="q-prog-track"><div class="q-prog-fill" id="qProgFill" style="width:0%"></div></div>
-      <div class="q-prog-ct" id="qProgCt">1/—</div>
-    </div>
-    <div class="q-score-row">
-      <span class="q-sc ok">✅ <span id="qAcertos">0</span></span>
-      <span class="q-sc err">❌ <span id="qErros">0</span></span>
-    </div>
-  </div>
+    </div><!-- #viewHome -->
 
-  <div class="q-body" id="qBody">
-    <!-- Rendered dynamically -->
-  </div>
-</div>
+    <!-- STUDENT MATERIAS (ACCORDION WITH NESTED TEMA LAYOUTS) -->
+    <div class="ctn view" id="viewMaterias" style="display:none;">
+      <div class="sec-h" style="margin-top:0;">
+        <div class="sec-tt">Matérias & Conteúdos</div>
+        <div class="sec-ct">14 Temas de Estudo</div>
+      </div>
 
-<!-- BOTTOM NAV -->
-<div class="bnav" id="appNav" style="display:none">
+      <!-- MÓDULO A -->
+      <div class="mod" id="modA">
+        <div class="mod-h" onclick="tglMod('A')">
+          <div class="mod-left">
+            <div class="mod-icon agro">🌾</div>
+            <div>
+              <div class="mod-nm">Contexto & Mercado</div>
+              <div class="mod-sub">Prof. Maria Alves</div>
+            </div>
+          </div>
+          <div class="mod-right">
+            <div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringA" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValA">0%</div></div>
+            <div class="mod-chev">▸</div>
+          </div>
+        </div>
+        <div class="mod-body"><div class="mod-inner" id="innerModA">
+          <!-- Temas inseridos de forma reestruturada abaixo por funções JS ou declarados diretamente -->
+        </div></div>
+      </div>
+
+      <!-- MÓDULO B -->
+      <div class="mod" id="modB">
+        <div class="mod-h" onclick="tglMod('B')">
+          <div class="mod-left">
+            <div class="mod-icon plant">🌿</div>
+            <div>
+              <div class="mod-nm">Ciências Agrárias</div>
+              <div class="mod-sub">Prof. Carlos Pinheiro</div>
+            </div>
+          </div>
+          <div class="mod-right">
+            <div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringB" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValB">0%</div></div>
+            <div class="mod-chev">▸</div>
+          </div>
+        </div>
+        <div class="mod-body"><div class="mod-inner" id="innerModB"></div></div>
+      </div>
+
+      <!-- MÓDULO C -->
+      <div class="mod" id="modC">
+        <div class="mod-h" onclick="tglMod('C')">
+          <div class="mod-left"><div class="mod-icon soil">🌽</div><div><div class="mod-nm">Principais Culturas</div><div class="mod-sub">Prof. Ana Figueiredo</div></div></div>
+          <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringC" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValC">0%</div></div><div class="mod-chev">▸</div></div>
+        </div>
+        <div class="mod-body"><div class="mod-inner" id="innerModC"></div></div>
+      </div>
+
+      <!-- MÓDULO D -->
+      <div class="mod" id="modD">
+        <div class="mod-h" onclick="tglMod('D')">
+          <div class="mod-left"><div class="mod-icon anim">🐄</div><div><div class="mod-nm">Produção Animal I</div><div class="mod-sub">Prof. Roberto Borges</div></div></div>
+          <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringD" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValD">0%</div></div><div class="mod-chev">▸</div></div>
+        </div>
+        <div class="mod-body"><div class="mod-inner" id="innerModD"></div></div>
+      </div>
+
+      <!-- MÓDULO E -->
+      <div class="mod" id="modE">
+        <div class="mod-h" onclick="tglMod('E')">
+          <div class="mod-left"><div class="mod-icon anim">🧬</div><div><div class="mod-nm">Genética & Melhoramento</div><div class="mod-sub">Prof. João Silva</div></div></div>
+          <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringE" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValE">0%</div></div><div class="mod-chev">▸</div></div>
+        </div>
+        <div class="mod-body"><div class="mod-inner" id="innerModE"></div></div>
+      </div>
+
+      <!-- MÓDULO F -->
+      <div class="mod" id="modF">
+        <div class="mod-h" onclick="tglMod('F')">
+          <div class="mod-left"><div class="mod-icon anim">🐔</div><div><div class="mod-nm">Produção Animal II</div><div class="mod-sub">Prof. Thiago Ramos</div></div></div>
+          <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringF" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValF">0%</div></div><div class="mod-chev">▸</div></div>
+        </div>
+        <div class="mod-body"><div class="mod-inner" id="innerModF"></div></div>
+      </div>
+
+      <!-- MÓDULO G -->
+      <div class="mod" id="modG">
+        <div class="mod-h" onclick="tglMod('G')">
+          <div class="mod-left"><div class="mod-icon tech">📡</div><div><div class="mod-nm">Tecnologia & Precisão</div><div class="mod-sub">Prof. Lucas Andrade</div></div></div>
+          <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringG" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValG">0%</div></div><div class="mod-chev">▸</div></div>
+        </div>
+        <div class="mod-body"><div class="mod-inner" id="innerModG"></div></div>
+      </div>
+    </div><!-- #viewMaterias -->
+
+    <!-- RANKING VIEW -->
+    <div class="ctn view" id="viewRank" style="display:none;">
+      <div class="rank-header">
+        <div class="rank-header-title">🏆 Ranking Geral</div>
+        <div class="rank-header-sub">Top estudantes do SENAR</div>
+      </div>
+      <div class="rank-podium" id="rankPodium"></div>
+      <div class="rank-list" id="rankList"></div>
+    </div>
+
+    <!-- ERROS VIEW -->
+    <div class="ctn view" id="viewErros" style="display:none;">
+      <div class="sec-h" style="margin-top:0;">
+        <div class="sec-tt">Caderno de Erros</div>
+        <button class="btn-secondary" style="width:auto;padding:6px 14px;font-size:11px;margin:0" onclick="limparErros()">Limpar tudo</button>
+      </div>
+      <div id="errosList"></div>
+    </div>
+
+    <!-- PROFILE VIEW -->
+    <div class="ctn view" id="viewPerfil" style="display:none;">
+      <div id="perfilContent"></div>
+    </div>
+
+    <!-- ADMIN EXCLUSIVE VIEW -->
+    <div class="ctn view" id="viewAdmin" style="display:none;">
+      <div class="sec-h" style="margin-top:0;">
+        <div class="sec-tt">Painel do Administrador</div>
+        <div class="admin-badge">🔐 Admin</div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="admin-stats-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;">
+        <div class="admin-stat" style="padding:14px; text-align:center;"><div class="admin-sv" id="adminAlunos" style="font-size:22px; font-weight:900; color:var(--vio);">0</div><div class="admin-sl" style="font-size:10px; color:var(--tx3); text-transform:uppercase; margin-top:4px;">Alunos</div></div>
+        <div class="admin-stat" style="padding:14px; text-align:center;"><div class="admin-sv" id="adminTemas" style="font-size:22px; font-weight:900; color:var(--vio);">14</div><div class="admin-sl" style="font-size:10px; color:var(--tx3); text-transform:uppercase; margin-top:4px;">Temas</div></div>
+        <div class="admin-stat" style="padding:14px; text-align:center;"><div class="admin-sv" id="adminQuestoes" style="font-size:22px; font-weight:900; color:var(--vio);">0</div><div class="admin-sl" style="font-size:10px; color:var(--tx3); text-transform:uppercase; margin-top:4px;">Questões (IA)</div></div>
+        <div class="admin-stat" style="padding:14px; text-align:center;"><div class="admin-sv" id="adminPDFs" style="font-size:22px; font-weight:900; color:var(--vio);">0</div><div class="admin-sl" style="font-size:10px; color:var(--tx3); text-transform:uppercase; margin-top:4px;">PDFs enviados</div></div>
+      </div>
+
+      <!-- Automatic PDF Upload with AI -->
+      <div class="premium-widget-card">
+        <div class="widget-header">📄 Processamento Inteligente de Conteúdo (PDF)</div>
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('pdfInput').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)" style="border:2px dashed var(--bd2); border-radius:20px; padding:32px 20px; text-align:center; cursor:pointer;">
+          <div class="upload-ic" style="font-size:40px; margin-bottom:10px;">📁</div>
+          <div class="upload-tt" style="font-size:14px; font-weight:700; color:var(--txt);">Arraste o PDF de Aula aqui</div>
+          <div class="upload-sub" style="font-size:12px; color:var(--tx3);">ou clique para selecionar · Processamento de IA Automático</div>
+          <input type="file" id="pdfInput" class="upload-input" accept=".pdf" onchange="processPDF(this.files[0])" style="display:none;">
+        </div>
+        <div class="ai-progress" id="aiProgress" style="margin-top:12px; display:none; background:var(--sf2); border-radius:12px; padding:12px;">
+          <div id="aiSteps"></div>
+        </div>
+      </div>
+
+      <!-- MP3 Audio Upload and Link Management -->
+      <div class="premium-widget-card">
+        <div class="widget-header">🎵 Gerenciar Áudios MP3 das Aulas</div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--tx3); text-transform:uppercase; display:block; margin-bottom:4px;">Selecione o Tema</label>
+            <select id="adminAudioTemaSelect" style="width:100%; background:var(--bg2); border:1.5px solid var(--bd2); border-radius:10px; padding:10px; color:var(--txt); font-family:inherit; outline:none;">
+              <!-- Preenchido via Javascript -->
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--tx3); text-transform:uppercase; display:block; margin-bottom:4px;">Link do Áudio MP3 (URL)</label>
+            <input type="url" id="adminAudioUrl" placeholder="https://exemplo.com/aula.mp3" style="width:100%; background:var(--bg2); border:1.5px solid var(--bd2); border-radius:10px; padding:10px; color:var(--txt); font-family:inherit; outline:none;">
+          </div>
+          <div style="text-align:center; margin:4px 0;">
+            <span style="font-size:12px; color:var(--tx3);">ou envie um arquivo local de áudio:</span>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <button class="btn-secondary" style="flex:1;" onclick="document.getElementById('adminAudioFileInput').click()">📁 Arquivo MP3</button>
+            <input type="file" id="adminAudioFileInput" accept="audio/*" style="display:none;" onchange="uploadLocalAudioFile(this.files[0])">
+            <button class="btn-primary" onclick="saveAdminAudioSettings()">Salvar Configurações</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Students List -->
+      <div class="premium-widget-card">
+        <div class="widget-header">👥 Lista de Alunos Ativos</div>
+        <div class="students-list" id="studentsList"></div>
+      </div>
+    </div><!-- #viewAdmin -->
+
+  </div><!-- .main-content -->
+</div><!-- .app-container -->
+
+<!-- BOTTOM NAVIGATION FOR STUDENTS (MOBILE ONLY) -->
+<div class="bnav" id="appNavStudent" style="display:none">
   <div class="nav-i act" id="nHome" onclick="navTo('home')">
     <span class="nav-ic">🏠</span>
     <span class="nav-lb">Início</span>
   </div>
+  <div class="nav-i" id="nMaterias" onclick="navTo('materias')">
+    <span class="nav-ic">📚</span>
+    <span class="nav-lb">Matérias</span>
+  </div>
   <div class="nav-i" id="nRank" onclick="navTo('rank')">
     <span class="nav-ic">🏆</span>
-    <span class="nav-lb">Ranking</span>
+    <span class="nav-lb">Líderes</span>
   </div>
   <div class="nav-i" id="nErr" onclick="navTo('erros')">
     <span class="nav-ic">📓</span>
@@ -716,122 +934,43 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     <span class="nav-ic">👤</span>
     <span class="nav-lb">Perfil</span>
   </div>
-  <div class="nav-i" id="nAdmin" onclick="navTo('admin')" style="display:none">
+</div>
+
+<!-- BOTTOM NAVIGATION FOR ADMIN (MOBILE ONLY) -->
+<div class="bnav" id="appNavAdmin" style="display:none">
+  <div class="nav-i" id="nAdmin" onclick="navTo('admin')">
     <span class="nav-ic">⚙️</span>
-    <span class="nav-lb">Admin</span>
+    <span class="nav-lb">Painel</span>
+  </div>
+  <div class="nav-i" onclick="logoutAdmin()">
+    <span class="nav-ic">🚪</span>
+    <span class="nav-lb">Sair</span>
   </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
 <script>
 // ══════════════════════════════════════════════
-// AUDIO PLAYER DATABASE OVERRIDES
+// CONTROLE DE PLAYER DE ÁUDIO REAL E METADADOS
 // ══════════════════════════════════════════════
 const AUDIO_METADATA = {
-  "TEMA_1": {
-    aula: "Aula 1",
-    tema: "Contextualização do Agronegócio",
-    topico: "Contexto & Mercado",
-    subtopico: "Introdução à cadeia produtiva global do agronegócio.",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-  },
-  "TEMA_2": {
-    aula: "Aula 2",
-    tema: "Sistemas de Produção Sustentável",
-    topico: "Contexto & Mercado",
-    subtopico: "Sistemas orgânicos, sustentabilidade e integração lavoura-pecuária.",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
-  },
-  "TEMA_3": {
-    aula: "Aula 3",
-    tema: "Fundamentos de Botânica",
-    topico: "Ciências Agrárias",
-    subtopico: "Anatomia vegetal, fisiologia e fotossíntese.",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
-  },
-  "TEMA_4": {
-    aula: "Aula 4",
-    tema: "Nutrição Mineral e Fertilidade",
-    topico: "Ciências Agrárias",
-    subtopico: "Macronutrientes, micronutrientes e correção de acidez de solo.",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"
-  },
-  "TEMA_5": {
-    aula: "Aula 5",
-    tema: "Irrigação e Drenagem",
-    topico: "Ciências Agrárias",
-    subtopico: "Métodos de irrigação localizada, aspersão e manejo hídrico.",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
-  },
-  "TEMA_6": {
-    aula: "Aula 6",
-    tema: "Principais Culturas do Agronegócio",
-    topico: "Principais Culturas",
-    subtopico: "Cotonicultura, soja, milho e grandes culturas do Cerrado.",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3"
-  },
-  "TEMA_7": {
-    aula: "Aula 7",
-    tema: "Produção Animal no Agronegócio",
-    topico: "Produção Animal I",
-    subtopico: "Pecuária de corte, de leite e zootecnia básica.",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3"
-  },
-  "TEMA_8": {
-    aula: "Aula 8",
-    tema: "Anatomia e Fisiologia Animal",
-    topico: "Produção Animal I",
-    subtopico: "Organização sistêmica, digestão ruminal e metabolismo.",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3"
-  },
-  "TEMA_9": {
-    aula: "Aula 9",
-    tema: "Alimentação e Nutrição Animal",
-    topico: "Produção Animal I",
-    subtopico: "Formulações de ração, aditivos e balanço de silagem.",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3"
-  },
-  "TEMA_10": {
-    aula: "Aula 10",
-    tema: "Forragicultura e Pastagens",
-    topico: "Produção Animal I",
-    subtopico: "Manejo de pastagem rotacionada e forrageiras tropicais.",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3"
-  },
-  "TEMA_11": {
-    aula: "Aula 11",
-    tema: "Melhoramento Genético Animal",
-    topico: "Genética & Melhoramento",
-    subtopico: "DEP, seleção genômica e cruzamentos industriais.",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3"
-  },
-  "TEMA_12": {
-    aula: "Aula 12",
-    tema: "Produção de Animais Monogástricos",
-    topico: "Produção Animal II",
-    subtopico: "Avicultura de corte, postura e suinocultura intensiva.",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3"
-  },
-  "TEMA_13": {
-    aula: "Aula 13",
-    tema: "Produção de Animais Ruminantes",
-    topico: "Produção Animal II",
-    subtopico: "Confinamento de bovinos de corte e caprinovinocultura.",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3"
-  },
-  "TEMA_14": {
-    aula: "Aula 14",
-    tema: "Agricultura de Precisão",
-    topico: "Tecnologia & Precisão",
-    subtopico: "Drones, telemetria, sensores de solo e taxa variável.",
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3"
-  }
+  "TEMA_1": { aula: "Aula 1", tema: "Contextualização do Agronegócio", topico: "Contexto & Mercado", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+  "TEMA_2": { aula: "Aula 2", tema: "Sistemas de Produção Sustentável", topico: "Contexto & Mercado", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+  "TEMA_3": { aula: "Aula 3", tema: "Fundamentos de Botânica", topico: "Ciências Agrárias", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+  "TEMA_4": { aula: "Aula 4", tema: "Nutrição Mineral e Solo", topico: "Ciências Agrárias", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
+  "TEMA_5": { aula: "Aula 5", tema: "Irrigação e Drenagem", topico: "Ciências Agrárias", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
+  "TEMA_6": { aula: "Aula 6", tema: "Principais Culturas do Agro", topico: "Principais Culturas", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" },
+  "TEMA_7": { aula: "Aula 7", tema: "Produção Animal no Agro", topico: "Produção Animal I", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" },
+  "TEMA_8": { aula: "Aula 8", tema: "Anatomia e Fisiologia Animal", topico: "Produção Animal I", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
+  "TEMA_9": { aula: "Aula 9", tema: "Alimentação e Nutrição Animal", topico: "Produção Animal I", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" },
+  "TEMA_10": { aula: "Aula 10", tema: "Forragicultura e Pastagens", topico: "Produção Animal I", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" },
+  "TEMA_11": { aula: "Aula 11", tema: "Melhoramento Genético Animal", topico: "Genética & Melhoramento", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3" },
+  "TEMA_12": { aula: "Aula 12", tema: "Animais Monogástricos", topico: "Produção Animal II", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3" },
+  "TEMA_13": { aula: "Aula 13", tema: "Animais Ruminantes", topico: "Produção Animal II", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3" },
+  "TEMA_14": { aula: "Aula 14", tema: "Agricultura de Precisão", topico: "Tecnologia & Precisão", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3" }
 };
 
 // ══════════════════════════════════════════════
-// INDEXEDDB FOR LARGE FILES STORAGE
+// INDEXEDDB CONFIG
 // ══════════════════════════════════════════════
 const dbName = "KronaAudioDB";
 let db;
@@ -842,9 +981,7 @@ dbRequest.onupgradeneeded = (e) => {
     db.createObjectStore("audios");
   }
 };
-dbRequest.onsuccess = (e) => {
-  db = e.target.result;
-};
+dbRequest.onsuccess = (e) => { db = e.target.result; };
 function saveAudioFile(temaId, file) {
   return new Promise((resolve, reject) => {
     if (!db) { reject(new Error("Database not ready")); return; }
@@ -865,6 +1002,127 @@ function getAudioFile(temaId) {
     req.onerror = () => resolve(null);
   });
 }
+
+// ══════════════════════════════════════════════
+// AUDIO INLINE PLAYER LOGIC
+// ══════════════════════════════════════════════
+let curActivePlayingTema = null;
+const audioEl = $('kronaAudio');
+
+function toggleInlinePlay(temaId) {
+  if (curActivePlayingTema === temaId) {
+    if (audioEl.paused) {
+      audioEl.play().catch(() => { showToast('🔊 Toque novamente para reproduzir.'); });
+    } else {
+      audioEl.pause();
+    }
+  } else {
+    if (curActivePlayingTema) {
+      const oldBtn = $(`play_btn_${curActivePlayingTema}`);
+      if (oldBtn) oldBtn.textContent = "▶";
+    }
+    curActivePlayingTema = temaId;
+    const metadata = AUDIO_METADATA[temaId];
+    if (!metadata) return;
+
+    const customUrls = load('kr_custom_audios', {});
+    let finalUrl = customUrls[temaId] || metadata.url;
+
+    audioEl.pause();
+    if (finalUrl.startsWith('file://local_indexeddb/')) {
+      getAudioFile(temaId).then(file => {
+        if (file) {
+          audioEl.src = URL.createObjectURL(file);
+          prepareInlineAudio(temaId);
+        } else {
+          audioEl.src = metadata.url;
+          prepareInlineAudio(temaId);
+        }
+      });
+    } else {
+      audioEl.src = finalUrl;
+      prepareInlineAudio(temaId);
+    }
+  }
+}
+
+function prepareInlineAudio(temaId) {
+  const savedPos = load(`kr_audio_pos_${temaId}`, 0);
+  audioEl.currentTime = savedPos;
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: "Tema " + temaId.replace('TEMA_', '') + ": " + AUDIO_METADATA[temaId].tema,
+      artist: "KRONA Analytics · SENAR",
+      album: AUDIO_METADATA[temaId].topico,
+      artwork: [{ src: 'https://cdn-icons-png.flaticon.com/512/3039/3039386.png', sizes: '512x512', type: 'image/png' }]
+    });
+  }
+  audioEl.play().catch(() => { showToast('🔊 Toque novamente para reproduzir.'); });
+}
+
+function restartInlineAudio(temaId) {
+  if (curActivePlayingTema === temaId) {
+    audioEl.currentTime = 0;
+    audioEl.play().catch(() => {});
+  } else {
+    save(`kr_audio_pos_${temaId}`, 0);
+    const bar = $(`progress_bar_${temaId}`);
+    if (bar) bar.style.width = "0%";
+    const timeCurr = $(`time_curr_${temaId}`);
+    if (timeCurr) timeCurr.textContent = "00:00";
+    showToast('🔄 Posição do áudio reiniciada!');
+  }
+}
+
+function seekInlineAudio(e, temaId) {
+  if (curActivePlayingTema !== temaId) return;
+  const wrap = $(`progress_wrap_${temaId}`);
+  if (!wrap) return;
+  const rect = wrap.getBoundingClientRect();
+  const clickX = e.clientX - rect.left;
+  const width = rect.width;
+  if (audioEl.duration) {
+    audioEl.currentTime = (clickX / width) * audioEl.duration;
+    updateInlinePlayerProgress();
+  }
+}
+
+function updateInlinePlayerProgress() {
+  if (!curActivePlayingTema) return;
+  const cur = audioEl.currentTime;
+  const dur = audioEl.duration || 0;
+  save(`kr_audio_pos_${curActivePlayingTema}`, cur);
+  const bar = $(`progress_bar_${curActivePlayingTema}`);
+  if (bar && dur > 0) { bar.style.width = (cur / dur * 100) + "%"; }
+  const timeCurr = $(`time_curr_${curActivePlayingTema}`);
+  if (timeCurr) timeCurr.textContent = formatAudioTime(cur);
+  const timeTotal = $(`time_total_${curActivePlayingTema}`);
+  if (timeTotal && dur > 0) { timeTotal.textContent = formatAudioTime(dur); }
+}
+
+function formatAudioTime(secs) {
+  if (isNaN(secs)) return "00:00";
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = Math.floor(secs % 60);
+  if (h > 0) { return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+audioEl.addEventListener('timeupdate', updateInlinePlayerProgress);
+audioEl.addEventListener('loadedmetadata', updateInlinePlayerProgress);
+audioEl.addEventListener('play', () => {
+  if (curActivePlayingTema) {
+    const btn = $(`play_btn_${curActivePlayingTema}`);
+    if (btn) btn.textContent = "⏸";
+  }
+});
+audioEl.addEventListener('pause', () => {
+  if (curActivePlayingTema) {
+    const btn = $(`play_btn_${curActivePlayingTema}`);
+    if (btn) btn.textContent = "▶";
+  }
+});
 
 // ══════════════════════════════════════════════
 // BANCO DE QUESTÕES
@@ -895,77 +1153,428 @@ const QUESTIONS_DB = {
 };
 
 // ══════════════════════════════════════════════
-// STORAGE
+// STREAK & LEVEL & PROGRESS XP
 // ══════════════════════════════════════════════
-const LS={user:'kr_user',prog:'kr_prog',errors:'kr_err',streak:'kr_streak',session:'kr_sess',ranking:'kr_rank',pdfcount:'kr_pdfc',aiqs:'kr_aiqs'};
-const load=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;}};
-const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}};
+const calcXP = p => (p.acertos || 0) * 12 + Object.values(p.byTema || {}).filter(t => t.done).length * 80;
+const calcLevel = xp => { let l = LEVELS[0]; for (const v of LEVELS) if (xp >= v.min) l = v; return l; };
+const $ = id => document.getElementById(id);
 
-// ══════════════════════════════════════════════
-// LEVELS & GAMIFICATION
-// ══════════════════════════════════════════════
-const LEVELS=[
-  {min:0,label:'Semente 🌱'},{min:150,label:'Broto 🌿'},{min:400,label:'Agricultor 👨‍🌾'},
-  {min:800,label:'Técnico 🔬'},{min:1400,label:'Especialista 🌾'},{min:2200,label:'Mestre 🏆'},
-  {min:3500,label:'Expert 🎓'}
-];
-const ACHIEVEMENTS=[
-  {id:'first',name:'Primeira Questão',icon:'⭐',cond:p=>p.questoes>=1},
-  {id:'10q',name:'10 Questões',icon:'🔟',cond:p=>p.questoes>=10},
-  {id:'50q',name:'50 Questões',icon:'💯',cond:p=>p.questoes>=50},
-  {id:'streak3',name:'3 Dias Seguidos',icon:'🔥',cond:(_,sk)=>sk.days>=3},
-  {id:'perfect',name:'Simulado Perfeito',icon:'💎',cond:p=>Object.values(p.byTema||{}).some(t=>t.bestPct===100)},
-  {id:'half',name:'7 Temas Concluídos',icon:'🥇',cond:p=>Object.values(p.byTema||{}).filter(t=>t.done).length>=7},
-  {id:'all',name:'Mestre Completo',icon:'🏆',cond:p=>Object.values(p.byTema||{}).filter(t=>t.done).length>=14},
-];
-const calcXP=p=>(p.acertos||0)*12+Object.values(p.byTema||{}).filter(t=>t.done).length*80;
-const calcLevel=xp=>{let l=LEVELS[0];for(const v of LEVELS)if(xp>=v.min)l=v;return l;};
-const $=id=>document.getElementById(id);
-
-function showToast(msg,dur=2500){
-  const t=$('toast');t.textContent=msg;t.classList.add('show');
-  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),dur);
+function showToast(msg, dur = 2500) {
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), dur);
 }
 
-function showAchievement(name,icon){
-  const p=$('achievePop');
-  $('achieveIc').textContent=icon;$('achieveName').textContent=name;
-  p.classList.add('show');
-  setTimeout(()=>p.classList.remove('show'),3500);
+function showAchievement(name, icon) {
+  const p = $('achievePop'); $('achieveIc').textContent = icon; $('achieveName').textContent = name;
+  p.classList.add('show'); setTimeout(() => p.classList.remove('show'), 3500);
 }
 
-function checkAchievements(){
-  const prog=load(LS.prog,{});const sk=load(LS.streak,{days:0});
-  const earned=load('kr_earned',[]);
-  for(const a of ACHIEVEMENTS){
-    if(!earned.includes(a.id)&&a.cond(prog,sk)){
-      earned.push(a.id);save('kr_earned',earned);
-      setTimeout(()=>showAchievement(a.name,a.icon),800);
-      break;
+function checkAchievements() {
+  const prog = load(LS.prog, {}); const sk = load(LS.streak, { days: 0 }); const earned = load('kr_earned', []);
+  for (const a of ACHIEVEMENTS) {
+    if (!earned.includes(a.id) && a.cond(prog, sk)) {
+      earned.push(a.id); save('kr_earned', earned);
+      setTimeout(() => showAchievement(a.name, a.icon), 800); break;
     }
   }
 }
 
 // ══════════════════════════════════════════════
-// CUSTOM CONFIRM MODAL CONTROLLER (FAILSAFE)
+// CUSTOM FAILSAFE DIALOG
 // ══════════════════════════════════════════════
 let kronaConfirmCallback = null;
 function showKronaConfirm(title, text, okBtnText, cancelBtnText, cb, icon = '⚠️') {
-  $('kronaConfirmTitle').textContent = title;
-  $('kronaConfirmText').textContent = text;
-  $('kronaConfirmBtnOk').textContent = okBtnText;
-  $('kronaConfirmBtnCancel').textContent = cancelBtnText;
-  $('kronaConfirmIcon').textContent = icon;
-  $('kronaConfirmModal').style.display = 'flex';
+  $('kronaConfirmTitle').textContent = title; $('kronaConfirmText').textContent = text;
+  $('kronaConfirmBtnOk').textContent = okBtnText; $('kronaConfirmBtnCancel').textContent = cancelBtnText;
+  $('kronaConfirmIcon').textContent = icon; $('kronaConfirmModal').style.display = 'flex';
   kronaConfirmCallback = cb;
 }
-
 function handleKronaConfirm(choice) {
   $('kronaConfirmModal').style.display = 'none';
-  if (kronaConfirmCallback) {
-    kronaConfirmCallback(choice);
-    kronaConfirmCallback = null;
+  if (kronaConfirmCallback) { kronaConfirmCallback(choice); kronaConfirmCallback = null; }
+}
+
+// ══════════════════════════════════════════════
+// LOG IN SWITCHER & REGISTRATION CONTROLLER
+// ══════════════════════════════════════════════
+function selectLoginProfile(profile) {
+  if (profile === 'admin') {
+    $('loginSelector').style.display = 'none';
+    $('adminLoginFields').style.display = 'block';
+  } else {
+    $('loginSelector').style.display = 'none';
+    $('studentFlowFields').style.display = 'flex';
   }
+}
+
+function cancelAdminLogin() {
+  $('adminLoginFields').style.display = 'none';
+  $('studentFlowFields').style.display = 'none';
+  $('loginSelector').style.display = 'block';
+}
+
+function tryAdminLogin() {
+  const email = $('adminEmail').value.trim();
+  const pass = $('adminPass').value.trim();
+  if (email === 'admin@plataforma.com' && pass === '123456') {
+    const adminUser = { name: 'Administrador', email: 'admin@plataforma.com', initials: 'AD', isAdmin: true, id: 'admin_1' };
+    save(LS.user, adminUser);
+    finishReg();
+  } else {
+    showToast('❌ Credenciais administrativas incorretas.');
+  }
+}
+
+function logoutAdmin() {
+  localStorage.removeItem(LS.user);
+  localStorage.removeItem(LS.session);
+  audioEl.pause();
+  curActivePlayingTema = null;
+  location.reload();
+}
+
+function regStep1Next() {
+  const nome = $('regNome').value.trim();
+  const email = $('regEmail').value.trim();
+  if (!nome || nome.length < 3) { showToast('⚠️ Informe seu nome completo'); return; }
+  if (!email.includes('@')) { showToast('⚠️ Informe um e-mail válido'); return; }
+  save(LS.user, { name: nome, email, initials: nome.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2), isAdmin: false, id: 'u_' + Date.now() });
+  $('regStep1').style.display = 'none'; $('regStep2').style.display = 'block';
+  setStepDot(2);
+}
+
+function sendSMS() {
+  const fone = $('regFone').value.trim();
+  if (!fone || fone.length < 10) { showToast('⚠️ Informe um telefone válido'); return; }
+  smsCode = String(Math.floor(100000 + Math.random() * 900000));
+  $('regCodeField').style.display = 'block';
+  showToast(`📱 Código (demo): ${smsCode}`, 6000);
+}
+
+function regStep2Next() {
+  const code = $('regCode').value.trim();
+  if (code && code !== smsCode && $('regCodeField').style.display !== 'none') {
+    showToast('❌ Código incorreto'); return;
+  }
+  $('regStep2').style.display = 'none'; $('regStep3').style.display = 'block';
+  setStepDot(3);
+}
+
+function regSkipPhone() { $('regStep2').style.display = 'none'; $('regStep3').style.display = 'block'; setStepDot(3); }
+
+function finishReg() {
+  $('regScreen').style.display = 'none';
+  $('appHeader').style.display = 'block';
+  $('appSidebar').style.display = 'flex';
+  
+  const usr = load(LS.user, {});
+  if (usr.isAdmin) {
+    $('appNavAdmin').style.display = 'flex';
+    $('appNavStudent').style.display = 'none';
+    $('sidebarAdmin').style.display = 'block';
+    $('sidebarStudent').style.display = 'none';
+    navTo('admin');
+  } else {
+    $('appNavStudent').style.display = 'flex';
+    $('appNavAdmin').style.display = 'none';
+    $('sidebarStudent').style.display = 'block';
+    $('sidebarAdmin').style.display = 'none';
+    bumpStreak(); checkAchievements();
+    navTo('home');
+  }
+}
+
+function setStepDot(n) {
+  const dots = $('stepDots').children;
+  for (let i = 0; i < dots.length; i++) { dots[i].className = 'step-dot' + (i < n ? ' active' : ''); }
+}
+
+// ══════════════════════════════════════════════
+// DYNAMIC DASHBOARD WIDGETS AND UI UPDATE
+// ══════════════════════════════════════════════
+const MOD_TEMAS={A:['TEMA_1','TEMA_2'],B:['TEMA_3','TEMA_4','TEMA_5'],C:['TEMA_6'],D:['TEMA_7','TEMA_8','TEMA_9','TEMA_10'],E:['TEMA_11'],F:['TEMA_12','TEMA_13'],G:['TEMA_14']};
+const TEMA_META={TEMA_1:{qtd:7},TEMA_2:{qtd:1},TEMA_3:{qtd:1},TEMA_4:{qtd:1},TEMA_5:{qtd:1},TEMA_6:{qtd:1},TEMA_7:{qtd:1},TEMA_8:{qtd:1},TEMA_9:{qtd:1},TEMA_10:{qtd:1},TEMA_11:{qtd:1},TEMA_12:{qtd:1},TEMA_13:{qtd:1},TEMA_14:{qtd:1}};
+
+function updateUI() {
+  const prog = load(LS.prog, { acertos: 0, questoes: 0, byTema: {} });
+  const usr = load(LS.user, { name: 'Aluno', initials: 'A' });
+  const sk = load(LS.streak, { days: 0, lastDate: null });
+  const erros = load(LS.errors, []);
+  const xp = calcXP(prog);
+  const lvl = calcLevel(xp);
+  const temasDone = Object.values(prog.byTema || {}).filter(t => t.done).length;
+  const pct = prog.questoes > 0 ? Math.round(prog.acertos / prog.questoes * 100) : 0;
+  const geral = Math.round(temasDone / 14 * 100);
+
+  $('hdrXP').textContent = xp + ' XP';
+  $('hdrAv').textContent = usr.initials || 'A';
+  $('wcName').textContent = (usr.name || 'Aluno') + ' 👋';
+  $('wcPct').textContent = geral + '%';
+  $('wcProgBar').style.width = geral + '%';
+  $('wcAcertos').textContent = prog.acertos || 0;
+  $('wcQuestoes').textContent = prog.questoes || 0;
+  $('wcAprov').textContent = pct + '%';
+  $('ribStreak').textContent = sk.days || 0;
+  $('ribLevel').textContent = lvl.label;
+
+  updateCountdown();
+
+  // Badge Caderno de Erros no menu e na sidebar
+  const eb = $('errBadge');
+  const ebSb = $('errBadgeSb');
+  if (erros.length > 0) {
+    if (eb) { eb.style.display = 'flex'; eb.textContent = Math.min(erros.length, 99); }
+    if (ebSb) { ebSb.style.display = 'inline-block'; ebSb.textContent = Math.min(erros.length, 99); }
+  } else {
+    if (eb) eb.style.display = 'none';
+    if (ebSb) ebSb.style.display = 'none';
+  }
+
+  // Progresso dos Módulos
+  for (const [mod, temas] of Object.entries(MOD_TEMAS)) {
+    let totalAc = 0, totalTot = 0;
+    for (const t of temas) { const td = prog.byTema?.[t]; if (td) { totalAc += td.acertos || 0; totalTot += td.total || 0; } }
+    const p = totalTot > 0 ? Math.round(totalAc / totalTot * 100) : 0;
+    const ring = $('ring' + mod); const rv = $('ringVal' + mod);
+    if (ring) { const offset = 88 - Math.round(p * 88 / 100); ring.style.strokeDashoffset = offset; }
+    if (rv) rv.textContent = p + '%';
+  }
+
+  pushRanking();
+}
+
+// ══════════════════════════════════════════════
+// DYNAMIC STRUCTURE RENDERING OF MATÉRIAS & TEMAS
+// ══════════════════════════════════════════════
+function renderAllAccordionTemas() {
+  const prog = load(LS.prog, { byTema: {} });
+  
+  for (const [mod, temas] of Object.entries(MOD_TEMAS)) {
+    const container = $('innerMod' + mod);
+    if (!container) continue;
+    container.innerHTML = '';
+    
+    temas.forEach(temaId => {
+      const meta = AUDIO_METADATA[temaId];
+      const td = prog.byTema?.[temaId];
+      
+      let badgeLabel = 'Pendente';
+      let badgeClass = 'tema-badge pending';
+      if (td?.done) {
+        badgeLabel = '✅ Concluído';
+        badgeClass = 'tema-badge done';
+      } else if (td?.total > 0) {
+        badgeLabel = `${td.acertos}/${td.total}`;
+        badgeClass = 'tema-badge partial';
+      }
+      
+      const bestNote = td?.bestPct ? td.bestPct + '%' : '0%';
+      const totalQuestions = QUESTIONS_DB[temaId]?.length || TEMA_META[temaId]?.qtd || 0;
+
+      const card = document.createElement('div');
+      card.className = 'tema-card';
+      card.id = `tema_${temaId}`;
+      card.innerHTML = `
+        <div class="tema-header" onclick="toggleTemaExpand('${temaId}')">
+          <div class="tema-title">
+            <span class="tema-icon">🌾</span>
+            <div>
+              <div class="tema-name">${meta.aula}: ${meta.tema}</div>
+              <div class="tema-meta">${totalQuestions} questões disponíveis</div>
+            </div>
+          </div>
+          <span class="${badgeClass}" id="badge_${temaId}">${badgeLabel}</span>
+        </div>
+        
+        <div class="tema-content" id="tema_content_${temaId}" style="display:none;">
+          <!-- 🎧 ÁUDIO EXPLICATIVO MÓDULO -->
+          <div class="sub-mod">
+            <div class="sub-mod-title">🎧 Áudio Explicativo</div>
+            <div class="inline-player">
+              <div class="inline-progress-wrap" onclick="seekInlineAudio(event, '${temaId}')" id="progress_wrap_${temaId}">
+                <div class="inline-progress-bar" id="progress_bar_${temaId}" style="width:0%;"></div>
+              </div>
+              <div class="inline-player-meta">
+                <span id="time_curr_${temaId}">00:00</span>
+                <span id="time_total_${temaId}">00:00</span>
+              </div>
+              <div class="inline-controls">
+                <button class="player-btn" onclick="restartInlineAudio('${temaId}')" title="Reiniciar">🔄</button>
+                <button class="player-btn play-btn" id="play_btn_${temaId}" onclick="toggleInlinePlay('${temaId}')">▶</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 📝 SIMULADO MÓDULO -->
+          <div class="sub-mod">
+            <div class="sub-mod-title">📝 Simulado do Tema</div>
+            <div class="quiz-info-row">
+              <div class="quiz-info-item">
+                <span class="qi-label">Questões</span>
+                <span class="qi-val">${totalQuestions}</span>
+              </div>
+              <div class="quiz-info-item">
+                <span class="qi-label">Tempo Máx</span>
+                <span class="qi-val">5:00</span>
+              </div>
+              <div class="quiz-info-item">
+                <span class="qi-label">Aproveitam.</span>
+                <span class="qi-val" id="best_${temaId}" style="color:var(--gold);">${bestNote}</span>
+              </div>
+            </div>
+            <button class="btn-success" style="width:100%;" onclick="startQuiz('${temaId}', '${meta.tema}')">Iniciar Simulado →</button>
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+}
+
+let openTemaId = null;
+function toggleTemaExpand(temaId) {
+  const content = $(`tema_content_${temaId}`);
+  const header = $(`tema_${temaId}`);
+  if (!content) return;
+  
+  if (openTemaId && openTemaId !== temaId) {
+    const oldContent = $(`tema_content_${openTemaId}`);
+    if (oldContent) oldContent.style.display = 'none';
+    const oldHeader = $(`tema_${openTemaId}`);
+    if (oldHeader) oldHeader.classList.remove('expanded');
+  }
+  
+  if (content.style.display === 'none') {
+    content.style.display = 'block';
+    header.classList.add('expanded');
+    openTemaId = temaId;
+    
+    // Sync current audio parameters if matching
+    const savedPos = load(`kr_audio_pos_${temaId}`, 0);
+    const timeCurr = $(`time_curr_${temaId}`);
+    if (timeCurr) timeCurr.textContent = formatAudioTime(savedPos);
+    
+    if (curActivePlayingTema === temaId && audioEl.duration) {
+      const timeTotal = $(`time_total_${temaId}`);
+      if (timeTotal) timeTotal.textContent = formatAudioTime(audioEl.duration);
+      const bar = $(`progress_bar_${temaId}`);
+      if (bar) bar.style.width = (audioEl.currentTime / audioEl.duration * 100) + "%";
+    }
+  } else {
+    content.style.display = 'none';
+    header.classList.remove('expanded');
+    if (openTemaId === temaId) openTemaId = null;
+  }
+}
+
+// ══════════════════════════════════════════════
+// DASHBOARD WIDGET POPULATORS
+// ══════════════════════════════════════════════
+function updatePendingSimuladosWidget() {
+  const prog = load(LS.prog, { byTema: {} });
+  const pendingList = $('pendingSimuladosList');
+  if (!pendingList) return;
+  pendingList.innerHTML = '';
+  
+  let count = 0;
+  for (let i = 1; i <= 14; i++) {
+    const temaId = 'TEMA_' + i;
+    const done = prog.byTema?.[temaId]?.done;
+    if (!done) {
+      count++;
+      const meta = AUDIO_METADATA[temaId];
+      const item = document.createElement('div');
+      item.className = 'widget-item-link';
+      item.onclick = () => { openTemaInAccordion(temaId); };
+      item.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+          <div>
+            <div style="font-weight:700; font-size:13px; color:var(--txt);">${meta.aula}: ${meta.tema}</div>
+            <div style="font-size:11px; color:var(--tx3); margin-top:2px;">Tópico: ${meta.topico}</div>
+          </div>
+          <span class="widget-action-arrow">›</span>
+        </div>
+      `;
+      pendingList.appendChild(item);
+      if (count >= 3) break;
+    }
+  }
+  if (count === 0) {
+    pendingList.innerHTML = '<div style="text-align:center; padding:12px; font-size:12px; color:var(--tx3);">🎉 Parabéns! Todos os simulados concluídos!</div>';
+  }
+}
+
+function getModOfTema(temaId) {
+  for (const [mod, temas] of Object.entries(MOD_TEMAS)) {
+    if (temas.includes(temaId)) return mod;
+  }
+  return 'A';
+}
+
+function openTemaInAccordion(temaId) {
+  navTo('materias');
+  setTimeout(() => {
+    const mod = getModOfTema(temaId);
+    tglMod(mod);
+    setTimeout(() => {
+      toggleTemaExpand(temaId);
+      const targetCard = $(`tema_${temaId}`);
+      if (targetCard) targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 200);
+  }, 150);
+}
+
+function updateMiniRankingWidget() {
+  const rank = load(LS.ranking, []);
+  const widget = $('miniRankingList');
+  if (!widget) return;
+  widget.innerHTML = '';
+  const preview = rank.slice(0, 3);
+  if (preview.length === 0) {
+    widget.innerHTML = '<div style="text-align:center; padding:12px; font-size:12px; color:var(--tx3);">Nenhum dado de líderes registrado.</div>';
+    return;
+  }
+  preview.forEach((u, i) => {
+    const medals = ['🥇', '🥈', '🥉'];
+    const item = document.createElement('div');
+    item.style = "display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.03);";
+    item.innerHTML = `
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:14px;">${medals[i] || (i+1)}</span>
+        <div class="usr-av" style="width:28px; height:28px; font-size:11px; display:flex; align-items:center; justify-content:center; background:var(--sf3); border-radius:50%; border:1px solid rgba(255,255,255,0.1); color:var(--gold); font-weight:800;">${u.initials}</div>
+        <span style="font-size:12px; font-weight:700; color:var(--txt);">${u.name}</span>
+      </div>
+      <span style="font-size:12px; font-weight:800; color:var(--gold);">${u.xp} XP</span>
+    `;
+    widget.appendChild(item);
+  });
+}
+
+function updateLastActivityWidget() {
+  const prog = load(LS.prog, { history: [] });
+  const widget = $('lastActivityWidget');
+  if (!widget) return;
+  widget.innerHTML = '';
+  const history = prog.history || [];
+  if (history.length === 0) {
+    widget.innerHTML = '<div style="text-align:center; padding:12px; font-size:12px; color:var(--tx3);">Nenhuma atividade registrada ainda.</div>';
+    return;
+  }
+  const last = history[history.length - 1];
+  const meta = AUDIO_METADATA[last.temaId];
+  const dateStr = last.data ? new Date(last.data).toLocaleDateString('pt-BR') : '';
+  widget.innerHTML = `
+    <div style="padding:4px 0;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:13px; font-weight:700; color:var(--txt);">${meta ? meta.tema : last.temaId}</span>
+        <span style="font-size:11px; color:var(--tx3); font-weight:600;">${dateStr}</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+        <span style="font-size:12px; color:var(--tx2);">Nota: <b style="color:var(--gold);">${last.pct}%</b> (${last.acertos}/${last.total} acertos)</span>
+        <span class="tema-badge done" style="font-size:9px; padding:2px 8px; background:rgba(0,214,143,.12); color:var(--grn); border-radius:20px; font-weight:700;">Concluído</span>
+      </div>
+    </div>
+  `;
 }
 
 // ══════════════════════════════════════════════
@@ -974,155 +1583,271 @@ function handleKronaConfirm(choice) {
 function updateCountdown(){
   const end=new Date('2026-12-31T23:59:59');
   const diff=end-new Date();
-  if(diff<=0){$('freeCountdown').textContent='Expirado';return;}
+  if(diff<=0){
+    if($('freeCountdownText')) $('freeCountdownText').textContent='Expirado';
+    return;
+  }
   const d=Math.floor(diff/86400000);
   const h=Math.floor((diff%86400000)/3600000);
-  $('freeCountdown').textContent=`${d}d ${h}h restantes`;
+  if($('freeCountdownText')) $('freeCountdownText').textContent=`${d}d ${h}h restantes`;
 }
-setInterval(updateCountdown,60000);
+setInterval(updateCountdown, 60000);
 
 // ══════════════════════════════════════════════
-// REGISTRATION
+// STREAK
 // ══════════════════════════════════════════════
-let smsCode='';
-function regStep1Next(){
-  const nome=$('regNome').value.trim();
-  const email=$('regEmail').value.trim();
-  if(!nome||nome.length<3){showToast('⚠️ Informe seu nome completo');return;}
-  if(!email.includes('@')){showToast('⚠️ Informe um e-mail válido');return;}
-  save(LS.user,{name:nome,email,initials:nome.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2),isAdmin:email.toLowerCase().includes('admin'),id:'u_'+Date.now()});
-  $('regStep1').style.display='none';$('regStep2').style.display='block';
-  setStepDot(2);
+function bumpStreak(){
+  const sk=load(LS.streak,{lastDate:null,days:0});
+  const today=new Date().toISOString().slice(0,10);
+  if(sk.lastDate===today)return;
+  const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
+  save(LS.streak,{lastDate:today,days:sk.lastDate===yesterday?sk.days+1:1});
 }
-function sendSMS(){
-  const fone=$('regFone').value.trim();
-  if(!fone||fone.length<10){showToast('⚠️ Informe um telefone válido');return;}
-  smsCode=String(Math.floor(100000+Math.random()*900000));
-  $('regCodeField').style.display='block';
-  showToast(`📱 Código (demo): ${smsCode}`,6000);
-}
-function regStep2Next(){
-  const code=$('regCode').value.trim();
-  if(code&&code!==smsCode&&$('regCodeField').style.display!=='none'){
-    showToast('❌ Código incorreto');return;
-  }
-  $('regStep2').style.display='none';$('regStep3').style.display='block';
-  setStepDot(3);
-}
-function regSkipPhone(){
-  $('regStep2').style.display='none';$('regStep3').style.display='block';
-  setStepDot(3);
-}
-function finishReg(){
-  $('regScreen').style.display='none';
-  $('appHeader').style.display='block';
-  $('appNav').style.display='flex';
+
+// ══════════════════════════════════════════════
+// RANKING
+// ══════════════════════════════════════════════
+function buildRanking(){
+  const rank=load(LS.ranking,[]);
+  if(!rank.length){$('rankPodium').innerHTML='';$('rankList').innerHTML='<div class="empty-state"><div class="empty-ic">🏆</div><div class="empty-tt">Sem dados ainda</div><div class="empty-sub">Complete simulados para entrar no ranking</div></div>';return;}
+  const top3=rank.slice(0,3);
+  const medals=['🥇','🥈','🥉'];
+  let podiumHtml='';
+  const ordered=top3.length>=3?[top3[1],top3[0],top3[2]]:(top3.length>=2?[top3[1],top3[0]]:[top3[0]]);
+  ordered.forEach((u,vi)=>{
+    const ri=top3.indexOf(u);
+    podiumHtml+=`<div class="podium-item podium-place-${ri+1}">
+      <div class="podium-av" style="width:${ri===0?56:ri===1?46:42}px;height:${ri===0?56:ri===1?46:42}px;border-color:${ri===0?'var(--gold)':ri===1?'var(--tx2)':'var(--org)'};color:${ri===0?'var(--gold)':ri===1?'var(--tx2)':'var(--org)'}">${u.initials}</div>
+      <div class="podium-name">${u.name}</div>
+      <div class="podium-xp">${u.xp} XP</div>
+      <div class="podium-base" style="height:${ri===0?50:ri===1?38:30}px;background:${ri===0?'rgba(245,200,66,.15)':ri===1?'rgba(160,175,204,.1)':'rgba(255,140,66,.1)'};color:${ri===0?'var(--gold)':ri===1?'var(--tx2)':'var(--org)'}">${medals[ri]}</div>
+    </div>`;
+  });
+  $('rankPodium').innerHTML=podiumHtml;
   const usr=load(LS.user,{});
-  if(usr.isAdmin){$('nAdmin').style.display='flex';}
-  bumpStreak();checkAchievements();
-  navTo('home');
-}
-function setStepDot(n){
-  const dots=$('stepDots').children;
-  for(let i=0;i<dots.length;i++){dots[i].className='step-dot'+(i<n?' active':'');}
+  $('rankList').innerHTML=rank.map((u,i)=>`
+    <div class="rank-row${u.isMe?' me':''}">
+      <div class="rank-pos">${i<3?medals[i]:i+1}</div>
+      <div class="rank-av">${u.initials}</div>
+      <div class="rank-info">
+        <div class="rank-nm">${u.name}${u.isMe?' (você)':''}</div>
+        <div class="rank-sub">${u.temas||0} temas concluídos</div>
+      </div>
+      <div class="rank-xp">${u.xp} XP</div>
+    </div>`).join('');
 }
 
 // ══════════════════════════════════════════════
-// UI UPDATE
+// ERROS
 // ══════════════════════════════════════════════
-const MOD_TEMAS={A:['TEMA_1','TEMA_2'],B:['TEMA_3','TEMA_4','TEMA_5'],C:['TEMA_6'],D:['TEMA_7','TEMA_8','TEMA_9','TEMA_10'],E:['TEMA_11'],F:['TEMA_12','TEMA_13'],G:['TEMA_14']};
-const TEMA_META={TEMA_1:{qtd:7},TEMA_2:{qtd:1},TEMA_3:{qtd:1},TEMA_4:{qtd:1},TEMA_5:{qtd:1},TEMA_6:{qtd:1},TEMA_7:{qtd:1},TEMA_8:{qtd:1},TEMA_9:{qtd:1},TEMA_10:{qtd:1},TEMA_11:{qtd:1},TEMA_12:{qtd:1},TEMA_13:{qtd:1},TEMA_14:{qtd:1}};
-
-function updateUI(){
-  const prog=load(LS.prog,{acertos:0,questoes:0,byTema:{}});
-  const usr=load(LS.user,{name:'Aluno',initials:'A'});
-  const sk=load(LS.streak,{days:0,lastDate:null});
+function buildErros(){
   const erros=load(LS.errors,[]);
-  const xp=calcXP(prog);
-  const lvl=calcLevel(xp);
-  const temasDone=Object.values(prog.byTema||{}).filter(t=>t.done).length;
+  if(!erros.length){$('errosList').innerHTML='<div class="empty-state"><div class="empty-ic">📓</div><div class="empty-tt">Caderno vazio</div><div class="empty-sub">Seus erros aparecerão aqui para revisão</div></div>';return;}
+  $('errosList').innerHTML=[...erros].reverse().slice(0,50).map(e=>`
+    <div class="erro-card">
+      <div class="erro-tema">${e.temaNome||e.temaId}</div>
+      <div class="erro-q">${e.pergunta}</div>
+      <div class="erro-resp">✅ ${e.correta}</div>
+      ${e.escolhida&&e.escolhida!=='⏰ tempo esgotado'?`<div style="font-size:12px;color:var(--red);margin-top:4px;display:flex;gap:6px;">❌ ${e.escolhida}</div>`:''}
+    </div>`).join('');
+}
+function limparErros(){save(LS.errors,[]);buildErros();updateUI();showToast('🗑️ Caderno limpo!');}
+
+// ══════════════════════════════════════════════
+// PROFILE
+// ══════════════════════════════════════════════
+function buildPerfil(){
+  const usr=load(LS.user,{name:'Aluno',initials:'A'});
+  const prog=load(LS.prog,{acertos:0,questoes:0,byTema:{}});
+  const sk=load(LS.streak,{days:0});
+  const xp=calcXP(prog);const lvl=calcLevel(xp);
+  const temas=Object.values(prog.byTema||{}).filter(t => t.done).length;
   const pct=prog.questoes>0?Math.round(prog.acertos/prog.questoes*100):0;
-  const geral=Math.round(temasDone/14*100);
+  const earned=load('kr_earned',[]);
+  const badgesHtml=ACHIEVEMENTS.map(a=>`
+    <div class="badge-item${earned.includes(a.id)?' earned':''}">
+      <div class="badge-ic">${a.icon}</div>
+      <div class="badge-lbl">${a.name.split(' ').slice(0,2).join(' ')}</div>
+    </div>`).join('');
 
-  $('hdrXP').textContent=xp+' XP';
-  $('hdrAv').textContent=usr.initials||'A';
-  $('wcName').textContent=(usr.name||'Aluno')+' 👋';
-  $('wcPct').textContent=geral+'%';
-  $('wcProgBar').style.width=geral+'%';
-  $('wcAcertos').textContent=prog.acertos||0;
-  $('wcQuestoes').textContent=prog.questoes||0;
-  $('wcAprov').textContent=pct+'%';
-  $('ribStreak').textContent=sk.days||0;
-  $('ribLevel').textContent=lvl.label;
-
-  updateCountdown();
-
-  // Badges por tema
-  for(let i=1;i<=14;i++){
-    const b=$('badge'+i);if(!b)continue;
-    const td=prog.byTema?.['TEMA_'+i];
-    if(td?.done){b.textContent='✅ Concluído';b.className='tema-badge done';}
-    else if(td?.total>0){b.textContent=`${td.acertos}/${td.total}`;b.className='tema-badge partial';}
-    else{b.textContent='Pendente';b.className='tema-badge pending';}
-    // count
-    const ct=$('ct'+i);
-    if(ct){const total=QUESTIONS_DB['TEMA_'+i]?.length||TEMA_META['TEMA_'+i]?.qtd||0;ct.textContent=`${total} questões disponíveis`;}
-  }
-
-  // Ring charts
-  for(const [mod,temas] of Object.entries(MOD_TEMAS)){
-    let totalAc=0,totalTot=0;
-    for(const t of temas){const td=prog.byTema?.[t];if(td){totalAc+=td.acertos||0;totalTot+=td.total||0;}}
-    const p=totalTot>0?Math.round(totalAc/totalTot*100):0;
-    const ring=$('ring'+mod);const rv=$('ringVal'+mod);
-    if(ring){const offset=88-Math.round(p*88/100);ring.style.strokeDashoffset=offset;}
-    if(rv)rv.textContent=p+'%';
-  }
-
-  // Error badge
-  const eb=$('errBadge');
-  if(erros.length>0){eb.style.display='flex';eb.textContent=Math.min(erros.length,99);}else eb.style.display='none';
-
-  pushRanking();
+  $('perfilContent').innerHTML=`
+    <div class="prof-av-big">${usr.initials||'A'}</div>
+    <div class="prof-name">${usr.name}</div>
+    <div class="prof-level">${lvl.label} · ${xp} XP</div>
+    ${usr.email?`<div style="text-align:center;font-size:12px;color:var(--tx3);margin-bottom:20px">📧 ${usr.email}</div>`:''}
+    <div class="sec-h"><div class="sec-tt">Conquistas</div></div>
+    <div class="badges-grid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px;">${badgesHtml}</div>
+    <div class="sec-h"><div class="sec-tt">Estatísticas</div></div>
+    <div class="prof-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;">
+      <div class="prof-stat"><div class="prof-sv" style="font-size:22px; font-weight:900; color:var(--gold);">${prog.acertos||0}</div><div class="prof-sl">Total de acertos</div></div>
+      <div class="prof-stat"><div class="prof-sv" style="font-size:22px; font-weight:900; color:var(--gold);">${temas}</div><div class="prof-sl">Temas concluídos</div></div>
+      <div class="prof-stat"><div class="prof-sv" style="font-size:22px; font-weight:900; color:var(--gold);">${pct}%</div><div class="prof-sl">Aproveitamento</div></div>
+      <div class="prof-stat"><div class="prof-sv" style="font-size:22px; font-weight:900; color:var(--gold);">${sk.days||0}</div><div class="prof-sl">Dias seguidos</div></div>
+    </div>
+    <button class="btn-secondary" style="width:100%;" onclick="exportData()">📊 Exportar meus dados</button>
+    <button class="btn-alert" style="width:100%; margin-top:8px;" onclick="resetarProgresso()">🔄 Resetar progresso</button>
+    <button class="btn-secondary" style="width:100%; margin-top:8px; border-color:rgba(255,90,90,.3); color:var(--red);" onclick="logoutAdmin()">🚪 Encerrar Sessão</button>
+  `;
+}
+function exportData(){
+  const prog=load(LS.prog,{});const usr=load(LS.user,{});
+  const data={usuario:usr,progresso:prog,erros:load(LS.errors,[]),exportado:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download='krona_dados.json';a.click();URL.revokeObjectURL(url);
+  showToast('📊 Dados exportados!');
+}
+function resetarProgresso(){
+  showKronaConfirm(
+    'Resetar todo o progresso?',
+    'Esta ação apagará todo o seu histórico e não pode ser desfeita.',
+    'Confirmar Reset',
+    'Cancelar',
+    (confirmed) => {
+      if (confirmed) {
+        [LS.prog,LS.errors,LS.streak,LS.session,'kr_earned'].forEach(k=>localStorage.removeItem(k));
+        updateUI();renderAllAccordionTemas();buildPerfil();showToast('🔄 Progresso resetado!');
+      }
+    }
+  );
 }
 
-function pushRanking(){
-  const prog=load(LS.prog,{});const usr=load(LS.user,{});
-  const xp=calcXP(prog);const temas=Object.values(prog.byTema||{}).filter(t=>t.done).length;
-  let rank=load(LS.ranking,[]);const myId=usr.id||'me';
-  rank=rank.filter(r=>r.id!==myId);
-  // add demo players if first time
-  if(rank.length===0){
-    rank=[
-      {id:'demo1',name:'Carlos Pinheiro',initials:'CP',xp:1850,temas:12,isMe:false},
-      {id:'demo2',name:'Ana Figueiredo',initials:'AF',xp:1340,temas:9,isMe:false},
-      {id:'demo3',name:'Roberto Borges',initials:'RB',xp:920,temas:7,isMe:false},
-      {id:'demo4',name:'Maria Alves',initials:'MA',xp:610,temas:5,isMe:false},
-      {id:'demo5',name:'Thiago Ramos',initials:'TR',xp:420,temas:4,isMe:false},
-    ];
+// ══════════════════════════════════════════════
+// ADMIN
+// ══════════════════════════════════════════════
+function buildAdmin(){
+  const pdfcount=load(LS.pdfcount,0);
+  const aiqs=load(LS.aiqs,0);
+  const rank=load(LS.ranking,[]);
+  $('adminAlunos').textContent=rank.length;
+  $('adminQuestoes').textContent=aiqs+(Object.values(QUESTIONS_DB).reduce((a,b)=>a+b.length,0));
+  $('adminPDFs').textContent=pdfcount;
+  
+  populateAdminAudioSelect();
+
+  $('studentsList').innerHTML=rank.slice(0,10).map(u=>`
+    <div class="student-row">
+      <div class="student-av" style="width:36px; height:36px; border-radius:50%; background:var(--sf3); border:1.5px solid var(--bd2); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:var(--blu); flex-shrink:0;">${u.initials}</div>
+      <div class="student-info" style="flex:1;">
+        <div class="student-nm" style="font-size:13px; font-weight:700; color:var(--txt);">${u.name}</div>
+        <div class="student-sub" style="font-size:10px; color:var(--tx3); margin-top:1px;">${u.temas||0} temas · ${u.xp} XP</div>
+      </div>
+      <div class="student-xp" style="font-size:13px; font-weight:800; color:var(--vio);">${u.xp}</div>
+    </div>`).join('');
+}
+
+function handleDrop(e){
+  e.preventDefault();$('uploadZone').classList.remove('drag');
+  const f=e.dataTransfer.files[0];if(f)processPDF(f);
+}
+
+async function processPDF(file){
+  if(!file||!file.name.endsWith('.pdf')){showToast('⚠️ Envie um arquivo PDF');return;}
+  save(LS.pdfcount,(load(LS.pdfcount,0)+1));
+  const steps=['📄 Lendo PDF...','🔍 Identificando temas...','🧠 Gerando questões com IA...','✍️ Criando explicações...','✅ Finalizado!'];
+  const prog=$('aiProgress');prog.style.display='block';
+  $('aiSteps').innerHTML=steps.map((s,i)=>`<div class="ai-step wait" id="aistep${i}" style="display:flex; align-items:center; gap:10px; padding:8px 0; font-size:13px; color:var(--tx2); border-bottom:1px solid var(--bd);"><div class="ai-step-ic">⏳</div>${s}</div>`).join('');
+
+  for(let i=0;i<steps.length;i++){
+    await new Promise(r=>setTimeout(r,600+Math.random()*800));
+    for(let j=0;j<i;j++){const el=$(`aistep${j}`);el.className='ai-step done';el.querySelector('.ai-step-ic').textContent='✅';}
+    const cur=$(`aistep${i}`);cur.className='ai-step active';cur.querySelector('.ai-step-ic').textContent='⚡';
+    if(i===2){
+      await generateQuestionsFromPDF(file,cur);
+    }
   }
-  if(xp>0||temas>0)rank.push({id:myId,name:usr.name||'Aluno',initials:usr.initials||'A',xp,temas,isMe:true});
-  rank.sort((a,b)=>b.xp-a.xp);
-  save(LS.ranking,rank.slice(0,30));
+  await new Promise(r=>setTimeout(r,500));
+  for(let j=0;j<steps.length;j++){const el=$(`aistep${j}`);el.className='ai-step done';el.querySelector('.ai-step-ic').textContent='✅';}
+  showToast('🎉 PDF processado com sucesso!',4000);
+  buildAdmin();
+}
+
+async function generateQuestionsFromPDF(file,stepEl){
+  try{
+    const base64=await new Promise((res,rej)=>{
+      const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=()=>rej(new Error('Falha ao ler arquivo'));r.readAsDataURL(file);
+    });
+    stepEl.lastChild.textContent=' Enviando para IA...';
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:1000,
+        messages:[{role:'user',content:[
+          {type:'document',source:{type:'base64',media_type:'application/pdf',data:base64}},
+          {type:'text',text:`Analise este PDF e crie 3 questões de múltipla escolha (A,B,C,D,E) sobre o conteúdo principal. Retorne APENAS JSON válido no formato:
+[{"pergunta":"...","opcoes":{"A":"...","B":"...","C":"...","D":"...","E":"..."},"correta":"A","explicacao":"..."}]`}
+        ]}]
+      })
+    });
+    if(!resp.ok)throw new Error('API error '+resp.status);
+    const data=await resp.json();
+    const text=data.content?.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim();
+    const novas=JSON.parse(text);
+    if(Array.isArray(novas)&&novas.length){
+      const cur=load(LS.aiqs,0);save(LS.aiqs,cur+novas.length);
+      const aiTemaId='AI_'+Date.now();
+      QUESTIONS_DB[aiTemaId]=novas;
+      showAchievement(`${novas.length} novas questões geradas!`,'🤖');
+    }
+  }catch(e){console.warn('PDF AI error:',e);stepEl.lastChild.textContent=' Questões geradas (modo de demonstração)';}
+}
+
+function saveAdminAudioSettings() {
+  const temaId = $('adminAudioTemaSelect').value;
+  const url = $('adminAudioUrl').value.trim();
+  if (!url) { showToast('⚠️ Insira uma URL ou envie um arquivo'); return; }
+  const customUrls = load('kr_custom_audios', {});
+  customUrls[temaId] = url; save('kr_custom_audios', customUrls);
+  showToast('✅ Configurações de áudio salvas!');
+  renderAllAccordionTemas();
+}
+
+function populateAdminAudioSelect() {
+  const select = $('adminAudioTemaSelect'); if (!select) return;
+  select.innerHTML = '';
+  for (let i = 1; i <= 14; i++) {
+    const tId = 'TEMA_' + i; const metadata = AUDIO_METADATA[tId];
+    const opt = document.createElement('option'); opt.value = tId;
+    opt.textContent = `Tema ${i} - ${metadata.tema}`; select.appendChild(opt);
+  }
 }
 
 // ══════════════════════════════════════════════
 // NAVIGATION
 // ══════════════════════════════════════════════
-const VIEWS={home:'viewHome',rank:'viewRank',erros:'viewErros',perfil:'viewPerfil',admin:'viewAdmin',audioPlayer:'viewAudioPlayer'};
-const NAVS={home:'nHome',rank:'nRank',erros:'nErr',perfil:'nProf',admin:'nAdmin'};
+const VIEWS={home:'viewHome',materias:'viewMaterias',rank:'viewRank',erros:'viewErros',perfil:'viewPerfil',admin:'viewAdmin'};
+const NAVS={home:'nHome',materias:'nMaterias',rank:'nRank',erros:'nErr',perfil:'nProf',admin:'nAdmin'};
 let curView='home';
+
 function navTo(view){
   for(const v of Object.values(VIEWS)){const el=$(v);if(el)el.style.display='none';}
   for(const n of Object.values(NAVS)){$(n)?.classList.remove('act');}
+  
+  // Sincroniza sidebar desktop
+  document.querySelectorAll('.side-link').forEach(l => l.classList.remove('active'));
+  const activeSbLink = $(`sb_${view}`);
+  if (activeSbLink) activeSbLink.classList.add('active');
+
   const el=$(VIEWS[view]);if(el)el.style.display='block';
   $(NAVS[view])?.classList.add('act');
   curView=view;
-  if(view==='home'){updateUI();window.scrollTo({top:0,behavior:'smooth'});}
-  if(view==='rank')buildRanking();
-  if(view==='erros')buildErros();
-  if(view==='perfil')buildPerfil();
-  if(view==='admin')buildAdmin();
+  
+  if(view==='home'){
+    updateUI();
+    updatePendingSimuladosWidget();
+    updateMiniRankingWidget();
+    updateLastActivityWidget();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  if(view==='materias') {
+    updateUI();
+    renderAllAccordionTemas();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  if(view==='rank') buildRanking();
+  if(view==='erros') buildErros();
+  if(view==='perfil') buildPerfil();
+  if(view==='admin') buildAdmin();
 }
 
 // ══════════════════════════════════════════════
@@ -1137,226 +1862,24 @@ function tglMod(id){
 }
 
 // ══════════════════════════════════════════════
-// AUDIO PLAYER LOGIC & CONTROLLER
-// ══════════════════════════════════════════════
-let curTemaId = null;
-const audioEl = $('kronaAudio');
-
-function openAula(temaId) {
-  setupAudioPlayer(temaId);
-  navTo('audioPlayer');
-}
-
-function setupAudioPlayer(temaId) {
-  curTemaId = temaId;
-  const metadata = AUDIO_METADATA[temaId];
-  if (!metadata) return;
-
-  $('playerClassTitle').textContent = metadata.aula;
-  $('playerTemaName').textContent = metadata.tema;
-  $('playerTopicName').textContent = metadata.topico;
-  $('playerSubtopic').textContent = metadata.subtopico;
-
-  // Stop currently playing
-  audioEl.pause();
-
-  // Load custom admin overriding URL if present
-  const customUrls = load('kr_custom_audios', {});
-  let finalUrl = customUrls[temaId] || metadata.url;
-
-  if (finalUrl.startsWith('file://local_indexeddb/')) {
-    getAudioFile(temaId).then(file => {
-      if (file) {
-        const fileUrl = URL.createObjectURL(file);
-        audioEl.src = fileUrl;
-        prepareAudioSource(temaId);
-      } else {
-        audioEl.src = metadata.url;
-        prepareAudioSource(temaId);
-      }
-    });
-  } else {
-    audioEl.src = finalUrl;
-    prepareAudioSource(temaId);
-  }
-}
-
-function prepareAudioSource(temaId) {
-  // Seek to previously saved audio lesson position
-  const savedPos = load(`kr_audio_pos_${temaId}`, 0);
-  audioEl.currentTime = savedPos;
-  updatePlayerProgress();
-
-  // Configure navigator background/lock screen media controller
-  if ('mediaSession' in navigator) {
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title: AUDIO_METADATA[temaId].aula + ": " + AUDIO_METADATA[temaId].tema,
-      artist: "KRONA Analytics · SENAR",
-      album: AUDIO_METADATA[temaId].topico,
-      artwork: [{ src: 'https://cdn-icons-png.flaticon.com/512/3039/3039386.png', sizes: '512x512', type: 'image/png' }]
-    });
-
-    navigator.mediaSession.setActionHandler('play', () => togglePlayPause());
-    navigator.mediaSession.setActionHandler('pause', () => togglePlayPause());
-    navigator.mediaSession.setActionHandler('previoustrack', () => playPrevAudio());
-    navigator.mediaSession.setActionHandler('nexttrack', () => playNextAudio());
-  }
-}
-
-function updatePlayerProgress() {
-  if (!audioEl.duration) {
-    $('playerTotalTime').textContent = "00:00";
-    $('progressBarFill').style.width = "0%";
-    return;
-  }
-  const cur = audioEl.currentTime;
-  const dur = audioEl.duration;
-
-  $('playerCurrentTime').textContent = formatAudioTime(cur);
-  $('playerTotalTime').textContent = formatAudioTime(dur);
-  $('progressBarFill').style.width = (cur / dur * 100) + "%";
-
-  // Periodic position persist
-  if (curTemaId) {
-    save(`kr_audio_pos_${curTemaId}`, cur);
-  }
-}
-
-function formatAudioTime(secs) {
-  if (isNaN(secs)) return "00:00";
-  const h = Math.floor(secs / 3600);
-  const m = Math.floor((secs % 3600) / 60);
-  const s = Math.floor(secs % 60);
-  if (h > 0) {
-    return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  }
-  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-}
-
-function togglePlayPause() {
-  if (audioEl.paused) {
-    audioEl.play().catch(() => {
-      showToast('🔊 Toque novamente para confirmar a reprodução.');
-    });
-  } else {
-    audioEl.pause();
-  }
-}
-
-function restartAudio() {
-  audioEl.currentTime = 0;
-  audioEl.play().catch(() => {});
-}
-
-function playNextAudio() {
-  if (!curTemaId) return;
-  const match = curTemaId.match(/\d+/);
-  if (match) {
-    const nextId = parseInt(match[0]) + 1;
-    if (nextId <= 14) {
-      setupAudioPlayer('TEMA_' + nextId);
-      audioEl.play().catch(() => {});
-    } else {
-      showToast('🏁 Este é o último tema do curso!');
-    }
-  }
-}
-
-function playPrevAudio() {
-  if (!curTemaId) return;
-  const match = curTemaId.match(/\d+/);
-  if (match) {
-    const prevId = parseInt(match[0]) - 1;
-    if (prevId >= 1) {
-      setupAudioPlayer('TEMA_' + prevId);
-      audioEl.play().catch(() => {});
-    } else {
-      showToast('⏮ Este é o primeiro tema do curso!');
-    }
-  }
-}
-
-function seekAudio(e) {
-  const container = $('progressBarContainer');
-  const rect = container.getBoundingClientRect();
-  const clickX = e.clientX - rect.left;
-  const width = rect.width;
-  if (audioEl.duration) {
-    audioEl.currentTime = (clickX / width) * audioEl.duration;
-    updatePlayerProgress();
-  }
-}
-
-function startSimuladoFromPlayer() {
-  if (!curTemaId) return;
-  const metadata = AUDIO_METADATA[curTemaId];
-  closeAudioView();
-  startQuiz(curTemaId, metadata.tema);
-}
-
-function closeAudioView() {
-  audioEl.pause();
-  navTo('home');
-}
-
-audioEl.addEventListener('timeupdate', updatePlayerProgress);
-audioEl.addEventListener('loadedmetadata', updatePlayerProgress);
-audioEl.addEventListener('play', () => {
-  $('playerMasterPlayPauseBtn').textContent = "⏸";
-  $('playerDisc').classList.add('spinning');
-});
-audioEl.addEventListener('pause', () => {
-  $('playerMasterPlayPauseBtn').textContent = "▶";
-  $('playerDisc').classList.remove('spinning');
-});
-
-// ══════════════════════════════════════════════
-// ADMIN AUDIO HANDLERS
-// ══════════════════════════════════════════════
-async function uploadLocalAudioFile(file) {
-  if (!file) return;
-  const temaId = $('adminAudioTemaSelect').value;
-  showToast('⚡ Lendo arquivo de áudio...');
-  try {
-    await saveAudioFile(temaId, file);
-    showToast('✅ Áudio local salvo para este tema!');
-    $('adminAudioUrl').value = `file://local_indexeddb/${temaId}`;
-  } catch (e) {
-    showToast('❌ Erro ao salvar arquivo local.');
-    console.error(e);
-  }
-}
-
-function saveAdminAudioSettings() {
-  const temaId = $('adminAudioTemaSelect').value;
-  const url = $('adminAudioUrl').value.trim();
-  if (!url) {
-    showToast('⚠️ Insira uma URL ou envie um arquivo');
-    return;
-  }
-  const customUrls = load('kr_custom_audios', {});
-  customUrls[temaId] = url;
-  save('kr_custom_audios', customUrls);
-  showToast('✅ Configurações de áudio salvas!');
-}
-
-function populateAdminAudioSelect() {
-  const select = $('adminAudioTemaSelect');
-  if (!select) return;
-  select.innerHTML = '';
-  for (let i = 1; i <= 14; i++) {
-    const tId = 'TEMA_' + i;
-    const metadata = AUDIO_METADATA[tId];
-    const opt = document.createElement('option');
-    opt.value = tId;
-    opt.textContent = `Tema ${i} - ${metadata.tema}`;
-    select.appendChild(opt);
-  }
-}
-
-// ══════════════════════════════════════════════
 // QUIZ ENGINE
 // ══════════════════════════════════════════════
+function startQuiz(temaId,temaNome){
+  const saved=load(LS.session,null);
+  if(saved&&saved.temaId===temaId&&!saved.finished){
+    showKronaConfirm(
+      'Retomar simulado?',
+      `Deseja retomar de onde parou ou iniciar um novo simulado de "${saved.temaNome}"?`,
+      'Iniciar Novo',
+      'Retomar Progresso',
+      (restart) => {
+        if (restart) { startFreshQuiz(temaId, temaNome); } else { resumeQuiz(saved); }
+      },
+      '📚'
+    );
+  }else{startFreshQuiz(temaId,temaNome);}
+}
+
 function startFreshQuiz(temaId,temaNome){
   const qs=QUESTIONS_DB[temaId];
   if(!qs?.length){showToast('❌ Questões não encontradas!');return;}
@@ -1375,16 +1898,44 @@ function resumeQuiz(saved){
 function saveSession(){
   if(!QS)return;
   save(LS.session,{
-    temaId:QS.temaId,
-    temaNome:QS.temaNome,
-    questions:QS.questions,
-    idx:QS.idx,
-    acertos:QS.acertos,
-    erros:QS.erros,
-    sessionErrors:QS.sessionErrors,
-    finished:QS.finished,
+    temaId:QS.temaId,temaNome:QS.temaNome,questions:QS.questions,idx:QS.idx,
+    acertos:QS.acertos,erros:QS.erros,sessionErrors:QS.sessionErrors,finished:QS.finished,
     timerSec:QS.timerSec || 300
   });
+}
+
+function openQuizScreen(){
+  $('quizScreen').classList.add('active');
+  $('qTemaNm').textContent=QS.temaNome;
+  $('qAcertos').textContent=QS.acertos;
+  $('qErros').textContent=QS.erros;
+  document.body.style.overflow='hidden';
+}
+
+function closeQuizScreen(){
+  $('quizScreen').classList.remove('active');
+  document.body.style.overflow='';
+  stopTimer();
+}
+
+function startTimer(){
+  stopTimer();updateTimerUI();
+  QS.timerInterval=setInterval(()=>{
+    QS.timerSec--;updateTimerUI();
+    if(QS.timerSec<=0){stopTimer();onTimeout();}
+  },1000);
+}
+
+function stopTimer(){if(QS?.timerInterval){clearInterval(QS.timerInterval);QS.timerInterval=null;}}
+
+function updateTimerUI(){
+  if(!QS)return;
+  const m=Math.floor(QS.timerSec/60);const s=QS.timerSec%60;
+  const el=$('qTimer');const fill=$('qTimerFill');
+  el.textContent=`⏱ ${m}:${String(s).padStart(2,'0')}`;
+  const pct=Math.round(QS.timerSec/300*100);
+  el.className='q-timer'+(QS.timerSec<=30?' danger':QS.timerSec<=60?' warn':'');
+  if(fill){fill.style.width=pct+'%';fill.style.background=QS.timerSec<=30?'var(--red)':QS.timerSec<=60?'var(--org)':'var(--gold)';}
 }
 
 function onTimeout(){
@@ -1527,8 +2078,8 @@ function showResult(){
         <div class="q-rs"><div class="q-rs-v">${pct}%</div><div class="q-rs-l">Aproveit.</div></div>
       </div>
       <div class="q-xp-banner">⚡ +${xpGain} XP ganhos!</div>
-      <button class="q-btn-home" onclick="finishAndGoHome()">🏠 Voltar ao início</button>
-      <button class="q-btn-retry" onclick="restartQuiz()">🔄 Refazer simulado</button>
+      <button class="q-btn-home btn-primary" onclick="finishAndGoHome()" style="width:100%;">🏠 Voltar ao início</button>
+      <button class="q-btn-retry btn-secondary" onclick="restartQuiz()" style="width:100%; margin-top:8px;">🔄 Refazer simulado</button>
     </div>`;
   $('qProgFill').style.width='100%';
   $('qProgCt').textContent=`${tot}/${tot}`;
@@ -1536,13 +2087,13 @@ function showResult(){
   $('qTimerFill').style.width='100%';$('qTimerFill').style.background='var(--grn)';
 }
 
-function finishAndGoHome(){closeQuizScreen();updateUI();showToast('✅ Resultado salvo!');}
+function finishAndGoHome(){closeQuizScreen();updateUI();renderAllAccordionTemas();showToast('✅ Resultado salvo!');}
 function restartQuiz(){const{temaId,temaNome}=QS;closeQuizScreen();setTimeout(()=>startFreshQuiz(temaId,temaNome),200);}
 
 function quitQuiz(){
   showKronaConfirm(
     'Tem certeza que deseja sair?',
-    'Seu progresso atual será salvo para que você possa continuar de onde parou a qualquer momento.',
+    'Seu progresso atual será salvo de forma segura para você continuar de onde parou.',
     'Sair e Salvar',
     'Continuar Simulado',
     (exit) => {
@@ -1550,6 +2101,7 @@ function quitQuiz(){
         saveSession();
         closeQuizScreen();
         updateUI();
+        renderAllAccordionTemas();
         showToast('💾 Progresso salvo!');
       }
     }
@@ -1557,207 +2109,7 @@ function quitQuiz(){
 }
 
 // ══════════════════════════════════════════════
-// STREAK
-// ══════════════════════════════════════════════
-function bumpStreak(){
-  const sk=load(LS.streak,{lastDate:null,days:0});
-  const today=new Date().toISOString().slice(0,10);
-  if(sk.lastDate===today)return;
-  const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
-  save(LS.streak,{lastDate:today,days:sk.lastDate===yesterday?sk.days+1:1});
-}
-
-// ══════════════════════════════════════════════
-// RANKING
-// ══════════════════════════════════════════════
-function buildRanking(){
-  const rank=load(LS.ranking,[]);
-  if(!rank.length){$('rankPodium').innerHTML='';$('rankList').innerHTML='<div class="empty-state"><div class="empty-ic">🏆</div><div class="empty-tt">Sem dados ainda</div><div class="empty-sub">Complete alguns simulados para entrar no ranking</div></div>';return;}
-  const top3=rank.slice(0,3);
-  const medals=['🥇','🥈','🥉'];
-  let podiumHtml='';
-  const ordered=top3.length>=3?[top3[1],top3[0],top3[2]]:(top3.length>=2?[top3[1],top3[0]]:[top3[0]]);
-  ordered.forEach((u,vi)=>{
-    const ri=top3.indexOf(u);
-    podiumHtml+=`<div class="podium-item podium-place-${ri+1}">
-      <div class="podium-av" style="width:${ri===0?56:ri===1?46:42}px;height:${ri===0?56:ri===1?46:42}px;border-color:${ri===0?'var(--gold)':ri===1?'var(--tx2)':'var(--org)'};color:${ri===0?'var(--gold)':ri===1?'var(--tx2)':'var(--org)'}">${u.initials}</div>
-      <div class="podium-name">${u.name}</div>
-      <div class="podium-xp">${u.xp} XP</div>
-      <div class="podium-base" style="height:${ri===0?50:ri===1?38:30}px;background:${ri===0?'rgba(245,200,66,.15)':ri===1?'rgba(160,175,204,.1)':'rgba(255,140,66,.1)'};color:${ri===0?'var(--gold)':ri===1?'var(--tx2)':'var(--org)'}">${medals[ri]}</div>
-    </div>`;
-  });
-  $('rankPodium').innerHTML=podiumHtml;
-  const usr=load(LS.user,{});
-  $('rankList').innerHTML=rank.map((u,i)=>`
-    <div class="rank-row${u.isMe?' me':''}">
-      <div class="rank-pos">${i<3?medals[i]:i+1}</div>
-      <div class="rank-av">${u.initials}</div>
-      <div class="rank-info">
-        <div class="rank-nm">${u.name}${u.isMe?' (você)':''}</div>
-        <div class="rank-sub">${u.temas||0} temas concluídos</div>
-      </div>
-      <div class="rank-xp">${u.xp} XP</div>
-    </div>`).join('');
-}
-
-// ══════════════════════════════════════════════
-// ERROS
-// ══════════════════════════════════════════════
-function buildErros(){
-  const erros=load(LS.errors,[]);
-  if(!erros.length){$('errosList').innerHTML='<div class="empty-state"><div class="empty-ic">📓</div><div class="empty-tt">Caderno vazio</div><div class="empty-sub">Seus erros aparecerão aqui para revisão</div></div>';return;}
-  $('errosList').innerHTML=[...erros].reverse().slice(0,50).map(e=>`
-    <div class="erro-card">
-      <div class="erro-tema">${e.temaNome||e.temaId}</div>
-      <div class="erro-q">${e.pergunta}</div>
-      <div class="erro-resp">✅ ${e.correta}</div>
-      ${e.escolhida&&e.escolhida!=='⏰ tempo esgotado'?`<div style="font-size:12px;color:var(--red);margin-top:4px;display:flex;gap:6px;">❌ ${e.escolhida}</div>`:''}
-    </div>`).join('');
-}
-function limparErros(){save(LS.errors,[]);buildErros();updateUI();showToast('🗑️ Caderno limpo!');}
-
-// ══════════════════════════════════════════════
-// PERFIL
-// ══════════════════════════════════════════════
-function buildPerfil(){
-  const usr=load(LS.user,{name:'Aluno',initials:'A'});
-  const prog=load(LS.prog,{acertos:0,questoes:0,byTema:{}});
-  const sk=load(LS.streak,{days:0});
-  const xp=calcXP(prog);const lvl=calcLevel(xp);
-  const temas=Object.values(prog.byTema||{}).filter(t=>t.done).length;
-  const pct=prog.questoes>0?Math.round(prog.acertos/prog.questoes*100):0;
-  const earned=load('kr_earned',[]);
-  const badgesHtml=ACHIEVEMENTS.map(a=>`
-    <div class="badge-item${earned.includes(a.id)?' earned':''}">
-      <div class="badge-ic">${a.icon}</div>
-      <div class="badge-lbl">${a.name.split(' ').slice(0,2).join(' ')}</div>
-    </div>`).join('');
-
-  $('perfilContent').innerHTML=`
-    <div class="prof-av-big">${usr.initials||'A'}</div>
-    <div class="prof-name">${usr.name}</div>
-    <div class="prof-level">${lvl.label} · ${xp} XP</div>
-    ${usr.email?`<div style="text-align:center;font-size:12px;color:var(--tx3);margin-bottom:20px">📧 ${usr.email}</div>`:''}
-    <div class="sec-h"><div class="sec-tt">Conquistas</div></div>
-    <div class="badges-grid">${badgesHtml}</div>
-    <div class="sec-h"><div class="sec-tt">Estatísticas</div></div>
-    <div class="prof-grid">
-      <div class="prof-stat"><div class="prof-sv">${prog.acertos||0}</div><div class="prof-sl">Total de acertos</div></div>
-      <div class="prof-stat"><div class="prof-sv">${temas}</div><div class="prof-sl">Temas concluídos</div></div>
-      <div class="prof-stat"><div class="prof-sv">${pct}%</div><div class="prof-sl">Aproveitamento</div></div>
-      <div class="prof-stat"><div class="prof-sv">${sk.days||0}</div><div class="prof-sl">Dias seguidos</div></div>
-    </div>
-    <button class="btn-secondary" style="width:100%;" onclick="exportData()">📊 Exportar meus dados</button>
-    <button class="btn-alert" style="width:100%;" onclick="resetarProgresso()">🔄 Resetar progresso</button>
-  `;
-}
-function exportData(){
-  const prog=load(LS.prog,{});const usr=load(LS.user,{});
-  const data={usuario:usr,progresso:prog,erros:load(LS.errors,[]),exportado:new Date().toISOString()};
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);const a=document.createElement('a');
-  a.href=url;a.download='krona_dados.json';a.click();URL.revokeObjectURL(url);
-  showToast('📊 Dados exportados!');
-}
-function resetarProgresso(){
-  showKronaConfirm(
-    'Resetar todo o progresso?',
-    'Esta ação apagará todo o seu histórico e não pode ser desfeita.',
-    'Confirmar Reset',
-    'Cancelar',
-    ok => {
-      if (ok) {
-        [LS.prog,LS.errors,LS.streak,LS.session,'kr_earned'].forEach(k=>localStorage.removeItem(k));
-        updateUI();
-        buildPerfil();
-        showToast('🔄 Progresso resetado!');
-      }
-    }
-  );
-}
-
-// ══════════════════════════════════════════════
-// ADMIN
-// ══════════════════════════════════════════════
-function buildAdmin(){
-  const pdfcount=load(LS.pdfcount,0);
-  const aiqs=load(LS.aiqs,0);
-  const rank=load(LS.ranking,[]);
-  $('adminAlunos').textContent=rank.length;
-  $('adminQuestoes').textContent=aiqs+(Object.values(QUESTIONS_DB).reduce((a,b)=>a+b.length,0));
-  $('adminPDFs').textContent=pdfcount;
-  
-  populateAdminAudioSelect();
-
-  $('studentsList').innerHTML=rank.slice(0,10).map(u=>`
-    <div class="student-row">
-      <div class="student-av">${u.initials}</div>
-      <div class="student-info">
-        <div class="student-nm">${u.name}</div>
-        <div class="student-sub">${u.temas||0} temas · ${u.xp} XP</div>
-      </div>
-      <div class="student-xp">${u.xp}</div>
-    </div>`).join('');
-}
-
-function handleDrop(e){
-  e.preventDefault();$('uploadZone').classList.remove('drag');
-  const f=e.dataTransfer.files[0];if(f)processPDF(f);
-}
-
-async function processPDF(file){
-  if(!file||!file.name.endsWith('.pdf')){showToast('⚠️ Envie um arquivo PDF');return;}
-  save(LS.pdfcount,(load(LS.pdfcount,0)+1));
-  const steps=['📄 Lendo PDF...','🔍 Identificando temas...','🧠 Gerando questões com IA...','✍️ Criando explicações...','✅ Finalizado!'];
-  const prog=$('aiProgress');prog.style.display='block';
-  $('aiSteps').innerHTML=steps.map((s,i)=>`<div class="ai-step wait" id="aistep${i}"><div class="ai-step-ic">⏳</div>${s}</div>`).join('');
-
-  for(let i=0;i<steps.length;i++){
-    await new Promise(r=>setTimeout(r,600+Math.random()*800));
-    for(let j=0;j<i;j++){const el=$(`aistep${j}`);el.className='ai-step done';el.querySelector('.ai-step-ic').textContent='✅';}
-    const cur=$(`aistep${i}`);cur.className='ai-step active';cur.querySelector('.ai-step-ic').textContent='⚡';
-    if(i===2){
-      await generateQuestionsFromPDF(file,cur);
-    }
-  }
-  await new Promise(r=>setTimeout(r,500));
-  for(let j=0;j<steps.length;j++){const el=$(`aistep${j}`);el.className='ai-step done';el.querySelector('.ai-step-ic').textContent='✅';}
-  showToast('🎉 PDF processado com sucesso!',4000);
-  buildAdmin();
-}
-
-async function generateQuestionsFromPDF(file,stepEl){
-  try{
-    const base64=await new Promise((res,rej)=>{
-      const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=()=>rej(new Error('Falha ao ler arquivo'));r.readAsDataURL(file);
-    });
-    stepEl.lastChild.textContent=' Enviando para IA...';
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',max_tokens:1000,
-        messages:[{role:'user',content:[
-          {type:'document',source:{type:'base64',media_type:'application/pdf',data:base64}},
-          {type:'text',text:`Analise este PDF e crie 3 questões de múltipla escolha (A,B,C,D,E) sobre o conteúdo principal. Retorne APENAS JSON válido no formato:
-[{"pergunta":"...","opcoes":{"A":"...","B":"...","C":"...","D":"...","E":"..."},"correta":"A","explicacao":"..."}]`}
-        ]}]
-      })
-    });
-    if(!resp.ok)throw new Error('API error '+resp.status);
-    const data=await resp.json();
-    const text=data.content?.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim();
-    const novas=JSON.parse(text);
-    if(Array.isArray(novas)&&novas.length){
-      const cur=load(LS.aiqs,0);save(LS.aiqs,cur+novas.length);
-      const aiTemaId='AI_'+Date.now();
-      QUESTIONS_DB[aiTemaId]=novas;
-      showAchievement(`${novas.length} novas questões geradas!`,'🤖');
-    }
-  }catch(e){console.warn('PDF AI error:',e);stepEl.lastChild.textContent=' Questões geradas (modo demo)';}
-}
-
-// ══════════════════════════════════════════════
-// CONFETTI
+// CONFETTI SYSTEM
 // ══════════════════════════════════════════════
 function launchConfetti(duration=1500){
   const canvas=$('confetti-canvas');
@@ -1778,27 +2130,42 @@ function launchConfetti(duration=1500){
 }
 
 // ══════════════════════════════════════════════
-// INIT
+// INITIALIZATION
 // ══════════════════════════════════════════════
 (function init(){
   const usr=load(LS.user,null);
   const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user;
-  if(tgUser&&!usr){
+  if(tgUser && !usr){
     const name=tgUser.first_name+(tgUser.last_name?' '+tgUser.last_name:'');
     const initials=(tgUser.first_name[0]+(tgUser.last_name?.[0]||'')).toUpperCase();
-    save(LS.user,{name,initials,id:String(tgUser.id)});
+    save(LS.user,{name,initials,id:String(tgUser.id),isAdmin:false});
   }
+  
+  // Renderiza a listagem de temas no accordion de matérias
+  renderAllAccordionTemas();
+  
   if(usr){
     $('regScreen').style.display='none';
     $('appHeader').style.display='block';
-    $('appNav').style.display='flex';
-    if(usr.isAdmin)$('nAdmin').style.display='flex';
-    bumpStreak();checkAchievements();
-    updateUI();
-    setTimeout(()=>{if(!openMod)tglMod('A');},500);
-    const saved=load(LS.session,null);
-    if(saved&&!saved.finished){
-      setTimeout(()=>showToast(`💾 Simulado salvo: "${saved.temaNome}". Clique para retomar.`,4000),1200);
+    $('appSidebar').style.display='flex';
+    if(usr.isAdmin){
+      $('appNavAdmin').style.display='flex';
+      $('appNavStudent').style.display='none';
+      $('sidebarAdmin').style.display='block';
+      $('sidebarStudent').style.display='none';
+      navTo('admin');
+    } else {
+      $('appNavStudent').style.display='flex';
+      $('appNavAdmin').style.display='none';
+      $('sidebarStudent').style.display='block';
+      $('sidebarAdmin').style.display='none';
+      bumpStreak();checkAchievements();
+      navTo('home');
+      setTimeout(()=>{if(!openMod)tglMod('A');},500);
+      const saved=load(LS.session,null);
+      if(saved&&!saved.finished){
+        setTimeout(()=>showToast(`💾 Simulado salvo: "${saved.temaNome}". Abra a Matéria correspondente para retomar.`,4000),1200);
+      }
     }
   }
 })();
