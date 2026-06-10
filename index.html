@@ -4,12 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#0A0F1E">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="KRONA">
-<title>KRONA — Simulado & Áudio SENAR</title>
+<title>KRONA Analytics — SENAR</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -19,2156 +16,409 @@
   --gold:#F5C842;--gold2:#FFD966;--gold3:#D4A820;
   --grn:#00D68F;--grn2:#00F0A0;--grnD:#009E6A;
   --red:#FF5A5A;--redD:#CC3838;
-  --blu:#4B9EFF;--vio:#A855F7;--org:#FF8C42;--teal:#00C9C8;
+  --blu:#4B9EFF;--vio:#A855F7;--org:#FF8C42;
   --txt:#F0F4FF;--tx2:#A0AFCC;--tx3:#607090;--tx4:#3D506A;
   --r:20px;--rs:14px;
   --sh:0 4px 24px rgba(0,0,0,.4);--sh2:0 8px 40px rgba(0,0,0,.5);
   --tr:.25s cubic-bezier(.4,0,.2,1);
-  --free-end:2026-12-31;
 }
-
 html{background:var(--bg);height:100%}
 body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+.app-container{display:flex;min-height:100vh;max-width:1200px;margin:0 auto;position:relative}
+.sidebar{width:270px;background:var(--bg2);border-right:1.5px solid var(--bd);padding:24px;display:flex;flex-direction:column;gap:20px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto}
+.main-content{flex:1;min-width:0;padding:16px 16px 100px}
+.side-link{display:flex;align-items:center;padding:12px 16px;color:var(--tx2);border-radius:var(--rs);cursor:pointer;font-weight:600;font-size:14px;transition:all var(--tr);gap:12px}
+.side-link:hover{background:rgba(255,255,255,0.03);color:var(--txt)}
+.side-link.active{background:rgba(245,200,66,0.08);color:var(--gold)}
+.badge-count{background:var(--red);color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:10px;margin-left:auto}
+@media (max-width:768px){.sidebar{display:none!important}.app-container{display:block}.main-content{max-width:430px;margin:0 auto;padding-bottom:110px}}
+@media (min-width:769px){.bnav{display:none!important}}
 
-/* ── LAYOUT RESPONSIVO (DESKTOP SIDEBAR / MOBILE NAV) ── */
-.app-container {
-  display: flex;
-  min-height: 100vh;
-  max-width: 1200px;
-  margin: 0 auto;
-  position: relative;
-}
-.sidebar {
-  width: 270px;
-  background: var(--bg2);
-  border-right: 1.5px solid var(--bd);
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  flex-shrink: 0;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-}
-.main-content {
-  flex: 1;
-  min-width: 0;
-  padding: 16px 16px 100px;
-}
-.side-link {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  color: var(--tx2);
-  border-radius: var(--rs);
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all var(--tr);
-  margin-bottom: 6px;
-  gap: 12px;
-}
-.side-link:hover {
-  background: rgba(255,255,255,0.03);
-  color: var(--txt);
-}
-.side-link.active {
-  background: rgba(245,200,66,0.08);
-  color: var(--gold);
-}
-.badge-count {
-  background: var(--red);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 10px;
-  margin-left: auto;
-}
+.btn-primary{background:linear-gradient(135deg,var(--gold3),var(--gold),var(--gold2));color:#0A0F1E;border:none;border-radius:var(--rs);padding:14px 20px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 4px 18px rgba(245,200,66,.25);transition:all var(--tr);display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary:hover{transform:translateY(-2px)}
+.btn-secondary{background:rgba(255,255,255,0.04);border:1.5px solid var(--bd2);color:var(--tx2);border-radius:var(--rs);padding:13px 20px;font-size:14px;font-weight:700;cursor:pointer;transition:all var(--tr);display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn-secondary:hover{background:rgba(255,255,255,0.08);color:var(--txt)}
+.btn-success{background:linear-gradient(135deg,#009E6A,var(--grn),#00F0A0);color:#0E1628;border:none;border-radius:var(--rs);padding:12px 18px;font-weight:800;cursor:pointer}
+.btn-alert{background:linear-gradient(135deg,var(--redD),var(--red),#ff7a7a);color:#fff;border:none;border-radius:var(--rs);padding:14px 20px;font-weight:800;cursor:pointer}
 
-@media (max-width: 768px) {
-  .sidebar {
-    display: none !important;
-  }
-  .app-container {
-    display: block;
-  }
-  .main-content {
-    max-width: 430px;
-    margin: 0 auto;
-    padding-bottom: 110px;
-  }
-}
-@media (min-width: 769px) {
-  .bnav {
-    display: none !important;
-  }
-}
+.brand{display:flex;align-items:center;gap:12px;padding-bottom:18px;border-bottom:1.5px solid var(--bd)}
+.brand-mark{width:40px;height:40px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#0A0F1E}
+.brand-name{font-size:18px;font-weight:900;color:var(--gold);letter-spacing:1px}
+.brand-sub{font-size:9px;color:var(--tx3);letter-spacing:1.5px}
+.hdr-main{display:flex;justify-content:space-between;align-items:center;padding:12px 0 8px}
+.usr-av{width:40px;height:40px;background:linear-gradient(135deg,var(--sf2),var(--sf3));border:2px solid var(--bd);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--gold)}
+.xp-chip{background:rgba(0,0,0,.4);border-radius:30px;padding:6px 14px;font-size:13px;font-weight:800;color:var(--gold)}
 
-/* ── PREMIUM BUTTONS ── */
-.btn-primary {
-  background: linear-gradient(135deg, var(--gold3), var(--gold), var(--gold2));
-  color: #0A0F1E;
-  border: none;
-  border-radius: var(--rs);
-  padding: 14px 20px;
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: .3px;
-  cursor: pointer;
-  box-shadow: 0 4px 18px rgba(245,200,66,.25);
-  transition: all var(--tr);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-family: inherit;
-}
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(245,200,66,0.35);
-}
-.btn-primary:active {
-  transform: translateY(1px);
-}
+.welcome-card{background:linear-gradient(135deg,#111e35 0%,#070e1b 100%);border:1px solid rgba(245,200,66,0.15);border-radius:var(--r);padding:20px;margin-bottom:20px}
+.wc-greeting{font-size:12px;color:var(--tx3)}
+.wc-name{font-size:22px;font-weight:900;margin-top:4px}
+.wc-prog-label{display:flex;justify-content:space-between;margin-top:16px;font-size:12px}
+.wc-prog-track{background:var(--sf);border-radius:20px;height:6px;margin:8px 0 16px}
+.wc-prog-fill{height:100%;background:linear-gradient(90deg,var(--gold3),var(--gold));border-radius:20px;width:0%}
+.wc-stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.wc-st{background:rgba(0,0,0,0.3);border-radius:var(--rs);padding:10px;text-align:center}
+.wc-sv{font-size:20px;font-weight:900;color:var(--gold)}
+.wc-sl{font-size:9px;color:var(--tx3)}
 
-.btn-success {
-  background: linear-gradient(135deg, #009E6A, var(--grn), #00F0A0);
-  color: #0E1628;
-  border: none;
-  border-radius: var(--rs);
-  padding: 12px 18px;
-  font-size: 13.5px;
-  font-weight: 800;
-  letter-spacing: .3px;
-  cursor: pointer;
-  box-shadow: 0 4px 18px rgba(0,214,143,.25);
-  transition: all var(--tr);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-family: inherit;
-}
-.btn-success:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(0,214,143,0.35);
-}
-.btn-success:active {
-  transform: translateY(1px);
-}
+.ribbon{display:flex;gap:12px;margin-bottom:20px}
+.rib-card{flex:1;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);padding:14px;display:flex;align-items:center;gap:12px}
+.rib-ic{font-size:24px}
+.rib-val{font-size:20px;font-weight:900}
+.rib-lbl{font-size:10px;color:var(--tx3)}
 
-.btn-secondary {
-  background: rgba(255,255,255,0.04);
-  border: 1.5px solid var(--bd2);
-  color: var(--tx2);
-  border-radius: var(--rs);
-  padding: 13px 20px;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: .3px;
-  cursor: pointer;
-  transition: all var(--tr);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-family: inherit;
-}
-.btn-secondary:hover {
-  background: rgba(255,255,255,0.08);
-  color: var(--txt);
-  border-color: rgba(255,255,255,0.2);
-}
-.btn-secondary:active {
-  transform: scale(0.98);
-}
+.premium-widget-card{background:var(--sf);border:1.5px solid rgba(255,255,255,0.04);border-radius:var(--r);padding:18px;margin-bottom:16px}
+.widget-header{font-size:11px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:1.2px;border-bottom:1.5px solid rgba(255,255,255,0.04);padding-bottom:10px;margin-bottom:12px}
+.widget-item-link{padding:10px 12px;border-radius:var(--rs);background:rgba(255,255,255,0.02);margin-bottom:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.widget-item-link:hover{background:var(--sf2)}
 
-.btn-alert {
-  background: linear-gradient(135deg, var(--redD), var(--red), #ff7a7a);
-  color: #ffffff;
-  border: none;
-  border-radius: var(--rs);
-  padding: 14px 20px;
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: .3px;
-  cursor: pointer;
-  box-shadow: 0 4px 18px rgba(255,90,90,.25);
-  transition: all var(--tr);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-family: inherit;
-}
-.btn-alert:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(255,90,90,0.35);
-}
-.btn-alert:active {
-  transform: translateY(1px);
-}
+.mod{background:#0f182a;border:1px solid rgba(255,255,255,0.05);border-radius:20px;margin-bottom:12px;overflow:hidden}
+.mod-h{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;cursor:pointer}
+.mod-left{display:flex;gap:14px;align-items:center}
+.mod-icon{width:44px;height:44px;background:rgba(245,200,66,0.08);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.mod-nm{font-size:15px;font-weight:800}
+.mod-sub{font-size:11px;color:var(--tx3)}
+.mod-right{display:flex;align-items:center;gap:12px}
+.mod-ring{position:relative;width:36px;height:36px}
+.mod-ring svg{transform:rotate(-90deg)}
+.mod-ring-val{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:10px;font-weight:800;color:var(--gold)}
+.mod-chev{font-size:16px;color:var(--tx4);transition:transform .25s}
+.mod.open .mod-chev{transform:rotate(90deg)}
+.mod-body{max-height:0;overflow:hidden;transition:max-height .35s}
+.mod.open .mod-body{max-height:1200px}
+.mod-inner{padding:0 18px 18px}
 
-/* ── PREMIUM WIDGET CARDS ── */
-.premium-widget-card {
-  background: var(--sf);
-  border: 1.5px solid rgba(255,255,255,0.04);
-  border-radius: var(--r);
-  padding: 18px;
-  margin-bottom: 16px;
-  box-shadow: var(--sh);
-}
-.widget-header {
-  font-size: 11px;
-  font-weight: 800;
-  color: var(--gold);
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  border-bottom: 1.5px solid rgba(255,255,255,0.04);
-  padding-bottom: 10px;
-  margin-bottom: 12px;
-}
-.widget-body {
-  color: var(--tx2);
-}
-.widget-item-link {
-  padding: 10px 12px;
-  border-radius: var(--rs);
-  background: rgba(255,255,255,0.02);
-  border: 1px solid transparent;
-  transition: all var(--tr);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-}
-.widget-item-link:hover {
-  background: var(--sf2);
-  border-color: rgba(245,200,66,0.15);
-}
-.widget-action-arrow {
-  color: var(--tx4);
-  font-size: 18px;
-  font-weight: bold;
-}
+.tema-card{background:rgba(255,255,255,0.02);border:1.5px solid rgba(255,255,255,0.04);border-radius:var(--rs);margin-bottom:12px}
+.tema-header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;cursor:pointer}
+.tema-title{display:flex;gap:12px;align-items:center}
+.tema-icon{font-size:22px}
+.tema-name{font-size:14px;font-weight:700}
+.tema-meta{font-size:11px;color:var(--tx3)}
+.tema-badge{font-size:10px;font-weight:800;padding:4px 12px;border-radius:20px}
+.tema-badge.pending{background:rgba(255,255,255,0.05);color:var(--tx3)}
+.tema-badge.partial{background:rgba(245,200,66,0.12);color:var(--gold)}
+.tema-badge.done{background:rgba(0,214,143,0.12);color:var(--grn)}
+.tema-content{padding:16px;border-top:1.5px solid rgba(255,255,255,0.04);display:none}
+.tema-card.expanded .tema-content{display:block}
 
-.free-badge-premium {
-  background: rgba(0,214,143,0.08);
-  border: 1.5px solid rgba(0,214,143,0.25);
-  border-radius: 20px;
-  padding: 4px 12px;
-  color: var(--grn);
-  font-size: 11px;
-  font-weight: 800;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
+.inline-player{display:flex;flex-direction:column;gap:10px}
+.inline-progress-wrap{height:6px;background:rgba(255,255,255,0.06);border-radius:4px;cursor:pointer}
+.inline-progress-bar{height:100%;background:linear-gradient(90deg,var(--gold3),var(--gold));border-radius:4px;width:0%}
+.inline-player-meta{display:flex;justify-content:space-between;font-size:10px}
+.player-btn{background:transparent;border:none;color:var(--tx2);cursor:pointer;font-size:16px}
+.play-btn{width:40px;height:40px;border-radius:50%;background:rgba(245,200,66,0.1);border:1px solid rgba(245,200,66,0.25);color:var(--gold);display:flex;align-items:center;justify-content:center}
 
-/* ── STRUCTURAL TEMA CARDS & PLAYERS ── */
-.tema-card {
-  background: rgba(255,255,255,0.02);
-  border: 1.5px solid rgba(255,255,255,0.04);
-  border-radius: var(--rs);
-  margin-bottom: 10px;
-  overflow: hidden;
-  transition: all var(--tr);
-}
-.tema-card:hover {
-  border-color: rgba(255,255,255,0.08);
-}
-.tema-card.expanded {
-  border-color: rgba(245,200,66,0.25);
-  background: rgba(255,255,255,0.04);
-}
-.tema-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 18px;
-  cursor: pointer;
-  user-select: none;
-}
-.tema-title {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex: 1;
-  min-width: 0;
-}
-.tema-icon {
-  font-size: 20px;
-}
-.tema-name {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--txt);
-  line-height: 1.3;
-}
-.tema-meta {
-  font-size: 11px;
-  color: var(--tx3);
-  margin-top: 3px;
-}
-.tema-content {
-  padding: 16px;
-  border-top: 1.5px solid rgba(255,255,255,0.04);
-  background: rgba(10,15,30,0.4);
-}
+.quiz-info-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.quiz-info-item{background:rgba(255,255,255,0.02);border-radius:10px;padding:8px;text-align:center}
+.qi-label{font-size:9px;color:var(--tx3);display:block}
+.qi-val{font-size:13px;font-weight:800}
 
-.sub-mod {
-  background: var(--sf);
-  border: 1px solid rgba(255,255,255,0.04);
-  border-radius: var(--rs);
-  padding: 14px;
-  margin-bottom: 12px;
-}
-.sub-mod:last-child {
-  margin-bottom: 0;
-}
-.sub-mod-title {
-  font-size: 10px;
-  font-weight: 800;
-  color: var(--gold);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  margin-bottom: 12px;
-}
+.chart-mini{display:flex;align-items:flex-end;justify-content:space-between;gap:6px;height:70px;margin:16px 0}
+.chart-bar{flex:1;background:var(--bg2);border-radius:6px 6px 0 0;height:60px;position:relative}
+.chart-fill{position:absolute;bottom:0;left:0;width:100%;background:linear-gradient(0deg,var(--gold3),var(--gold));border-radius:6px 6px 0 0;transition:height .6s}
 
-/* INLINE AUDIO PLAYER */
-.inline-player {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.inline-progress-wrap {
-  width: 100%;
-  height: 6px;
-  background: rgba(255,255,255,0.06);
-  border-radius: 4px;
-  cursor: pointer;
-  position: relative;
-}
-.inline-progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg, var(--gold3), var(--gold));
-  border-radius: 4px;
-  width: 0%;
-  position: relative;
-}
-.inline-player-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--tx3);
-}
-.inline-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 4px;
-}
-.player-btn {
-  background: transparent;
-  border: none;
-  color: var(--tx2);
-  font-size: 16px;
-  cursor: pointer;
-  outline: none;
-  transition: color var(--tr);
-}
-.player-btn:hover {
-  color: var(--txt);
-}
-.player-btn.play-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(245,200,66,0.1);
-  border: 1px solid rgba(245,200,66,0.25);
-  color: var(--gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-}
-.player-btn.play-btn:hover {
-  background: rgba(245,200,66,0.15);
-  transform: scale(1.05);
-}
+.rank-podium{display:flex;justify-content:center;align-items:flex-end;gap:20px;margin:30px 0 24px}
+.podium-item{text-align:center}
+.podium-av{background:var(--sf3);border:3px solid;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
+.podium-name{font-size:12px;font-weight:700}
+.podium-xp{font-size:10px;color:var(--tx3)}
+.podium-base{width:60px;border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:center;font-size:24px;margin-top:6px}
+.rank-row{display:flex;align-items:center;gap:12px;padding:12px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);margin-bottom:8px}
+.rank-pos{width:32px;font-weight:800}
+.rank-av{width:36px;height:36px;border-radius:50%;background:var(--sf3);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--gold)}
+.rank-info{flex:1}
+.rank-nm{font-size:13px;font-weight:700}
+.rank-sub{font-size:10px;color:var(--tx3)}
+.rank-xp{font-weight:800;color:var(--gold)}
+.rank-row.me{border-color:var(--gold);background:rgba(245,200,66,0.05)}
+.erro-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);padding:14px;margin-bottom:10px}
+.erro-tema{font-size:9px;color:var(--org);font-weight:800;text-transform:uppercase}
+.erro-q{font-size:13px;margin:6px 0}
+.erro-resp{color:var(--grn);font-size:12px}
 
-/* QUIZ BLOCK */
-.quiz-info-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-.quiz-info-item {
-  background: rgba(255,255,255,0.02);
-  border: 1.5px solid rgba(255,255,255,0.04);
-  border-radius: 10px;
-  padding: 8px;
-  text-align: center;
-}
-.qi-label {
-  font-size: 9px;
-  color: var(--tx3);
-  text-transform: uppercase;
-  font-weight: 700;
-  display: block;
-  margin-bottom: 2px;
-}
-.qi-val {
-  font-size: 12.5px;
-  font-weight: 800;
-  color: var(--txt);
-}
+#quizScreen{position:fixed;inset:0;background:var(--bg);z-index:1000;display:none;flex-direction:column;max-width:480px;left:50%;transform:translateX(-50%)}
+#quizScreen.active{display:flex}
+.qhdr{background:var(--bg2);padding:12px 16px;border-bottom:1px solid var(--bd)}
+.qhdr-top{display:flex;justify-content:space-between;margin-bottom:10px}
+.q-back{background:var(--sf);border:1px solid var(--bd);border-radius:30px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer}
+.q-timer-wrap{text-align:right}
+.q-timer{font-size:14px;font-weight:900}
+.q-timer.warn{color:var(--org)}
+.q-timer.danger{color:var(--red);animation:pulse .6s infinite}
+.q-prog-row{display:flex;gap:10px;align-items:center}
+.q-prog-track{flex:1;height:6px;background:var(--sf);border-radius:10px}
+.q-prog-fill{height:100%;background:linear-gradient(90deg,var(--gold3),var(--gold));border-radius:10px;width:0%}
+.q-body{flex:1;overflow-y:auto;padding:20px}
+.q-num{font-size:10px;color:var(--tx4);margin-bottom:6px}
+.q-txt{font-size:16px;font-weight:600;line-height:1.5;margin-bottom:20px}
+.q-carousel-wrap{display:flex;flex-direction:column;gap:10px}
+.q-opt-card{background:var(--sf);border:2px solid var(--bd);border-radius:var(--r);padding:20px;cursor:pointer}
+.q-opt-card.correct{border-color:var(--grn);background:rgba(0,214,143,0.1)}
+.q-opt-card.wrong{border-color:var(--red);background:rgba(255,90,90,0.1)}
+.q-fb-overlay{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:2px solid var(--bd);padding:20px;transform:translateY(100%);transition:transform .3s;z-index:10}
+.q-fb-overlay.show{transform:translateY(0)}
+.q-next{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold3),var(--gold));border:none;border-radius:var(--rs);font-weight:900;cursor:pointer;margin-top:12px}
+.q-result{text-align:center;padding:20px}
+.q-res-emoji{font-size:64px}
+.q-res-nota{font-size:48px;font-weight:900;color:var(--gold);margin:10px 0}
+.q-res-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:20px 0}
+.q-xp-banner{background:rgba(245,200,66,0.1);border-radius:var(--rs);padding:12px;margin:16px 0}
 
-/* VISUAL POLISH */
-.hdr {
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(20px);
-}
-.welcome-card {
-  background: linear-gradient(135deg, #111e35 0%, #070e1b 100%) !important;
-  border: 1px solid rgba(245,200,66,0.15) !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-}
-.mod {
-  background: #0f182a !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  border-radius: 20px !important;
-}
-.mod.open {
-  border-color: rgba(245,200,66,0.2) !important;
-}
-.bnav {
-  background: linear-gradient(180deg, rgba(10, 15, 30, 0) 0%, rgba(10, 15, 30, 0.95) 20%);
-  backdrop-filter: blur(20px);
-}
-.nav-i.act {
-  background: rgba(245,200,66,0.12) !important;
-}
-.nav-i.act .nav-lb {
-  color: var(--gold) !important;
-}
-
-@keyframes spinDisc {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-.spinning {
-  animation: spinDisc 8s linear infinite;
-}
+#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(180deg,transparent,var(--bg2) 20%);backdrop-filter:blur(20px);padding:8px 16px 12px;display:flex;justify-content:space-around;z-index:100}
+.nav-i{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 12px;border-radius:12px;cursor:pointer}
+.nav-i.act{background:rgba(245,200,66,0.12)}
+.nav-ic{font-size:20px}
+.nav-lb{font-size:10px;font-weight:700;color:var(--tx3)}
+.nav-i.act .nav-lb{color:var(--gold)}
+.nav-dot{position:absolute;top:0;right:5px;background:var(--red);color:#fff;font-size:9px;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+@keyframes pulse{from{opacity:1}to{opacity:.6}}
 </style>
 </head>
 <body>
-
-<!-- CONFETTI CANVAS -->
 <canvas id="confetti-canvas"></canvas>
-
-<!-- GLOBAL NATIVE AUDIO ELEMENT -->
 <audio id="kronaAudio" preload="auto"></audio>
+<audio id="successSound" preload="auto" src="data:audio/wav;base64,U3RlYWx0aCBzb3VuZCBkYXRh..."></audio>
 
-<!-- ACHIEVEMENT POPUP -->
-<div class="achieve-pop" id="achievePop">
-  <div class="achieve-ic" id="achieveIc">🏆</div>
-  <div class="achieve-txt">
-    <div class="achieve-lbl">Conquista desbloqueada!</div>
-    <div class="achieve-name" id="achieveName">—</div>
-  </div>
-</div>
-
-<!-- FAILSAFE IN-APP CONFIRMATION MODAL -->
-<div id="kronaConfirmModal" style="display:none; position:fixed; inset:0; background:rgba(10,15,30,0.9); z-index:9999; justify-content:center; align-items:center; padding:20px;">
-  <div style="background:#0E1628; border:1.5px solid rgba(255,255,255,0.1); border-radius:24px; padding:28px 24px; max-width:340px; width:100%; text-align:center; box-shadow:0 12px 40px rgba(0,0,0,0.6); font-family:'Inter',system-ui,sans-serif;">
-    <div style="font-size:42px; margin-bottom:14px;" id="kronaConfirmIcon">⚠️</div>
-    <div style="font-size:18px; font-weight:800; color:#F0F4FF; margin-bottom:8px; line-height:1.4;" id="kronaConfirmTitle">Tem certeza que deseja sair?</div>
-    <div style="font-size:13.5px; color:#A0AFCC; margin-bottom:24px; line-height:1.5;" id="kronaConfirmText">Seu progresso atual será salvo.</div>
-    <div style="display:flex; flex-direction:column; gap:12px;">
-      <button style="width:100%; padding:14px; background:linear-gradient(135deg,#D4A820,#F5C842,#FFD966); color:#0A0F1E; border:none; border-radius:14px; font-size:14px; font-weight:800; cursor:pointer; font-family:inherit; box-shadow:0 4px 20px rgba(245,200,66,0.3); transition: transform 0.1s;" id="kronaConfirmBtnCancel" onclick="handleKronaConfirm(false)">Continuar Simulado</button>
-      <button style="width:100%; padding:14px; background:transparent; border:1.5px solid rgba(255,90,90,0.3); color:#FF5A5A; border-radius:14px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit;" id="kronaConfirmBtnOk" onclick="handleKronaConfirm(true)">Sair e Salvar</button>
+<div id="regScreen" style="min-height:100vh;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px">
+  <div style="max-width:360px;width:100%;text-align:center">
+    <div class="brand-mark" style="margin:0 auto 20px;width:60px;height:60px;font-size:28px">K</div>
+    <div style="font-size:24px;font-weight:900;margin-bottom:8px">KRONA Analytics</div>
+    <div style="color:var(--tx2);margin-bottom:32px">Plataforma de estudos SENAR</div>
+    <div id="loginSelector">
+      <button class="btn-primary" style="width:100%;margin-bottom:12px" onclick="selectLogin('student')">👨‍🌾 Área do Aluno</button>
+      <button class="btn-secondary" style="width:100%" onclick="selectLogin('admin')">🔐 Painel Administrativo</button>
+      <div style="margin-top:24px;font-size:11px;color:var(--tx4)">Acesso gratuito até 31/12/2026</div>
+    </div>
+    <div id="adminLoginPanel" style="display:none">
+      <input type="email" id="adminEmail" placeholder="admin@krona.com" value="admin@krona.com" style="width:100%;padding:12px;background:var(--sf);border:1px solid var(--bd);border-radius:12px;color:var(--txt);margin-bottom:12px">
+      <input type="password" id="adminPass" placeholder="Senha" value="123456" style="width:100%;padding:12px;background:var(--sf);border:1px solid var(--bd);border-radius:12px;color:var(--txt);margin-bottom:16px">
+      <button class="btn-primary" style="width:100%" onclick="adminLogin()">Entrar</button>
+      <button class="btn-secondary" style="width:100%;margin-top:8px" onclick="backToLogin()">Voltar</button>
+    </div>
+    <div id="studentRegPanel" style="display:none">
+      <input type="text" id="regNome" placeholder="Nome completo" style="width:100%;padding:12px;background:var(--sf);border:1px solid var(--bd);border-radius:12px;color:var(--txt);margin-bottom:12px">
+      <input type="email" id="regEmail" placeholder="E-mail" style="width:100%;padding:12px;background:var(--sf);border:1px solid var(--bd);border-radius:12px;color:var(--txt);margin-bottom:16px">
+      <button class="btn-primary" style="width:100%" onclick="registerStudent()">Começar a estudar →</button>
+      <button class="btn-secondary" style="width:100%;margin-top:8px" onclick="backToLogin()">Voltar</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     REGISTRATION SCREEN (STUDENT & ADMIN)
-══════════════════════════════════════ -->
-<div id="regScreen">
-  <div class="reg-logo">K</div>
-  
-  <!-- LOGIN SWITCHER SELECTOR -->
-  <div id="loginSelector" style="width:100%; text-align:center;">
-    <div class="reg-title">Acesse a Plataforma</div>
-    <div class="reg-sub" style="margin-bottom:28px;">Escolha seu perfil de acesso para continuar.</div>
-    <div style="display:flex; flex-direction:column; gap:12px; width:100%;">
-      <button class="btn-primary" onclick="selectLoginProfile('student')">Estudante (Área do Aluno) 👨‍🌾</button>
-      <button class="btn-secondary" onclick="selectLoginProfile('admin')">Painel Administrativo 🔐</button>
-    </div>
-    <div class="reg-free-badge" style="margin-top:24px;">🎁 Acesso gratuito até 31/12/2026</div>
-  </div>
-
-  <!-- ADMIN CREDENTIALS INTERFACE -->
-  <div id="adminLoginFields" style="display:none; width:100%;">
-    <div class="reg-title">Acesso do Administrador</div>
-    <div class="reg-sub" style="margin-bottom:24px;">Credenciais fictícias de teste.</div>
-    <div class="reg-form">
-      <div class="reg-field">
-        <div class="reg-label">E-mail de Acesso</div>
-        <input class="reg-input" id="adminEmail" type="email" placeholder="admin@plataforma.com" value="admin@plataforma.com">
-      </div>
-      <div class="reg-field">
-        <div class="reg-label">Senha</div>
-        <input class="reg-input" id="adminPass" type="password" placeholder="••••••" value="123456">
-      </div>
-      <button class="btn-primary" style="margin-top:10px;" onclick="tryAdminLogin()">Entrar no Painel 🔐</button>
-      <button class="btn-secondary" style="margin-top:0;" onclick="cancelAdminLogin()">← Voltar</button>
-    </div>
-  </div>
-
-  <!-- STANDARD STUDENT FLOW -->
-  <div id="studentFlowFields" style="display:none; width:100%; align-items:center; flex-direction:column;">
-    <div class="step-dots" id="stepDots">
-      <div class="step-dot active"></div>
-      <div class="step-dot"></div>
-      <div class="step-dot"></div>
-    </div>
-
-    <!-- STEP 1 -->
-    <div id="regStep1" style="width:100%;">
-      <div class="reg-title">Crie sua Conta</div>
-      <div class="reg-sub">Sua plataforma de estudos para o SENAR.</div>
-      <div class="reg-form">
-        <div class="reg-field">
-          <div class="reg-label">Nome completo</div>
-          <input class="reg-input" id="regNome" type="text" placeholder="Ex: Maria Silva" autocomplete="name">
-        </div>
-        <div class="reg-field">
-          <div class="reg-label">E-mail</div>
-          <input class="reg-input" id="regEmail" type="email" placeholder="seu@email.com" autocomplete="email">
-        </div>
-        <button class="btn-primary" onclick="regStep1Next()">Continuar →</button>
-        <button class="btn-secondary" style="margin-top:0;" onclick="cancelAdminLogin()">← Voltar</button>
-      </div>
-    </div>
-
-    <!-- STEP 2 -->
-    <div id="regStep2" style="display:none; width:100%">
-      <div class="reg-title">Verificar celular</div>
-      <div class="reg-sub">Informe seu telefone para receber o código.</div>
-      <div class="reg-form">
-        <div class="reg-field">
-          <div class="reg-label">Telefone</div>
-          <div class="reg-sms-row" style="display:flex; gap:10px;">
-            <input class="reg-input" id="regFone" type="tel" placeholder="(11) 99999-9999" autocomplete="tel" style="flex:1;">
-            <button class="btn-secondary" onclick="sendSMS()" style="white-space:nowrap;">Enviar código</button>
-          </div>
-        </div>
-        <div class="reg-field" id="regCodeField" style="display:none">
-          <div class="reg-label">Código recebido</div>
-          <input class="reg-input" id="regCode" type="number" placeholder="000000" maxlength="6">
-        </div>
-        <button class="btn-primary" onclick="regStep2Next()">Verificar e entrar →</button>
-        <button class="btn-secondary" style="margin-top:0" onclick="regSkipPhone()">Pular verificação (demo)</button>
-      </div>
-    </div>
-
-    <!-- STEP 3 -->
-    <div id="regStep3" style="display:none; width:100%">
-      <div style="text-align:center">
-        <div style="font-size:56px;margin-bottom:16px">🎉</div>
-        <div class="reg-title">Tudo pronto!</div>
-        <div class="reg-sub" style="margin-bottom:28px">Sua conta de estudante foi criada com sucesso.<br>Acesso gratuito até 31/12/2026.</div>
-        <button class="btn-primary" onclick="finishReg()">Começar a estudar →</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════
-     RESPONSIVE CORE LAYOUT WRAPPER
-══════════════════════════════════════ -->
-<div class="app-container">
-  
-  <!-- DESKTOP SIDEBAR DRAWER (RESPONSIVE) -->
-  <div class="sidebar" id="appSidebar" style="display:none;">
-    <div class="brand" style="padding-bottom:18px; border-bottom:1.5px solid var(--bd);">
-      <div class="brand-mark">K</div>
-      <div>
-        <div class="brand-name">KRONA</div>
-        <div class="brand-sub">Analytics · SENAR</div>
-      </div>
-    </div>
-    
-    <!-- Student Sidebar Links -->
-    <div id="sidebarStudent" style="display:block; flex:1; margin-top:20px;">
-      <div class="side-link active" id="sb_home" onclick="navTo('home')">🏠 Início / Dashboard</div>
+<div class="app-container" id="appContainer" style="display:none">
+  <div class="sidebar" id="sidebar">
+    <div class="brand"><div class="brand-mark">K</div><div><div class="brand-name">KRONA</div><div class="brand-sub">Analytics · SENAR</div></div></div>
+    <div id="sidebarStudent">
+      <div class="side-link active" id="sb_home" onclick="navTo('home')">🏠 Dashboard</div>
       <div class="side-link" id="sb_materias" onclick="navTo('materias')">📚 Matérias & Temas</div>
-      <div class="side-link" id="sb_rank" onclick="navTo('rank')">🏆 Ranking Líderes</div>
-      <div class="side-link" id="sb_erros" onclick="navTo('erros')">📓 Caderno de Erros <span class="badge-count" id="errBadgeSb" style="display:none;">0</span></div>
-      <div class="side-link" id="sb_perfil" onclick="navTo('perfil')">👤 Minha Conta</div>
+      <div class="side-link" id="sb_rank" onclick="navTo('rank')">🏆 Ranking</div>
+      <div class="side-link" id="sb_erros" onclick="navTo('erros')">📓 Caderno de Erros <span class="badge-count" id="errBadgeSb" style="display:none">0</span></div>
+      <div class="side-link" id="sb_perfil" onclick="navTo('perfil')">👤 Perfil</div>
     </div>
-    
-    <!-- Admin Sidebar Links -->
-    <div id="sidebarAdmin" style="display:none; flex:1; margin-top:20px;">
-      <div class="side-link active" id="sb_admin" onclick="navTo('admin')">⚙️ Painel Admin</div>
-      <div class="side-link" style="color:var(--red); margin-top:30px;" onclick="logoutAdmin()">🚪 Encerrar Sessão</div>
-    </div>
-
-    <div style="font-size:10px; color:var(--tx3); text-align:center; padding-top:10px; border-top:1.5px solid var(--bd);">
-      SENAR · Versão 4.2.1
+    <div id="sidebarAdmin" style="display:none">
+      <div class="side-link" id="sb_admin_dash" onclick="navTo('admin')">📊 Dashboard</div>
+      <div class="side-link" id="sb_admin_modulos" onclick="navTo('adminModulos')">📦 Módulos</div>
+      <div class="side-link" id="sb_admin_pdfs" onclick="navTo('adminPdfs')">📄 PDFs</div>
+      <div class="side-link" id="sb_admin_audios" onclick="navTo('adminAudios')">🎵 Áudios</div>
+      <div class="side-link" id="sb_admin_simulados" onclick="navTo('adminSimulados')">📝 Simulados</div>
+      <div class="side-link" id="sb_admin_alunos" onclick="navTo('adminAlunos')">👥 Alunos</div>
+      <div class="side-link" id="sb_admin_relatorios" onclick="navTo('adminRelatorios')">📈 Relatórios</div>
+      <div class="side-link" id="sb_admin_config" onclick="navTo('adminConfig')">⚙️ Configurações</div>
+      <div class="side-link" style="color:var(--red);margin-top:30px" onclick="logout()">🚪 Sair</div>
     </div>
   </div>
-
-  <!-- MAIN SCROLLABLE WRAPPER -->
   <div class="main-content">
-    
-    <!-- HEADER -->
-    <div class="hdr" id="appHeader" style="display:none">
-      <div class="hdr-main">
-        <div class="brand" id="mobileBrandHeader">
-          <div class="brand-mark">K</div>
-          <div>
-            <div class="brand-name">KRONA</div>
-            <div class="brand-sub">Analytics · SENAR</div>
-          </div>
-        </div>
-        <div class="hdr-right">
-          <div class="xp-chip" id="hdrXP">0 XP</div>
-          <div class="usr-av" id="hdrAv">A</div>
-        </div>
-      </div>
-    </div>
+    <div class="hdr-main"><div class="brand" style="border:none;padding:0"><div class="brand-mark">K</div><div><div class="brand-name">KRONA</div><div class="brand-sub">Analytics</div></div></div><div class="hdr-right" style="display:flex;gap:12px;align-items:center"><div class="xp-chip" id="hdrXP">0 XP</div><div class="usr-av" id="hdrAv">A</div></div></div>
 
-    <!-- ══════════════════════════════════════
-         VIEWS STACK
-    ══════════════════════════════════════ -->
+    <!-- Views do Aluno -->
+    <div class="view" id="viewHome"><div class="welcome-card"><div><div class="wc-greeting">Bom estudo,</div><div class="wc-name" id="wcName">Aluno 👋</div></div><div class="wc-prog-label"><span>Progresso Geral</span><span id="wcPct">0%</span></div><div class="wc-prog-track"><div class="wc-prog-fill" id="wcProgBar"></div></div><div class="wc-stats-row"><div class="wc-st"><div class="wc-sv" id="wcAcertos">0</div><div class="wc-sl">Acertos</div></div><div class="wc-st"><div class="wc-sv" id="wcQuestoes">0</div><div class="wc-sl">Questões</div></div><div class="wc-st"><div class="wc-sv" id="wcAprov">0%</div><div class="wc-sl">Aproveit.</div></div></div></div><div class="ribbon"><div class="rib-card"><div class="rib-ic">🔥</div><div><div class="rib-val" id="ribStreak">0</div><div class="rib-lbl">Dias seguidos</div></div></div><div class="rib-card"><div class="rib-ic">⭐</div><div><div class="rib-val" id="ribLevel">Semente</div><div class="rib-lbl">Nível</div></div></div></div><div class="premium-widget-card"><div class="widget-header">📚 Simulados Pendentes</div><div id="pendingList"></div></div><div class="premium-widget-card" onclick="navTo('materias')" style="cursor:pointer"><div class="widget-header">📊 Desempenho por Tema</div><div class="chart-mini" id="miniChart"></div></div><div class="premium-widget-card" onclick="navTo('rank')" style="cursor:pointer"><div class="widget-header">🏆 Ranking Líderes SENAR</div><div id="miniRanking"></div></div><div class="premium-widget-card"><div class="widget-header">⏱️ Última Atividade</div><div id="lastActivity"></div></div></div>
+    <div class="view" id="viewMaterias"><div class="sec-h"><div class="sec-tt">Matérias & Conteúdos</div><div class="sec-ct">Temas de Estudo</div></div><div id="modulosContainer"></div></div>
+    <div class="view" id="viewRank"><div class="rank-podium" id="rankPodium"></div><div id="rankList"></div></div>
+    <div class="view" id="viewErros"><div class="sec-h"><div class="sec-tt">Caderno de Erros</div><button class="btn-secondary" onclick="limparErros()" style="padding:6px 12px">Limpar</button></div><div id="errosList"></div></div>
+    <div class="view" id="viewPerfil"><div id="perfilContent"></div></div>
 
-    <!-- STUDENT DASHBOARD -->
-    <div class="ctn view" id="viewHome">
-      <div class="welcome-card">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-          <div>
-            <div class="wc-greeting">Bom estudo,</div>
-            <div class="wc-name" id="wcName">Aluno 👋</div>
-          </div>
-          <div class="free-badge-premium" id="freeCountdownBadge">
-            <span class="free-dot"></span> <span id="freeCountdownText">Carregando...</span>
-          </div>
-        </div>
-        
-        <div class="wc-prog-label" style="margin-top:16px;">
-          <span class="wc-prog-t">Progresso Geral do Curso</span>
-          <span class="wc-prog-p" id="wcPct">0%</span>
-        </div>
-        <div class="wc-prog-track"><div class="wc-prog-fill" id="wcProgBar" style="width:0%"></div></div>
-        
-        <div class="wc-stats-row">
-          <div class="wc-st">
-            <div class="wc-sv" id="wcAcertos">0</div>
-            <div class="wc-sl">Acertos</div>
-          </div>
-          <div class="wc-st">
-            <div class="wc-sv" id="wcQuestoes">0</div>
-            <div class="wc-sl">Questões</div>
-          </div>
-          <div class="wc-st">
-            <div class="wc-sv" id="wcAprov">0%</div>
-            <div class="wc-sl">Aproveit.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Gamification -->
-      <div class="ribbon">
-        <div class="rib-card streak">
-          <div class="rib-ic">🔥</div>
-          <div class="rib-info">
-            <div class="rib-val" id="ribStreak">0</div>
-            <div class="rib-lbl">Dias seguidos</div>
-          </div>
-        </div>
-        <div class="rib-card level">
-          <div class="rib-ic">⭐</div>
-          <div class="rib-info">
-            <div class="rib-val" id="ribLevel">Semente</div>
-            <div class="rib-lbl">Nível atual</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Simulados Pendentes Widget -->
-      <div class="premium-widget-card">
-        <div class="widget-header">📚 Simulados Pendentes</div>
-        <div id="pendingSimuladosList" class="widget-body">
-          <!-- Carregamento dinâmico de simulados -->
-        </div>
-      </div>
-
-      <!-- Ranking Preview Widget -->
-      <div class="premium-widget-card" onclick="navTo('rank')" style="cursor:pointer;">
-        <div class="widget-header" style="display:flex; justify-content:space-between; align-items:center;">
-          <span>🏆 Ranking Líderes SENAR</span>
-          <span style="font-size:12px; color:var(--gold);">Ver tudo →</span>
-        </div>
-        <div id="miniRankingList" class="widget-body">
-          <!-- Preview dos líderes -->
-        </div>
-      </div>
-
-      <!-- Última Atividade Widget -->
-      <div class="premium-widget-card">
-        <div class="widget-header">⏱️ Última Atividade</div>
-        <div id="lastActivityWidget" class="widget-body">
-          <!-- Histórico recente de estudo -->
-        </div>
-      </div>
-    </div><!-- #viewHome -->
-
-    <!-- STUDENT MATERIAS (ACCORDION WITH NESTED TEMA LAYOUTS) -->
-    <div class="ctn view" id="viewMaterias" style="display:none;">
-      <div class="sec-h" style="margin-top:0;">
-        <div class="sec-tt">Matérias & Conteúdos</div>
-        <div class="sec-ct">14 Temas de Estudo</div>
-      </div>
-
-      <!-- MÓDULO A -->
-      <div class="mod" id="modA">
-        <div class="mod-h" onclick="tglMod('A')">
-          <div class="mod-left">
-            <div class="mod-icon agro">🌾</div>
-            <div>
-              <div class="mod-nm">Contexto & Mercado</div>
-              <div class="mod-sub">Prof. Maria Alves</div>
-            </div>
-          </div>
-          <div class="mod-right">
-            <div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringA" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValA">0%</div></div>
-            <div class="mod-chev">▸</div>
-          </div>
-        </div>
-        <div class="mod-body"><div class="mod-inner" id="innerModA">
-          <!-- Temas inseridos de forma reestruturada abaixo por funções JS ou declarados diretamente -->
-        </div></div>
-      </div>
-
-      <!-- MÓDULO B -->
-      <div class="mod" id="modB">
-        <div class="mod-h" onclick="tglMod('B')">
-          <div class="mod-left">
-            <div class="mod-icon plant">🌿</div>
-            <div>
-              <div class="mod-nm">Ciências Agrárias</div>
-              <div class="mod-sub">Prof. Carlos Pinheiro</div>
-            </div>
-          </div>
-          <div class="mod-right">
-            <div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringB" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValB">0%</div></div>
-            <div class="mod-chev">▸</div>
-          </div>
-        </div>
-        <div class="mod-body"><div class="mod-inner" id="innerModB"></div></div>
-      </div>
-
-      <!-- MÓDULO C -->
-      <div class="mod" id="modC">
-        <div class="mod-h" onclick="tglMod('C')">
-          <div class="mod-left"><div class="mod-icon soil">🌽</div><div><div class="mod-nm">Principais Culturas</div><div class="mod-sub">Prof. Ana Figueiredo</div></div></div>
-          <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringC" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValC">0%</div></div><div class="mod-chev">▸</div></div>
-        </div>
-        <div class="mod-body"><div class="mod-inner" id="innerModC"></div></div>
-      </div>
-
-      <!-- MÓDULO D -->
-      <div class="mod" id="modD">
-        <div class="mod-h" onclick="tglMod('D')">
-          <div class="mod-left"><div class="mod-icon anim">🐄</div><div><div class="mod-nm">Produção Animal I</div><div class="mod-sub">Prof. Roberto Borges</div></div></div>
-          <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringD" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValD">0%</div></div><div class="mod-chev">▸</div></div>
-        </div>
-        <div class="mod-body"><div class="mod-inner" id="innerModD"></div></div>
-      </div>
-
-      <!-- MÓDULO E -->
-      <div class="mod" id="modE">
-        <div class="mod-h" onclick="tglMod('E')">
-          <div class="mod-left"><div class="mod-icon anim">🧬</div><div><div class="mod-nm">Genética & Melhoramento</div><div class="mod-sub">Prof. João Silva</div></div></div>
-          <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringE" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValE">0%</div></div><div class="mod-chev">▸</div></div>
-        </div>
-        <div class="mod-body"><div class="mod-inner" id="innerModE"></div></div>
-      </div>
-
-      <!-- MÓDULO F -->
-      <div class="mod" id="modF">
-        <div class="mod-h" onclick="tglMod('F')">
-          <div class="mod-left"><div class="mod-icon anim">🐔</div><div><div class="mod-nm">Produção Animal II</div><div class="mod-sub">Prof. Thiago Ramos</div></div></div>
-          <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringF" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValF">0%</div></div><div class="mod-chev">▸</div></div>
-        </div>
-        <div class="mod-body"><div class="mod-inner" id="innerModF"></div></div>
-      </div>
-
-      <!-- MÓDULO G -->
-      <div class="mod" id="modG">
-        <div class="mod-h" onclick="tglMod('G')">
-          <div class="mod-left"><div class="mod-icon tech">📡</div><div><div class="mod-nm">Tecnologia & Precisão</div><div class="mod-sub">Prof. Lucas Andrade</div></div></div>
-          <div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" id="ringG" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="mod-ring-val" id="ringValG">0%</div></div><div class="mod-chev">▸</div></div>
-        </div>
-        <div class="mod-body"><div class="mod-inner" id="innerModG"></div></div>
-      </div>
-    </div><!-- #viewMaterias -->
-
-    <!-- RANKING VIEW -->
-    <div class="ctn view" id="viewRank" style="display:none;">
-      <div class="rank-header">
-        <div class="rank-header-title">🏆 Ranking Geral</div>
-        <div class="rank-header-sub">Top estudantes do SENAR</div>
-      </div>
-      <div class="rank-podium" id="rankPodium"></div>
-      <div class="rank-list" id="rankList"></div>
-    </div>
-
-    <!-- ERROS VIEW -->
-    <div class="ctn view" id="viewErros" style="display:none;">
-      <div class="sec-h" style="margin-top:0;">
-        <div class="sec-tt">Caderno de Erros</div>
-        <button class="btn-secondary" style="width:auto;padding:6px 14px;font-size:11px;margin:0" onclick="limparErros()">Limpar tudo</button>
-      </div>
-      <div id="errosList"></div>
-    </div>
-
-    <!-- PROFILE VIEW -->
-    <div class="ctn view" id="viewPerfil" style="display:none;">
-      <div id="perfilContent"></div>
-    </div>
-
-    <!-- ADMIN EXCLUSIVE VIEW -->
-    <div class="ctn view" id="viewAdmin" style="display:none;">
-      <div class="sec-h" style="margin-top:0;">
-        <div class="sec-tt">Painel do Administrador</div>
-        <div class="admin-badge">🔐 Admin</div>
-      </div>
-
-      <!-- Stats Grid -->
-      <div class="admin-stats-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;">
-        <div class="admin-stat" style="padding:14px; text-align:center;"><div class="admin-sv" id="adminAlunos" style="font-size:22px; font-weight:900; color:var(--vio);">0</div><div class="admin-sl" style="font-size:10px; color:var(--tx3); text-transform:uppercase; margin-top:4px;">Alunos</div></div>
-        <div class="admin-stat" style="padding:14px; text-align:center;"><div class="admin-sv" id="adminTemas" style="font-size:22px; font-weight:900; color:var(--vio);">14</div><div class="admin-sl" style="font-size:10px; color:var(--tx3); text-transform:uppercase; margin-top:4px;">Temas</div></div>
-        <div class="admin-stat" style="padding:14px; text-align:center;"><div class="admin-sv" id="adminQuestoes" style="font-size:22px; font-weight:900; color:var(--vio);">0</div><div class="admin-sl" style="font-size:10px; color:var(--tx3); text-transform:uppercase; margin-top:4px;">Questões (IA)</div></div>
-        <div class="admin-stat" style="padding:14px; text-align:center;"><div class="admin-sv" id="adminPDFs" style="font-size:22px; font-weight:900; color:var(--vio);">0</div><div class="admin-sl" style="font-size:10px; color:var(--tx3); text-transform:uppercase; margin-top:4px;">PDFs enviados</div></div>
-      </div>
-
-      <!-- Automatic PDF Upload with AI -->
-      <div class="premium-widget-card">
-        <div class="widget-header">📄 Processamento Inteligente de Conteúdo (PDF)</div>
-        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('pdfInput').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)" style="border:2px dashed var(--bd2); border-radius:20px; padding:32px 20px; text-align:center; cursor:pointer;">
-          <div class="upload-ic" style="font-size:40px; margin-bottom:10px;">📁</div>
-          <div class="upload-tt" style="font-size:14px; font-weight:700; color:var(--txt);">Arraste o PDF de Aula aqui</div>
-          <div class="upload-sub" style="font-size:12px; color:var(--tx3);">ou clique para selecionar · Processamento de IA Automático</div>
-          <input type="file" id="pdfInput" class="upload-input" accept=".pdf" onchange="processPDF(this.files[0])" style="display:none;">
-        </div>
-        <div class="ai-progress" id="aiProgress" style="margin-top:12px; display:none; background:var(--sf2); border-radius:12px; padding:12px;">
-          <div id="aiSteps"></div>
-        </div>
-      </div>
-
-      <!-- MP3 Audio Upload and Link Management -->
-      <div class="premium-widget-card">
-        <div class="widget-header">🎵 Gerenciar Áudios MP3 das Aulas</div>
-        <div style="display:flex; flex-direction:column; gap:12px;">
-          <div>
-            <label style="font-size:11px; font-weight:700; color:var(--tx3); text-transform:uppercase; display:block; margin-bottom:4px;">Selecione o Tema</label>
-            <select id="adminAudioTemaSelect" style="width:100%; background:var(--bg2); border:1.5px solid var(--bd2); border-radius:10px; padding:10px; color:var(--txt); font-family:inherit; outline:none;">
-              <!-- Preenchido via Javascript -->
-            </select>
-          </div>
-          <div>
-            <label style="font-size:11px; font-weight:700; color:var(--tx3); text-transform:uppercase; display:block; margin-bottom:4px;">Link do Áudio MP3 (URL)</label>
-            <input type="url" id="adminAudioUrl" placeholder="https://exemplo.com/aula.mp3" style="width:100%; background:var(--bg2); border:1.5px solid var(--bd2); border-radius:10px; padding:10px; color:var(--txt); font-family:inherit; outline:none;">
-          </div>
-          <div style="text-align:center; margin:4px 0;">
-            <span style="font-size:12px; color:var(--tx3);">ou envie um arquivo local de áudio:</span>
-          </div>
-          <div style="display:flex; gap:10px; align-items:center;">
-            <button class="btn-secondary" style="flex:1;" onclick="document.getElementById('adminAudioFileInput').click()">📁 Arquivo MP3</button>
-            <input type="file" id="adminAudioFileInput" accept="audio/*" style="display:none;" onchange="uploadLocalAudioFile(this.files[0])">
-            <button class="btn-primary" onclick="saveAdminAudioSettings()">Salvar Configurações</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Students List -->
-      <div class="premium-widget-card">
-        <div class="widget-header">👥 Lista de Alunos Ativos</div>
-        <div class="students-list" id="studentsList"></div>
-      </div>
-    </div><!-- #viewAdmin -->
-
-  </div><!-- .main-content -->
-</div><!-- .app-container -->
-
-<!-- BOTTOM NAVIGATION FOR STUDENTS (MOBILE ONLY) -->
-<div class="bnav" id="appNavStudent" style="display:none">
-  <div class="nav-i act" id="nHome" onclick="navTo('home')">
-    <span class="nav-ic">🏠</span>
-    <span class="nav-lb">Início</span>
-  </div>
-  <div class="nav-i" id="nMaterias" onclick="navTo('materias')">
-    <span class="nav-ic">📚</span>
-    <span class="nav-lb">Matérias</span>
-  </div>
-  <div class="nav-i" id="nRank" onclick="navTo('rank')">
-    <span class="nav-ic">🏆</span>
-    <span class="nav-lb">Líderes</span>
-  </div>
-  <div class="nav-i" id="nErr" onclick="navTo('erros')">
-    <span class="nav-ic">📓</span>
-    <span class="nav-lb">Erros</span>
-    <span class="nav-dot" id="errBadge" style="display:none">0</span>
-  </div>
-  <div class="nav-i" id="nProf" onclick="navTo('perfil')">
-    <span class="nav-ic">👤</span>
-    <span class="nav-lb">Perfil</span>
+    <!-- Views do Administrador -->
+    <div class="view" id="viewAdmin"><div class="premium-widget-card"><div class="widget-header">📊 Dashboard Admin</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div>Alunos: <strong id="adminAlunos">0</strong></div><div>PDFs enviados: <strong id="adminPDFs">0</strong></div><div>Módulos: <strong id="adminModulosCount">0</strong></div><div>Questões: <strong id="adminQuestoesCount">0</strong></div></div></div></div>
+    <div class="view" id="viewAdminModulos"><div class="premium-widget-card"><div class="widget-header">📦 Gerenciar Módulos</div><button class="btn-primary" onclick="criarModulo()" style="margin-bottom:16px">+ Novo Módulo</button><div id="listaModulosAdmin"></div></div></div>
+    <div class="view" id="viewAdminPdfs"><div class="premium-widget-card"><div class="widget-header">📄 Upload de PDF</div><div class="upload-zone" onclick="document.getElementById('pdfInput').click()" style="border:2px dashed var(--bd2);border-radius:20px;padding:32px;text-align:center;cursor:pointer">📁 Clique ou arraste PDF</div><input type="file" id="pdfInput" accept=".pdf" style="display:none" onchange="processPDF(this.files[0])"><div id="aiProgress" style="margin-top:12px;display:none"></div><div id="listaPdfs"></div></div></div>
+    <div class="view" id="viewAdminAudios"><div class="premium-widget-card"><div class="widget-header">🎵 Gerenciar Áudios por Tema</div><select id="adminAudioTema" style="width:100%;background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:10px;margin-bottom:12px"></select><input type="url" id="adminAudioUrl" placeholder="URL do MP3" style="width:100%;padding:10px;background:var(--sf);border:1px solid var(--bd);border-radius:12px;margin-bottom:12px"><button class="btn-primary" onclick="saveAdminAudio()">Salvar URL</button></div></div>
+    <div class="view" id="viewAdminSimulados"><div class="premium-widget-card"><div class="widget-header">📝 Simulados Gerados</div><div id="listaSimuladosAdmin"></div></div></div>
+    <div class="view" id="viewAdminAlunos"><div class="premium-widget-card"><div class="widget-header">👥 Lista de Alunos</div><div id="studentsList"></div></div></div>
+    <div class="view" id="viewAdminRelatorios"><div class="premium-widget-card"><div class="widget-header">📈 Relatórios Gerais</div><div id="relatoriosContent"></div></div></div>
+    <div class="view" id="viewAdminConfig"><div class="premium-widget-card"><div class="widget-header">⚙️ Configurações do Sistema</div><div>Configurações futuras...</div></div></div>
   </div>
 </div>
 
-<!-- BOTTOM NAVIGATION FOR ADMIN (MOBILE ONLY) -->
-<div class="bnav" id="appNavAdmin" style="display:none">
-  <div class="nav-i" id="nAdmin" onclick="navTo('admin')">
-    <span class="nav-ic">⚙️</span>
-    <span class="nav-lb">Painel</span>
-  </div>
-  <div class="nav-i" onclick="logoutAdmin()">
-    <span class="nav-ic">🚪</span>
-    <span class="nav-lb">Sair</span>
-  </div>
+<div class="bnav" id="bnavStudent">
+  <div class="nav-i" id="nHome" onclick="navTo('home')"><span class="nav-ic">🏠</span><span class="nav-lb">Início</span></div>
+  <div class="nav-i" id="nMaterias" onclick="navTo('materias')"><span class="nav-ic">📚</span><span class="nav-lb">Matérias</span></div>
+  <div class="nav-i" id="nRank" onclick="navTo('rank')"><span class="nav-ic">🏆</span><span class="nav-lb">Líderes</span></div>
+  <div class="nav-i" id="nErr" onclick="navTo('erros')"><span class="nav-ic">📓</span><span class="nav-lb">Erros</span><span class="nav-dot" id="errBadge" style="display:none">0</span></div>
+  <div class="nav-i" id="nProf" onclick="navTo('perfil')"><span class="nav-ic">👤</span><span class="nav-lb">Perfil</span></div>
 </div>
+<div class="bnav" id="bnavAdmin" style="display:none"><div class="nav-i" onclick="navTo('admin')"><span class="nav-ic">📊</span><span class="nav-lb">Dashboard</span></div><div class="nav-i" onclick="navTo('adminModulos')"><span class="nav-ic">📦</span><span class="nav-lb">Módulos</span></div><div class="nav-i" onclick="navTo('adminPdfs')"><span class="nav-ic">📄</span><span class="nav-lb">PDFs</span></div><div class="nav-i" onclick="navTo('adminAlunos')"><span class="nav-ic">👥</span><span class="nav-lb">Alunos</span></div><div class="nav-i" onclick="logout()"><span class="nav-ic">🚪</span><span class="nav-lb">Sair</span></div></div>
+
+<div id="quizScreen"><div class="qhdr"><div class="qhdr-top"><button class="q-back" onclick="quitQuiz()">← Sair</button><div class="q-timer-wrap"><div class="q-timer" id="qTimer">⏱ 5:00</div><div class="q-prog-track"><div class="q-timer-fill" id="qTimerFill" style="width:100%"></div></div></div></div><div class="q-prog-row"><div class="q-prog-track"><div class="q-prog-fill" id="qProgFill"></div></div><div class="q-prog-ct" id="qProgCt">1/10</div></div><div style="display:flex;justify-content:flex-end;gap:12px;margin-top:8px"><span>✅ <span id="qAcertos">0</span></span><span>❌ <span id="qErros">0</span></span></div></div><div class="q-body" id="qBody"></div></div>
 
 <script>
-// ══════════════════════════════════════════════
-// CONTROLE DE PLAYER DE ÁUDIO REAL E METADADOS
-// ══════════════════════════════════════════════
-const AUDIO_METADATA = {
-  "TEMA_1": { aula: "Aula 1", tema: "Contextualização do Agronegócio", topico: "Contexto & Mercado", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-  "TEMA_2": { aula: "Aula 2", tema: "Sistemas de Produção Sustentável", topico: "Contexto & Mercado", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-  "TEMA_3": { aula: "Aula 3", tema: "Fundamentos de Botânica", topico: "Ciências Agrárias", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
-  "TEMA_4": { aula: "Aula 4", tema: "Nutrição Mineral e Solo", topico: "Ciências Agrárias", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
-  "TEMA_5": { aula: "Aula 5", tema: "Irrigação e Drenagem", topico: "Ciências Agrárias", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
-  "TEMA_6": { aula: "Aula 6", tema: "Principais Culturas do Agro", topico: "Principais Culturas", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" },
-  "TEMA_7": { aula: "Aula 7", tema: "Produção Animal no Agro", topico: "Produção Animal I", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" },
-  "TEMA_8": { aula: "Aula 8", tema: "Anatomia e Fisiologia Animal", topico: "Produção Animal I", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
-  "TEMA_9": { aula: "Aula 9", tema: "Alimentação e Nutrição Animal", topico: "Produção Animal I", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" },
-  "TEMA_10": { aula: "Aula 10", tema: "Forragicultura e Pastagens", topico: "Produção Animal I", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" },
-  "TEMA_11": { aula: "Aula 11", tema: "Melhoramento Genético Animal", topico: "Genética & Melhoramento", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3" },
-  "TEMA_12": { aula: "Aula 12", tema: "Animais Monogástricos", topico: "Produção Animal II", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3" },
-  "TEMA_13": { aula: "Aula 13", tema: "Animais Ruminantes", topico: "Produção Animal II", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3" },
-  "TEMA_14": { aula: "Aula 14", tema: "Agricultura de Precisão", topico: "Tecnologia & Precisão", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3" }
+// ======================== CONFIGURAÇÕES INICIAIS ========================
+const AUDIO_METADATA = {};
+for(let i=1;i<=14;i++){AUDIO_METADATA[`TEMA_${i}`]={aula:`Aula ${i}`,tema:`Tema ${i}`,topico:"Módulo",url:`https://www.soundhelix.com/examples/mp3/SoundHelix-Song-${i}.mp3`};}
+AUDIO_METADATA.TEMA_1.tema="Contextualização do Agronegócio";AUDIO_METADATA.TEMA_2.tema="Sistemas de Produção Sustentável";AUDIO_METADATA.TEMA_3.tema="Fundamentos de Botânica";AUDIO_METADATA.TEMA_4.tema="Nutrição Mineral e Solo";AUDIO_METADATA.TEMA_5.tema="Irrigação e Drenagem";AUDIO_METADATA.TEMA_6.tema="Principais Culturas";AUDIO_METADATA.TEMA_7.tema="Produção Animal I";AUDIO_METADATA.TEMA_8.tema="Anatomia Animal";AUDIO_METADATA.TEMA_9.tema="Nutrição Animal";AUDIO_METADATA.TEMA_10.tema="Forragicultura";AUDIO_METADATA.TEMA_11.tema="Melhoramento Genético";AUDIO_METADATA.TEMA_12.tema="Monogástricos";AUDIO_METADATA.TEMA_13.tema="Ruminantes";AUDIO_METADATA.TEMA_14.tema="Agricultura de Precisão";
+
+let QUESTIONS_DB = {
+  TEMA_1:[{"pergunta":"O agronegócio foi conceituado em 1957 por quais autores?","opcoes":{"A":"Malthus e Ricardo","B":"Davis e Goldberg","C":"Marx e Engels","D":"Smith e Hume","E":"Keynes e Friedman"},"correta":"B","explicacao":"John Davis e Ray Goldberg cunharam o termo agronegócio."}],
+  TEMA_2:[{"pergunta":"Qual a premissa da teoria de Malthus?","opcoes":{"A":"População em PA e produção em PG","B":"População em PG e produção em PA","C":"Ambas em PA","D":"Ambas em PG","E":"Estagnação populacional"},"correta":"B","explicacao":"Malthus acreditava que a população crescia em PG e alimentos em PA."}]
 };
+for(let i=3;i<=14;i++){QUESTIONS_DB[`TEMA_${i}`]=[{"pergunta":"Questão exemplo para este tema.","opcoes":{"A":"Opção A","B":"Opção B","C":"Opção C","D":"Opção D","E":"Opção E"},"correta":"A","explicacao":"Explicação da resposta."}];}
 
-// ══════════════════════════════════════════════
-// INDEXEDDB CONFIG
-// ══════════════════════════════════════════════
-const dbName = "KronaAudioDB";
-let db;
-const dbRequest = indexedDB.open(dbName, 1);
-dbRequest.onupgradeneeded = (e) => {
-  db = e.target.result;
-  if (!db.objectStoreNames.contains("audios")) {
-    db.createObjectStore("audios");
-  }
-};
-dbRequest.onsuccess = (e) => { db = e.target.result; };
-function saveAudioFile(temaId, file) {
-  return new Promise((resolve, reject) => {
-    if (!db) { reject(new Error("Database not ready")); return; }
-    const transaction = db.transaction(["audios"], "readwrite");
-    const store = transaction.objectStore("audios");
-    const req = store.put(file, temaId);
-    req.onsuccess = () => resolve();
-    req.onerror = () => reject(req.error);
-  });
-}
-function getAudioFile(temaId) {
-  return new Promise((resolve) => {
-    if (!db) { resolve(null); return; }
-    const transaction = db.transaction(["audios"], "readonly");
-    const store = transaction.objectStore("audios");
-    const req = store.get(temaId);
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => resolve(null);
-  });
-}
-
-// ══════════════════════════════════════════════
-// AUDIO INLINE PLAYER LOGIC
-// ══════════════════════════════════════════════
-let curActivePlayingTema = null;
-const audioEl = $('kronaAudio');
-
-function toggleInlinePlay(temaId) {
-  if (curActivePlayingTema === temaId) {
-    if (audioEl.paused) {
-      audioEl.play().catch(() => { showToast('🔊 Toque novamente para reproduzir.'); });
-    } else {
-      audioEl.pause();
-    }
-  } else {
-    if (curActivePlayingTema) {
-      const oldBtn = $(`play_btn_${curActivePlayingTema}`);
-      if (oldBtn) oldBtn.textContent = "▶";
-    }
-    curActivePlayingTema = temaId;
-    const metadata = AUDIO_METADATA[temaId];
-    if (!metadata) return;
-
-    const customUrls = load('kr_custom_audios', {});
-    let finalUrl = customUrls[temaId] || metadata.url;
-
-    audioEl.pause();
-    if (finalUrl.startsWith('file://local_indexeddb/')) {
-      getAudioFile(temaId).then(file => {
-        if (file) {
-          audioEl.src = URL.createObjectURL(file);
-          prepareInlineAudio(temaId);
-        } else {
-          audioEl.src = metadata.url;
-          prepareInlineAudio(temaId);
-        }
-      });
-    } else {
-      audioEl.src = finalUrl;
-      prepareInlineAudio(temaId);
-    }
-  }
-}
-
-function prepareInlineAudio(temaId) {
-  const savedPos = load(`kr_audio_pos_${temaId}`, 0);
-  audioEl.currentTime = savedPos;
-  if ('mediaSession' in navigator) {
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title: "Tema " + temaId.replace('TEMA_', '') + ": " + AUDIO_METADATA[temaId].tema,
-      artist: "KRONA Analytics · SENAR",
-      album: AUDIO_METADATA[temaId].topico,
-      artwork: [{ src: 'https://cdn-icons-png.flaticon.com/512/3039/3039386.png', sizes: '512x512', type: 'image/png' }]
-    });
-  }
-  audioEl.play().catch(() => { showToast('🔊 Toque novamente para reproduzir.'); });
-}
-
-function restartInlineAudio(temaId) {
-  if (curActivePlayingTema === temaId) {
-    audioEl.currentTime = 0;
-    audioEl.play().catch(() => {});
-  } else {
-    save(`kr_audio_pos_${temaId}`, 0);
-    const bar = $(`progress_bar_${temaId}`);
-    if (bar) bar.style.width = "0%";
-    const timeCurr = $(`time_curr_${temaId}`);
-    if (timeCurr) timeCurr.textContent = "00:00";
-    showToast('🔄 Posição do áudio reiniciada!');
-  }
-}
-
-function seekInlineAudio(e, temaId) {
-  if (curActivePlayingTema !== temaId) return;
-  const wrap = $(`progress_wrap_${temaId}`);
-  if (!wrap) return;
-  const rect = wrap.getBoundingClientRect();
-  const clickX = e.clientX - rect.left;
-  const width = rect.width;
-  if (audioEl.duration) {
-    audioEl.currentTime = (clickX / width) * audioEl.duration;
-    updateInlinePlayerProgress();
-  }
-}
-
-function updateInlinePlayerProgress() {
-  if (!curActivePlayingTema) return;
-  const cur = audioEl.currentTime;
-  const dur = audioEl.duration || 0;
-  save(`kr_audio_pos_${curActivePlayingTema}`, cur);
-  const bar = $(`progress_bar_${curActivePlayingTema}`);
-  if (bar && dur > 0) { bar.style.width = (cur / dur * 100) + "%"; }
-  const timeCurr = $(`time_curr_${curActivePlayingTema}`);
-  if (timeCurr) timeCurr.textContent = formatAudioTime(cur);
-  const timeTotal = $(`time_total_${curActivePlayingTema}`);
-  if (timeTotal && dur > 0) { timeTotal.textContent = formatAudioTime(dur); }
-}
-
-function formatAudioTime(secs) {
-  if (isNaN(secs)) return "00:00";
-  const h = Math.floor(secs / 3600);
-  const m = Math.floor((secs % 3600) / 60);
-  const s = Math.floor(secs % 60);
-  if (h > 0) { return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
-  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-}
-
-audioEl.addEventListener('timeupdate', updateInlinePlayerProgress);
-audioEl.addEventListener('loadedmetadata', updateInlinePlayerProgress);
-audioEl.addEventListener('play', () => {
-  if (curActivePlayingTema) {
-    const btn = $(`play_btn_${curActivePlayingTema}`);
-    if (btn) btn.textContent = "⏸";
-  }
-});
-audioEl.addEventListener('pause', () => {
-  if (curActivePlayingTema) {
-    const btn = $(`play_btn_${curActivePlayingTema}`);
-    if (btn) btn.textContent = "▶";
-  }
-});
-
-// ══════════════════════════════════════════════
-// BANCO DE QUESTÕES
-// ══════════════════════════════════════════════
-const QUESTIONS_DB = {
-  "TEMA_1": [
-    {"pergunta":"O agronegócio pode ser compreendido como um encadeamento de atividades econômicas. Qual alternativa indica os autores que, em 1957, cunharam pioneiramente esse conceito?","opcoes":{"A":"Thomas Malthus e David Ricardo.","B":"John Davis e Ray Goldberg.","C":"Karl Marx e Friedrich Engels.","D":"Adam Smith e David Hume.","E":"John Maynard Keynes e Milton Friedman."},"correta":"B","explicacao":"O conceito de agronegócio foi estabelecido por John Davis e Ray Goldberg, em 1957, definindo as atividades do setor de forma encadeada como um 'sistema integrado'."},
-    {"pergunta":"De acordo com o Cepea, o agronegócio brasileiro é entendido como o somatório de quais segmentos?","opcoes":{"A":"Operações de preparo do solo, plantio, tratos culturais e colheita.","B":"Agricultura familiar, complexos patronais, cooperativas e órgãos estatais.","C":"Insumos para a agropecuária, produção agropecuária primária, agroindústria e agrosserviços.","D":"Comércio atacadista, acordos bilaterais, exportação e barreiras tarifárias.","E":"Sistemas orgânicos, cultivos convencionais, hidroponia e consórcios agroflorestais."},"correta":"C","explicacao":"A análise metodológica do Cepea adota quatro segmentos: insumos para a agropecuária, produção agropecuária primária, agroindústria (processamento) e agrosserviços."},
-    {"pergunta":"Qual comportamento define a participação do agronegócio no PIB nacional desde 2003?","opcoes":{"A":"Retração severa decorrente da desindustrialização.","B":"Estabilidade linear absoluta sem variações.","C":"Tendência de participação crescente no PIB total.","D":"Comportamento cíclico governado pelas oscilações climáticas.","E":"Índices fixados abaixo de 10% do PIB."},"correta":"C","explicacao":"A série histórica iniciada em 2003 demonstra que a participação do agronegócio no PIB total apresenta tendência crescente."},
-    {"pergunta":"Qual foi o reflexo do desenvolvimento tecnológico do agronegócio brasileiro nas últimas décadas?","opcoes":{"A":"Redução das exportações e perda de rentabilidade.","B":"Ampliação das exportações, elevação da renda e oferta de alimentos de maior qualidade e menor custo.","C":"Estagnação dos estoques e elevação dos custos.","D":"Depreciação dos padrões fitossanitários.","E":"Perda de competitividade nos mercados internacionais."},"correta":"B","explicacao":"O avanço tecnológico permitiu aumentar a produtividade, ampliar exportações e renda dos produtores, possibilitando alimentos de melhor qualidade e menor custo ao consumidor."},
-    {"pergunta":"De acordo com a FGV, entre 1989 e 2014, as exportações do agronegócio cresceram a que taxa anual?","opcoes":{"A":"3,2% ao ano.","B":"5,5% ao ano.","C":"7,7% ao ano.","D":"10,4% ao ano.","E":"12,1% ao ano."},"correta":"C","explicacao":"Entre 1989 e 2014, as exportações do agronegócio mantiveram crescimento linear de 7,7% ao ano."},
-    {"pergunta":"O saldo da balança comercial do agronegócio evoluiu de que forma entre 1989 e 2014?","opcoes":{"A":"Manteve-se fixo em US$ 10,8 bilhões.","B":"Sofreu retração de 50%.","C":"Aumentou de US$ 10,8 bilhões para cerca de R$ 80 bilhões.","D":"Cresceu apenas 5% no período.","E":"Registrou déficits sucessivos."},"correta":"C","explicacao":"O saldo da balança comercial aumentou de US$ 10,8 bilhões, em 1989, para cerca de R$ 80 bilhões, em 2014."},
-    {"pergunta":"Qual alternativa define corretamente os segmentos do agronegócio segundo o Cepea?","opcoes":{"A":"Agroindústria, comércio nacional, internacional e vendas.","B":"Insumos, produção agropecuária primária, agroindústria e agrosserviços.","C":"Insumos, produtos eletrônicos, indústria e comércio.","D":"Insumos, produção secundária e agrosserviços.","E":"Produção primária, secundária e terciária."},"correta":"B","explicacao":"A divisão conceitual do Cepea mapeia os elos: insumos, produção primária, agroindústria e agrosserviços."}
-  ],
-  "TEMA_2": [{"pergunta":"Em 1797, Thomas Malthus formulou uma teoria sobre o suprimento alimentar. Qual era a premissa?","opcoes":{"A":"A população cresceria em progressão aritmética.","B":"A produção cresceria em progressão geométrica.","C":"O agronegócio operaria de forma fechada.","D":"A população cresceria geometricamente, enquanto a produção cresceria aritmeticamente, tornando impossível alimentar a humanidade.","E":"O melhoramento genético estabilizaria as taxas de natalidade."},"correta":"D","explicacao":"Malthus afirmou que a população expandia-se geometricamente enquanto a produção de alimentos crescia aritmeticamente. Essa visão pessimista foi superada pelo avanço científico."}],
-  "TEMA_3": [{"pergunta":"Como se define a fotossíntese nos organismos do Reino Vegetal?","opcoes":{"A":"Oxidação de compostos carbonados na mitocôndria.","B":"Conversão de energia luminosa em energia química, com produção de carboidratos a partir de CO2 e água.","C":"Absorção radicular de macro e micronutrientes.","D":"Reprodução vegetativa por tecidos meristemáticos.","E":"Transformação de energia mecânica em energia osmótica."},"correta":"B","explicacao":"A fotossíntese capta luz solar pelos cloroplastos, fixando CO2 e sintetizando carboidratos, liberando oxigênio."}],
-  "TEMA_4": [{"pergunta":"Qual alternativa agrupa exclusivamente macronutrientes minerais?","opcoes":{"A":"Fe, Mn, B, Cu, Zn, Mo, Cl e Ni.","B":"N, P, K, Ca, Mg e S.","C":"C, O, H, N e P.","D":"Zn, Cu, Mn, Fe, B, Mo e Al.","E":"Ca, Mg, S, Fe, Mn e Zn."},"correta":"B","explicacao":"Os macronutrientes minerais exigidos em larga escala são: N, P, K, Ca, Mg e S."}],
-  "TEMA_5": [{"pergunta":"Qual é a relação de produtividade entre agricultura irrigada e tradicional de sequeiro?","opcoes":{"A":"1,5 vez mais produtiva.","B":"Exatamente 2 vezes mais produtiva.","C":"Até 3 vezes mais produtiva.","D":"Até 5 vezes mais produtiva.","E":"Sem diferenças significativas."},"correta":"C","explicacao":"A irrigação eleva a produtividade física em até 3 vezes e o ganho econômico em até 7 vezes."}],
-  "TEMA_6": [{"pergunta":"Qual praga devastou a cotonicultura nos anos 1980 e qual estado se consolidou como polo produtor a partir dos anos 2000?","opcoes":{"A":"Bicudo-do-algodoeiro nos 1980 e Mato Grosso a partir dos 2000.","B":"Lagarta-do-cartucho nos 1980 e Rio Grande do Sul.","C":"Pulgão-das-folhas em 1980 e Região Nordeste.","D":"Ácaro-rajado por colônias portuguesas e Maranhão.","E":"Nematóides nos 1980 e bioma Pampas."},"correta":"A","explicacao":"O bicudo-do-algodoeiro (Anthonomus grandis) devastou a cotonicultura nos 1980. A partir dos 2000, o cultivo ressurgiu no Cerrado do Mato Grosso."}],
-  "TEMA_7": [{"pergunta":"Qual posição o Brasil ocupa no ranking mundial de produção de leite?","opcoes":{"A":"3º lugar, 50 bilhões de litros.","B":"6º lugar, 38 bilhões de litros.","C":"2º lugar, 45 bilhões de litros.","D":"10º lugar, 25 bilhões de litros.","E":"1º lugar, 60 bilhões de litros."},"correta":"B","explicacao":"O Brasil ocupa a 6ª posição global com 38 bilhões de litros de leite produzidos."}],
-  "TEMA_8": [{"pergunta":"Qual é a importância prática de dominar anatomia e fisiologia na produção animal?","opcoes":{"A":"Conhecer a organização das partes do corpo é fundamental para entender como funcionam, melhorando o manejo zootécnico.","B":"Anatomia estuda o comportamento etológico; fisiologia mapeia ingredientes da ração.","C":"São disciplinas exclusivamente teóricas sem aplicabilidade agropecuária.","D":"Servem apenas como ferramenta para patologias parasitárias terminais.","E":"São termos sinônimos restritos a hormônios reprodutivos."},"correta":"A","explicacao":"Entender a disposição dos órgãos e tecidos é pré-requisito para entender o metabolismo animal, balizando decisões sobre manejo e bem-estar."}],
-  "TEMA_9": [{"pergunta":"Qual é a relação entre alimentação, manejo e custos de produção?","opcoes":{"A":"Alimentação e manejo representam os menores custos.","B":"Alimentação e manejo são as bases da produção animal e compreendem os maiores custos.","C":"Alimentação é uma variável de custo irrelevante.","D":"São custos fixos que não interferem na rentabilidade.","E":"Alimentação é gargalo restrito à avicultura de corte."},"correta":"B","explicacao":"Alimentação e manejo são os pilares da produção (carne, leite, lã, ovos) e respondem pelas maiores parcelas dos custos operacionais."}],
-  "TEMA_10": [{"pergunta":"Qual é a principal característica diferencial das pastagens tropicais?","opcoes":{"A":"Permite maior flexibilidade no planejamento dos sistemas de produção animal.","B":"Registra os menores índices de produtividade.","C":"É exclusivo para bovinos de corte.","D":"Dispensa suplementação mineral.","E":"Tem maior custo por quilo de carcaça."},"correta":"A","explicacao":"A produção em pastagens destaca-se pela versatilidade, permitindo alto grau de customização no planejamento do agrossistema."}],
-  "TEMA_11": [{"pergunta":"Qual é o objetivo central do melhoramento genético nos sistemas de produção animal?","opcoes":{"A":"Aumentar o volume bruto de cabeças independentemente da qualidade.","B":"Melhorar o índice produtivo do rebanho por meio de animais geneticamente superiores.","C":"Eliminar a necessidade de manejos sanitários.","D":"Padronizar todos os indivíduos de uma mesma linhagem.","E":"Substituir o manejo nutricional pela fixação de alelos."},"correta":"B","explicacao":"O melhoramento genético busca maximizar os índices zootécnicos identificando e multiplicando indivíduos de mérito genético superior."}],
-  "TEMA_12": [{"pergunta":"Como evoluiu o consumo per capita de carne de frango no Brasil entre 1973 e hoje?","opcoes":{"A":"De 2 kg para 10 kg por habitante/ano.","B":"De cerca de 4 kg para mais de 25 kg por habitante/ano.","C":"De 8 kg para 15 kg por habitante/ano.","D":"De 1 kg para 30 kg por habitante/ano.","E":"De 10 kg para 20 kg por habitante/ano."},"correta":"B","explicacao":"Em 1973 o consumo era de ~4 kg/hab/ano. O avanço tecnológico e a popularização elevaram para mais de 25 kg/hab/ano."}],
-  "TEMA_13": [{"pergunta":"Qual é o papel social da atividade leiteira e seu principal desafio?","opcoes":{"A":"Commodity restrita à alta renda; desafio é elevar margens via tabelamento.","B":"Garante renda mensal, emprega famílias e combate êxodo rural. Desafio: mão de obra escassa e envelhecida.","C":"Governada por multinacionais; desafio é conter importações.","D":"Baixo impacto em empregos; desafio é a mecanização integral.","E":"Baixa relevância rural; foco na expansão de pastagens."},"correta":"B","explicacao":"O leite gera fluxo de caixa mensal e emprego no campo. O grande desafio é a escassez de mão de obra qualificada e o envelhecimento dos produtores."}],
-  "TEMA_14": [{"pergunta":"Qual é a definição correta de Agricultura de Precisão (AP)?","opcoes":{"A":"Uso exclusivo de maquinários pesados automatizados.","B":"Usa recursos mecânicos, eletrônicos e informáticos para gerenciamento localizado de sistemas agrícolas, com aplicação localizada de insumos.","C":"Substituição integral do trabalho humano por robôs.","D":"Emprego de insumos orgânicos em áreas de preservação.","E":"Aplicação de defensivos em dose única uniforme em toda a lavoura."},"correta":"B","explicacao":"A AP integra mecânica, eletrônica e informática para mapear variabilidade e aplicar insumos na dose certa, no local e momento adequados."}]
-};
-
-// ══════════════════════════════════════════════
-// STREAK & LEVEL & PROGRESS XP
-// ══════════════════════════════════════════════
-const calcXP = p => (p.acertos || 0) * 12 + Object.values(p.byTema || {}).filter(t => t.done).length * 80;
-const calcLevel = xp => { let l = LEVELS[0]; for (const v of LEVELS) if (xp >= v.min) l = v; return l; };
-const $ = id => document.getElementById(id);
-
-function showToast(msg, dur = 2500) {
-  const t = $('toast'); t.textContent = msg; t.classList.add('show');
-  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), dur);
-}
-
-function showAchievement(name, icon) {
-  const p = $('achievePop'); $('achieveIc').textContent = icon; $('achieveName').textContent = name;
-  p.classList.add('show'); setTimeout(() => p.classList.remove('show'), 3500);
-}
-
-function checkAchievements() {
-  const prog = load(LS.prog, {}); const sk = load(LS.streak, { days: 0 }); const earned = load('kr_earned', []);
-  for (const a of ACHIEVEMENTS) {
-    if (!earned.includes(a.id) && a.cond(prog, sk)) {
-      earned.push(a.id); save('kr_earned', earned);
-      setTimeout(() => showAchievement(a.name, a.icon), 800); break;
-    }
-  }
-}
-
-// ══════════════════════════════════════════════
-// CUSTOM FAILSAFE DIALOG
-// ══════════════════════════════════════════════
-let kronaConfirmCallback = null;
-function showKronaConfirm(title, text, okBtnText, cancelBtnText, cb, icon = '⚠️') {
-  $('kronaConfirmTitle').textContent = title; $('kronaConfirmText').textContent = text;
-  $('kronaConfirmBtnOk').textContent = okBtnText; $('kronaConfirmBtnCancel').textContent = cancelBtnText;
-  $('kronaConfirmIcon').textContent = icon; $('kronaConfirmModal').style.display = 'flex';
-  kronaConfirmCallback = cb;
-}
-function handleKronaConfirm(choice) {
-  $('kronaConfirmModal').style.display = 'none';
-  if (kronaConfirmCallback) { kronaConfirmCallback(choice); kronaConfirmCallback = null; }
-}
-
-// ══════════════════════════════════════════════
-// LOG IN SWITCHER & REGISTRATION CONTROLLER
-// ══════════════════════════════════════════════
-function selectLoginProfile(profile) {
-  if (profile === 'admin') {
-    $('loginSelector').style.display = 'none';
-    $('adminLoginFields').style.display = 'block';
-  } else {
-    $('loginSelector').style.display = 'none';
-    $('studentFlowFields').style.display = 'flex';
-  }
-}
-
-function cancelAdminLogin() {
-  $('adminLoginFields').style.display = 'none';
-  $('studentFlowFields').style.display = 'none';
-  $('loginSelector').style.display = 'block';
-}
-
-function tryAdminLogin() {
-  const email = $('adminEmail').value.trim();
-  const pass = $('adminPass').value.trim();
-  if (email === 'admin@plataforma.com' && pass === '123456') {
-    const adminUser = { name: 'Administrador', email: 'admin@plataforma.com', initials: 'AD', isAdmin: true, id: 'admin_1' };
-    save(LS.user, adminUser);
-    finishReg();
-  } else {
-    showToast('❌ Credenciais administrativas incorretas.');
-  }
-}
-
-function logoutAdmin() {
-  localStorage.removeItem(LS.user);
-  localStorage.removeItem(LS.session);
-  audioEl.pause();
-  curActivePlayingTema = null;
-  location.reload();
-}
-
-function regStep1Next() {
-  const nome = $('regNome').value.trim();
-  const email = $('regEmail').value.trim();
-  if (!nome || nome.length < 3) { showToast('⚠️ Informe seu nome completo'); return; }
-  if (!email.includes('@')) { showToast('⚠️ Informe um e-mail válido'); return; }
-  save(LS.user, { name: nome, email, initials: nome.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2), isAdmin: false, id: 'u_' + Date.now() });
-  $('regStep1').style.display = 'none'; $('regStep2').style.display = 'block';
-  setStepDot(2);
-}
-
-function sendSMS() {
-  const fone = $('regFone').value.trim();
-  if (!fone || fone.length < 10) { showToast('⚠️ Informe um telefone válido'); return; }
-  smsCode = String(Math.floor(100000 + Math.random() * 900000));
-  $('regCodeField').style.display = 'block';
-  showToast(`📱 Código (demo): ${smsCode}`, 6000);
-}
-
-function regStep2Next() {
-  const code = $('regCode').value.trim();
-  if (code && code !== smsCode && $('regCodeField').style.display !== 'none') {
-    showToast('❌ Código incorreto'); return;
-  }
-  $('regStep2').style.display = 'none'; $('regStep3').style.display = 'block';
-  setStepDot(3);
-}
-
-function regSkipPhone() { $('regStep2').style.display = 'none'; $('regStep3').style.display = 'block'; setStepDot(3); }
-
-function finishReg() {
-  $('regScreen').style.display = 'none';
-  $('appHeader').style.display = 'block';
-  $('appSidebar').style.display = 'flex';
-  
-  const usr = load(LS.user, {});
-  if (usr.isAdmin) {
-    $('appNavAdmin').style.display = 'flex';
-    $('appNavStudent').style.display = 'none';
-    $('sidebarAdmin').style.display = 'block';
-    $('sidebarStudent').style.display = 'none';
-    navTo('admin');
-  } else {
-    $('appNavStudent').style.display = 'flex';
-    $('appNavAdmin').style.display = 'none';
-    $('sidebarStudent').style.display = 'block';
-    $('sidebarAdmin').style.display = 'none';
-    bumpStreak(); checkAchievements();
-    navTo('home');
-  }
-}
-
-function setStepDot(n) {
-  const dots = $('stepDots').children;
-  for (let i = 0; i < dots.length; i++) { dots[i].className = 'step-dot' + (i < n ? ' active' : ''); }
-}
-
-// ══════════════════════════════════════════════
-// DYNAMIC DASHBOARD WIDGETS AND UI UPDATE
-// ══════════════════════════════════════════════
 const MOD_TEMAS={A:['TEMA_1','TEMA_2'],B:['TEMA_3','TEMA_4','TEMA_5'],C:['TEMA_6'],D:['TEMA_7','TEMA_8','TEMA_9','TEMA_10'],E:['TEMA_11'],F:['TEMA_12','TEMA_13'],G:['TEMA_14']};
-const TEMA_META={TEMA_1:{qtd:7},TEMA_2:{qtd:1},TEMA_3:{qtd:1},TEMA_4:{qtd:1},TEMA_5:{qtd:1},TEMA_6:{qtd:1},TEMA_7:{qtd:1},TEMA_8:{qtd:1},TEMA_9:{qtd:1},TEMA_10:{qtd:1},TEMA_11:{qtd:1},TEMA_12:{qtd:1},TEMA_13:{qtd:1},TEMA_14:{qtd:1}};
+const MOD_NOMES={A:"Contexto & Mercado",B:"Ciências Agrárias",C:"Principais Culturas",D:"Produção Animal I",E:"Genética & Melhoramento",F:"Produção Animal II",G:"Tecnologia & Precisão"};
+const LEVELS=[{min:0,label:"Semente"},{min:200,label:"Broto"},{min:500,label:"Agricultor"},{min:900,label:"Técnico"},{min:1400,label:"Especialista"},{min:2000,label:"Mestre"}];
+const LS={user:"krona_user",prog:"krona_prog",errors:"krona_errors",streak:"krona_streak",session:"krona_session",ranking:"krona_ranking",customAudios:"kr_custom_audios",pdfcount:"kr_pdfcount",extraModules:"kr_extra_modules"};
+function $(id){return document.getElementById(id);}
+function save(k,v){localStorage.setItem(k,JSON.stringify(v));}
+function load(k,d){try{return JSON.parse(localStorage.getItem(k))||d;}catch(e){return d;}}
+function showToast(msg){const t=$('toast');if(t){t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}else alert(msg);}
+let tg=window.Telegram?.WebApp||{ready:()=>{},expand:()=>{},HapticFeedback:{impactOccurred:()=>{},notificationOccurred:()=>{}}}; tg.ready();tg.expand();
 
-function updateUI() {
-  const prog = load(LS.prog, { acertos: 0, questoes: 0, byTema: {} });
-  const usr = load(LS.user, { name: 'Aluno', initials: 'A' });
-  const sk = load(LS.streak, { days: 0, lastDate: null });
-  const erros = load(LS.errors, []);
-  const xp = calcXP(prog);
-  const lvl = calcLevel(xp);
-  const temasDone = Object.values(prog.byTema || {}).filter(t => t.done).length;
-  const pct = prog.questoes > 0 ? Math.round(prog.acertos / prog.questoes * 100) : 0;
-  const geral = Math.round(temasDone / 14 * 100);
+// ======================== CORREÇÃO BOAS-VINDAS ========================
+function getSafeUserName(){const u=load(LS.user,{});return (u.name && u.name!=='undefined')?u.name:"Aluno";}
+function updateWelcome(){const name=getSafeUserName();$('wcName').textContent=name+" 👋";}
 
-  $('hdrXP').textContent = xp + ' XP';
-  $('hdrAv').textContent = usr.initials || 'A';
-  $('wcName').textContent = (usr.name || 'Aluno') + ' 👋';
-  $('wcPct').textContent = geral + '%';
-  $('wcProgBar').style.width = geral + '%';
-  $('wcAcertos').textContent = prog.acertos || 0;
-  $('wcQuestoes').textContent = prog.questoes || 0;
-  $('wcAprov').textContent = pct + '%';
-  $('ribStreak').textContent = sk.days || 0;
-  $('ribLevel').textContent = lvl.label;
+// ======================== LOGIN E REGISTRO ========================
+function selectLogin(type){if(type==='admin'){$('loginSelector').style.display='none';$('adminLoginPanel').style.display='block';}else{$('loginSelector').style.display='none';$('studentRegPanel').style.display='block';}}
+function backToLogin(){$('adminLoginPanel').style.display='none';$('studentRegPanel').style.display='none';$('loginSelector').style.display='block';}
+function adminLogin(){const email=$('adminEmail').value.trim(),pass=$('adminPass').value.trim();if(email==='admin@krona.com'&&pass==='123456'){save(LS.user,{name:"Administrador",initials:"AD",isAdmin:true,id:"admin"});initApp();}else{showToast("Credenciais inválidas");}}
+function registerStudent(){const nome=$('regNome').value.trim();if(!nome){showToast("Informe seu nome");return;}save(LS.user,{name:nome,initials:nome.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2),isAdmin:false,id:"user_"+Date.now()});initApp();}
+function initApp(){$('regScreen').style.display='none';$('appContainer').style.display='flex';const usr=load(LS.user,{});if(usr.isAdmin){$('sidebarStudent').style.display='none';$('sidebarAdmin').style.display='block';$('bnavStudent').style.display='none';$('bnavAdmin').style.display='flex';navTo('admin');}else{$('sidebarStudent').style.display='block';$('sidebarAdmin').style.display='none';$('bnavStudent').style.display='flex';$('bnavAdmin').style.display='none';bumpStreak();navTo('home');updateUI();renderModulos();updateWelcome();}}
+function logout(){localStorage.removeItem(LS.user);location.reload();}
 
-  updateCountdown();
+// ======================== STREAK, XP, LEVEL ========================
+function bumpStreak(){const sk=load(LS.streak,{lastDate:null,days:0});const today=new Date().toISOString().slice(0,10);if(sk.lastDate===today)return;const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);save(LS.streak,{lastDate:today,days:sk.lastDate===yesterday?sk.days+1:1});}
+function calcXP(prog){const temas=Object.values(prog.byTema||{}).filter(t=>t.done).length;return (prog.acertos||0)*12 + temas*80;}
+function calcLevel(xp){let l=LEVELS[0];for(const v of LEVELS)if(xp>=v.min)l=v;return l;}
 
-  // Badge Caderno de Erros no menu e na sidebar
-  const eb = $('errBadge');
-  const ebSb = $('errBadgeSb');
-  if (erros.length > 0) {
-    if (eb) { eb.style.display = 'flex'; eb.textContent = Math.min(erros.length, 99); }
-    if (ebSb) { ebSb.style.display = 'inline-block'; ebSb.textContent = Math.min(erros.length, 99); }
-  } else {
-    if (eb) eb.style.display = 'none';
-    if (ebSb) ebSb.style.display = 'none';
-  }
-
-  // Progresso dos Módulos
-  for (const [mod, temas] of Object.entries(MOD_TEMAS)) {
-    let totalAc = 0, totalTot = 0;
-    for (const t of temas) { const td = prog.byTema?.[t]; if (td) { totalAc += td.acertos || 0; totalTot += td.total || 0; } }
-    const p = totalTot > 0 ? Math.round(totalAc / totalTot * 100) : 0;
-    const ring = $('ring' + mod); const rv = $('ringVal' + mod);
-    if (ring) { const offset = 88 - Math.round(p * 88 / 100); ring.style.strokeDashoffset = offset; }
-    if (rv) rv.textContent = p + '%';
-  }
-
-  pushRanking();
-}
-
-// ══════════════════════════════════════════════
-// DYNAMIC STRUCTURE RENDERING OF MATÉRIAS & TEMAS
-// ══════════════════════════════════════════════
-function renderAllAccordionTemas() {
-  const prog = load(LS.prog, { byTema: {} });
-  
-  for (const [mod, temas] of Object.entries(MOD_TEMAS)) {
-    const container = $('innerMod' + mod);
-    if (!container) continue;
-    container.innerHTML = '';
-    
-    temas.forEach(temaId => {
-      const meta = AUDIO_METADATA[temaId];
-      const td = prog.byTema?.[temaId];
-      
-      let badgeLabel = 'Pendente';
-      let badgeClass = 'tema-badge pending';
-      if (td?.done) {
-        badgeLabel = '✅ Concluído';
-        badgeClass = 'tema-badge done';
-      } else if (td?.total > 0) {
-        badgeLabel = `${td.acertos}/${td.total}`;
-        badgeClass = 'tema-badge partial';
-      }
-      
-      const bestNote = td?.bestPct ? td.bestPct + '%' : '0%';
-      const totalQuestions = QUESTIONS_DB[temaId]?.length || TEMA_META[temaId]?.qtd || 0;
-
-      const card = document.createElement('div');
-      card.className = 'tema-card';
-      card.id = `tema_${temaId}`;
-      card.innerHTML = `
-        <div class="tema-header" onclick="toggleTemaExpand('${temaId}')">
-          <div class="tema-title">
-            <span class="tema-icon">🌾</span>
-            <div>
-              <div class="tema-name">${meta.aula}: ${meta.tema}</div>
-              <div class="tema-meta">${totalQuestions} questões disponíveis</div>
-            </div>
-          </div>
-          <span class="${badgeClass}" id="badge_${temaId}">${badgeLabel}</span>
-        </div>
-        
-        <div class="tema-content" id="tema_content_${temaId}" style="display:none;">
-          <!-- 🎧 ÁUDIO EXPLICATIVO MÓDULO -->
-          <div class="sub-mod">
-            <div class="sub-mod-title">🎧 Áudio Explicativo</div>
-            <div class="inline-player">
-              <div class="inline-progress-wrap" onclick="seekInlineAudio(event, '${temaId}')" id="progress_wrap_${temaId}">
-                <div class="inline-progress-bar" id="progress_bar_${temaId}" style="width:0%;"></div>
-              </div>
-              <div class="inline-player-meta">
-                <span id="time_curr_${temaId}">00:00</span>
-                <span id="time_total_${temaId}">00:00</span>
-              </div>
-              <div class="inline-controls">
-                <button class="player-btn" onclick="restartInlineAudio('${temaId}')" title="Reiniciar">🔄</button>
-                <button class="player-btn play-btn" id="play_btn_${temaId}" onclick="toggleInlinePlay('${temaId}')">▶</button>
-              </div>
-            </div>
-          </div>
-          
-          <!-- 📝 SIMULADO MÓDULO -->
-          <div class="sub-mod">
-            <div class="sub-mod-title">📝 Simulado do Tema</div>
-            <div class="quiz-info-row">
-              <div class="quiz-info-item">
-                <span class="qi-label">Questões</span>
-                <span class="qi-val">${totalQuestions}</span>
-              </div>
-              <div class="quiz-info-item">
-                <span class="qi-label">Tempo Máx</span>
-                <span class="qi-val">5:00</span>
-              </div>
-              <div class="quiz-info-item">
-                <span class="qi-label">Aproveitam.</span>
-                <span class="qi-val" id="best_${temaId}" style="color:var(--gold);">${bestNote}</span>
-              </div>
-            </div>
-            <button class="btn-success" style="width:100%;" onclick="startQuiz('${temaId}', '${meta.tema}')">Iniciar Simulado →</button>
-          </div>
-        </div>
-      `;
-      container.appendChild(card);
-    });
-  }
-}
-
-let openTemaId = null;
-function toggleTemaExpand(temaId) {
-  const content = $(`tema_content_${temaId}`);
-  const header = $(`tema_${temaId}`);
-  if (!content) return;
-  
-  if (openTemaId && openTemaId !== temaId) {
-    const oldContent = $(`tema_content_${openTemaId}`);
-    if (oldContent) oldContent.style.display = 'none';
-    const oldHeader = $(`tema_${openTemaId}`);
-    if (oldHeader) oldHeader.classList.remove('expanded');
-  }
-  
-  if (content.style.display === 'none') {
-    content.style.display = 'block';
-    header.classList.add('expanded');
-    openTemaId = temaId;
-    
-    // Sync current audio parameters if matching
-    const savedPos = load(`kr_audio_pos_${temaId}`, 0);
-    const timeCurr = $(`time_curr_${temaId}`);
-    if (timeCurr) timeCurr.textContent = formatAudioTime(savedPos);
-    
-    if (curActivePlayingTema === temaId && audioEl.duration) {
-      const timeTotal = $(`time_total_${temaId}`);
-      if (timeTotal) timeTotal.textContent = formatAudioTime(audioEl.duration);
-      const bar = $(`progress_bar_${temaId}`);
-      if (bar) bar.style.width = (audioEl.currentTime / audioEl.duration * 100) + "%";
-    }
-  } else {
-    content.style.display = 'none';
-    header.classList.remove('expanded');
-    if (openTemaId === temaId) openTemaId = null;
-  }
-}
-
-// ══════════════════════════════════════════════
-// DASHBOARD WIDGET POPULATORS
-// ══════════════════════════════════════════════
-function updatePendingSimuladosWidget() {
-  const prog = load(LS.prog, { byTema: {} });
-  const pendingList = $('pendingSimuladosList');
-  if (!pendingList) return;
-  pendingList.innerHTML = '';
-  
-  let count = 0;
-  for (let i = 1; i <= 14; i++) {
-    const temaId = 'TEMA_' + i;
-    const done = prog.byTema?.[temaId]?.done;
-    if (!done) {
-      count++;
-      const meta = AUDIO_METADATA[temaId];
-      const item = document.createElement('div');
-      item.className = 'widget-item-link';
-      item.onclick = () => { openTemaInAccordion(temaId); };
-      item.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-          <div>
-            <div style="font-weight:700; font-size:13px; color:var(--txt);">${meta.aula}: ${meta.tema}</div>
-            <div style="font-size:11px; color:var(--tx3); margin-top:2px;">Tópico: ${meta.topico}</div>
-          </div>
-          <span class="widget-action-arrow">›</span>
-        </div>
-      `;
-      pendingList.appendChild(item);
-      if (count >= 3) break;
-    }
-  }
-  if (count === 0) {
-    pendingList.innerHTML = '<div style="text-align:center; padding:12px; font-size:12px; color:var(--tx3);">🎉 Parabéns! Todos os simulados concluídos!</div>';
-  }
-}
-
-function getModOfTema(temaId) {
-  for (const [mod, temas] of Object.entries(MOD_TEMAS)) {
-    if (temas.includes(temaId)) return mod;
-  }
-  return 'A';
-}
-
-function openTemaInAccordion(temaId) {
-  navTo('materias');
-  setTimeout(() => {
-    const mod = getModOfTema(temaId);
-    tglMod(mod);
-    setTimeout(() => {
-      toggleTemaExpand(temaId);
-      const targetCard = $(`tema_${temaId}`);
-      if (targetCard) targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 200);
-  }, 150);
-}
-
-function updateMiniRankingWidget() {
-  const rank = load(LS.ranking, []);
-  const widget = $('miniRankingList');
-  if (!widget) return;
-  widget.innerHTML = '';
-  const preview = rank.slice(0, 3);
-  if (preview.length === 0) {
-    widget.innerHTML = '<div style="text-align:center; padding:12px; font-size:12px; color:var(--tx3);">Nenhum dado de líderes registrado.</div>';
-    return;
-  }
-  preview.forEach((u, i) => {
-    const medals = ['🥇', '🥈', '🥉'];
-    const item = document.createElement('div');
-    item.style = "display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.03);";
-    item.innerHTML = `
-      <div style="display:flex; align-items:center; gap:10px;">
-        <span style="font-size:14px;">${medals[i] || (i+1)}</span>
-        <div class="usr-av" style="width:28px; height:28px; font-size:11px; display:flex; align-items:center; justify-content:center; background:var(--sf3); border-radius:50%; border:1px solid rgba(255,255,255,0.1); color:var(--gold); font-weight:800;">${u.initials}</div>
-        <span style="font-size:12px; font-weight:700; color:var(--txt);">${u.name}</span>
-      </div>
-      <span style="font-size:12px; font-weight:800; color:var(--gold);">${u.xp} XP</span>
-    `;
-    widget.appendChild(item);
-  });
-}
-
-function updateLastActivityWidget() {
-  const prog = load(LS.prog, { history: [] });
-  const widget = $('lastActivityWidget');
-  if (!widget) return;
-  widget.innerHTML = '';
-  const history = prog.history || [];
-  if (history.length === 0) {
-    widget.innerHTML = '<div style="text-align:center; padding:12px; font-size:12px; color:var(--tx3);">Nenhuma atividade registrada ainda.</div>';
-    return;
-  }
-  const last = history[history.length - 1];
-  const meta = AUDIO_METADATA[last.temaId];
-  const dateStr = last.data ? new Date(last.data).toLocaleDateString('pt-BR') : '';
-  widget.innerHTML = `
-    <div style="padding:4px 0;">
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-size:13px; font-weight:700; color:var(--txt);">${meta ? meta.tema : last.temaId}</span>
-        <span style="font-size:11px; color:var(--tx3); font-weight:600;">${dateStr}</span>
-      </div>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
-        <span style="font-size:12px; color:var(--tx2);">Nota: <b style="color:var(--gold);">${last.pct}%</b> (${last.acertos}/${last.total} acertos)</span>
-        <span class="tema-badge done" style="font-size:9px; padding:2px 8px; background:rgba(0,214,143,.12); color:var(--grn); border-radius:20px; font-weight:700;">Concluído</span>
-      </div>
-    </div>
-  `;
-}
-
-// ══════════════════════════════════════════════
-// COUNTDOWN
-// ══════════════════════════════════════════════
-function updateCountdown(){
-  const end=new Date('2026-12-31T23:59:59');
-  const diff=end-new Date();
-  if(diff<=0){
-    if($('freeCountdownText')) $('freeCountdownText').textContent='Expirado';
-    return;
-  }
-  const d=Math.floor(diff/86400000);
-  const h=Math.floor((diff%86400000)/3600000);
-  if($('freeCountdownText')) $('freeCountdownText').textContent=`${d}d ${h}h restantes`;
-}
-setInterval(updateCountdown, 60000);
-
-// ══════════════════════════════════════════════
-// STREAK
-// ══════════════════════════════════════════════
-function bumpStreak(){
-  const sk=load(LS.streak,{lastDate:null,days:0});
-  const today=new Date().toISOString().slice(0,10);
-  if(sk.lastDate===today)return;
-  const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
-  save(LS.streak,{lastDate:today,days:sk.lastDate===yesterday?sk.days+1:1});
-}
-
-// ══════════════════════════════════════════════
-// RANKING
-// ══════════════════════════════════════════════
-function buildRanking(){
-  const rank=load(LS.ranking,[]);
-  if(!rank.length){$('rankPodium').innerHTML='';$('rankList').innerHTML='<div class="empty-state"><div class="empty-ic">🏆</div><div class="empty-tt">Sem dados ainda</div><div class="empty-sub">Complete simulados para entrar no ranking</div></div>';return;}
-  const top3=rank.slice(0,3);
-  const medals=['🥇','🥈','🥉'];
-  let podiumHtml='';
-  const ordered=top3.length>=3?[top3[1],top3[0],top3[2]]:(top3.length>=2?[top3[1],top3[0]]:[top3[0]]);
-  ordered.forEach((u,vi)=>{
-    const ri=top3.indexOf(u);
-    podiumHtml+=`<div class="podium-item podium-place-${ri+1}">
-      <div class="podium-av" style="width:${ri===0?56:ri===1?46:42}px;height:${ri===0?56:ri===1?46:42}px;border-color:${ri===0?'var(--gold)':ri===1?'var(--tx2)':'var(--org)'};color:${ri===0?'var(--gold)':ri===1?'var(--tx2)':'var(--org)'}">${u.initials}</div>
-      <div class="podium-name">${u.name}</div>
-      <div class="podium-xp">${u.xp} XP</div>
-      <div class="podium-base" style="height:${ri===0?50:ri===1?38:30}px;background:${ri===0?'rgba(245,200,66,.15)':ri===1?'rgba(160,175,204,.1)':'rgba(255,140,66,.1)'};color:${ri===0?'var(--gold)':ri===1?'var(--tx2)':'var(--org)'}">${medals[ri]}</div>
-    </div>`;
-  });
-  $('rankPodium').innerHTML=podiumHtml;
-  const usr=load(LS.user,{});
-  $('rankList').innerHTML=rank.map((u,i)=>`
-    <div class="rank-row${u.isMe?' me':''}">
-      <div class="rank-pos">${i<3?medals[i]:i+1}</div>
-      <div class="rank-av">${u.initials}</div>
-      <div class="rank-info">
-        <div class="rank-nm">${u.name}${u.isMe?' (você)':''}</div>
-        <div class="rank-sub">${u.temas||0} temas concluídos</div>
-      </div>
-      <div class="rank-xp">${u.xp} XP</div>
-    </div>`).join('');
-}
-
-// ══════════════════════════════════════════════
-// ERROS
-// ══════════════════════════════════════════════
-function buildErros(){
-  const erros=load(LS.errors,[]);
-  if(!erros.length){$('errosList').innerHTML='<div class="empty-state"><div class="empty-ic">📓</div><div class="empty-tt">Caderno vazio</div><div class="empty-sub">Seus erros aparecerão aqui para revisão</div></div>';return;}
-  $('errosList').innerHTML=[...erros].reverse().slice(0,50).map(e=>`
-    <div class="erro-card">
-      <div class="erro-tema">${e.temaNome||e.temaId}</div>
-      <div class="erro-q">${e.pergunta}</div>
-      <div class="erro-resp">✅ ${e.correta}</div>
-      ${e.escolhida&&e.escolhida!=='⏰ tempo esgotado'?`<div style="font-size:12px;color:var(--red);margin-top:4px;display:flex;gap:6px;">❌ ${e.escolhida}</div>`:''}
-    </div>`).join('');
-}
-function limparErros(){save(LS.errors,[]);buildErros();updateUI();showToast('🗑️ Caderno limpo!');}
-
-// ══════════════════════════════════════════════
-// PROFILE
-// ══════════════════════════════════════════════
-function buildPerfil(){
-  const usr=load(LS.user,{name:'Aluno',initials:'A'});
-  const prog=load(LS.prog,{acertos:0,questoes:0,byTema:{}});
-  const sk=load(LS.streak,{days:0});
-  const xp=calcXP(prog);const lvl=calcLevel(xp);
-  const temas=Object.values(prog.byTema||{}).filter(t => t.done).length;
-  const pct=prog.questoes>0?Math.round(prog.acertos/prog.questoes*100):0;
-  const earned=load('kr_earned',[]);
-  const badgesHtml=ACHIEVEMENTS.map(a=>`
-    <div class="badge-item${earned.includes(a.id)?' earned':''}">
-      <div class="badge-ic">${a.icon}</div>
-      <div class="badge-lbl">${a.name.split(' ').slice(0,2).join(' ')}</div>
-    </div>`).join('');
-
-  $('perfilContent').innerHTML=`
-    <div class="prof-av-big">${usr.initials||'A'}</div>
-    <div class="prof-name">${usr.name}</div>
-    <div class="prof-level">${lvl.label} · ${xp} XP</div>
-    ${usr.email?`<div style="text-align:center;font-size:12px;color:var(--tx3);margin-bottom:20px">📧 ${usr.email}</div>`:''}
-    <div class="sec-h"><div class="sec-tt">Conquistas</div></div>
-    <div class="badges-grid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px;">${badgesHtml}</div>
-    <div class="sec-h"><div class="sec-tt">Estatísticas</div></div>
-    <div class="prof-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;">
-      <div class="prof-stat"><div class="prof-sv" style="font-size:22px; font-weight:900; color:var(--gold);">${prog.acertos||0}</div><div class="prof-sl">Total de acertos</div></div>
-      <div class="prof-stat"><div class="prof-sv" style="font-size:22px; font-weight:900; color:var(--gold);">${temas}</div><div class="prof-sl">Temas concluídos</div></div>
-      <div class="prof-stat"><div class="prof-sv" style="font-size:22px; font-weight:900; color:var(--gold);">${pct}%</div><div class="prof-sl">Aproveitamento</div></div>
-      <div class="prof-stat"><div class="prof-sv" style="font-size:22px; font-weight:900; color:var(--gold);">${sk.days||0}</div><div class="prof-sl">Dias seguidos</div></div>
-    </div>
-    <button class="btn-secondary" style="width:100%;" onclick="exportData()">📊 Exportar meus dados</button>
-    <button class="btn-alert" style="width:100%; margin-top:8px;" onclick="resetarProgresso()">🔄 Resetar progresso</button>
-    <button class="btn-secondary" style="width:100%; margin-top:8px; border-color:rgba(255,90,90,.3); color:var(--red);" onclick="logoutAdmin()">🚪 Encerrar Sessão</button>
-  `;
-}
-function exportData(){
-  const prog=load(LS.prog,{});const usr=load(LS.user,{});
-  const data={usuario:usr,progresso:prog,erros:load(LS.errors,[]),exportado:new Date().toISOString()};
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);const a=document.createElement('a');
-  a.href=url;a.download='krona_dados.json';a.click();URL.revokeObjectURL(url);
-  showToast('📊 Dados exportados!');
-}
-function resetarProgresso(){
-  showKronaConfirm(
-    'Resetar todo o progresso?',
-    'Esta ação apagará todo o seu histórico e não pode ser desfeita.',
-    'Confirmar Reset',
-    'Cancelar',
-    (confirmed) => {
-      if (confirmed) {
-        [LS.prog,LS.errors,LS.streak,LS.session,'kr_earned'].forEach(k=>localStorage.removeItem(k));
-        updateUI();renderAllAccordionTemas();buildPerfil();showToast('🔄 Progresso resetado!');
-      }
-    }
-  );
-}
-
-// ══════════════════════════════════════════════
-// ADMIN
-// ══════════════════════════════════════════════
-function buildAdmin(){
-  const pdfcount=load(LS.pdfcount,0);
-  const aiqs=load(LS.aiqs,0);
-  const rank=load(LS.ranking,[]);
-  $('adminAlunos').textContent=rank.length;
-  $('adminQuestoes').textContent=aiqs+(Object.values(QUESTIONS_DB).reduce((a,b)=>a+b.length,0));
-  $('adminPDFs').textContent=pdfcount;
-  
-  populateAdminAudioSelect();
-
-  $('studentsList').innerHTML=rank.slice(0,10).map(u=>`
-    <div class="student-row">
-      <div class="student-av" style="width:36px; height:36px; border-radius:50%; background:var(--sf3); border:1.5px solid var(--bd2); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:var(--blu); flex-shrink:0;">${u.initials}</div>
-      <div class="student-info" style="flex:1;">
-        <div class="student-nm" style="font-size:13px; font-weight:700; color:var(--txt);">${u.name}</div>
-        <div class="student-sub" style="font-size:10px; color:var(--tx3); margin-top:1px;">${u.temas||0} temas · ${u.xp} XP</div>
-      </div>
-      <div class="student-xp" style="font-size:13px; font-weight:800; color:var(--vio);">${u.xp}</div>
-    </div>`).join('');
-}
-
-function handleDrop(e){
-  e.preventDefault();$('uploadZone').classList.remove('drag');
-  const f=e.dataTransfer.files[0];if(f)processPDF(f);
-}
-
-async function processPDF(file){
-  if(!file||!file.name.endsWith('.pdf')){showToast('⚠️ Envie um arquivo PDF');return;}
-  save(LS.pdfcount,(load(LS.pdfcount,0)+1));
-  const steps=['📄 Lendo PDF...','🔍 Identificando temas...','🧠 Gerando questões com IA...','✍️ Criando explicações...','✅ Finalizado!'];
-  const prog=$('aiProgress');prog.style.display='block';
-  $('aiSteps').innerHTML=steps.map((s,i)=>`<div class="ai-step wait" id="aistep${i}" style="display:flex; align-items:center; gap:10px; padding:8px 0; font-size:13px; color:var(--tx2); border-bottom:1px solid var(--bd);"><div class="ai-step-ic">⏳</div>${s}</div>`).join('');
-
-  for(let i=0;i<steps.length;i++){
-    await new Promise(r=>setTimeout(r,600+Math.random()*800));
-    for(let j=0;j<i;j++){const el=$(`aistep${j}`);el.className='ai-step done';el.querySelector('.ai-step-ic').textContent='✅';}
-    const cur=$(`aistep${i}`);cur.className='ai-step active';cur.querySelector('.ai-step-ic').textContent='⚡';
-    if(i===2){
-      await generateQuestionsFromPDF(file,cur);
-    }
-  }
-  await new Promise(r=>setTimeout(r,500));
-  for(let j=0;j<steps.length;j++){const el=$(`aistep${j}`);el.className='ai-step done';el.querySelector('.ai-step-ic').textContent='✅';}
-  showToast('🎉 PDF processado com sucesso!',4000);
-  buildAdmin();
-}
-
-async function generateQuestionsFromPDF(file,stepEl){
-  try{
-    const base64=await new Promise((res,rej)=>{
-      const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=()=>rej(new Error('Falha ao ler arquivo'));r.readAsDataURL(file);
-    });
-    stepEl.lastChild.textContent=' Enviando para IA...';
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',max_tokens:1000,
-        messages:[{role:'user',content:[
-          {type:'document',source:{type:'base64',media_type:'application/pdf',data:base64}},
-          {type:'text',text:`Analise este PDF e crie 3 questões de múltipla escolha (A,B,C,D,E) sobre o conteúdo principal. Retorne APENAS JSON válido no formato:
-[{"pergunta":"...","opcoes":{"A":"...","B":"...","C":"...","D":"...","E":"..."},"correta":"A","explicacao":"..."}]`}
-        ]}]
-      })
-    });
-    if(!resp.ok)throw new Error('API error '+resp.status);
-    const data=await resp.json();
-    const text=data.content?.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim();
-    const novas=JSON.parse(text);
-    if(Array.isArray(novas)&&novas.length){
-      const cur=load(LS.aiqs,0);save(LS.aiqs,cur+novas.length);
-      const aiTemaId='AI_'+Date.now();
-      QUESTIONS_DB[aiTemaId]=novas;
-      showAchievement(`${novas.length} novas questões geradas!`,'🤖');
-    }
-  }catch(e){console.warn('PDF AI error:',e);stepEl.lastChild.textContent=' Questões geradas (modo de demonstração)';}
-}
-
-function saveAdminAudioSettings() {
-  const temaId = $('adminAudioTemaSelect').value;
-  const url = $('adminAudioUrl').value.trim();
-  if (!url) { showToast('⚠️ Insira uma URL ou envie um arquivo'); return; }
-  const customUrls = load('kr_custom_audios', {});
-  customUrls[temaId] = url; save('kr_custom_audios', customUrls);
-  showToast('✅ Configurações de áudio salvas!');
-  renderAllAccordionTemas();
-}
-
-function populateAdminAudioSelect() {
-  const select = $('adminAudioTemaSelect'); if (!select) return;
-  select.innerHTML = '';
-  for (let i = 1; i <= 14; i++) {
-    const tId = 'TEMA_' + i; const metadata = AUDIO_METADATA[tId];
-    const opt = document.createElement('option'); opt.value = tId;
-    opt.textContent = `Tema ${i} - ${metadata.tema}`; select.appendChild(opt);
-  }
-}
-
-// ══════════════════════════════════════════════
-// NAVIGATION
-// ══════════════════════════════════════════════
-const VIEWS={home:'viewHome',materias:'viewMaterias',rank:'viewRank',erros:'viewErros',perfil:'viewPerfil',admin:'viewAdmin'};
-const NAVS={home:'nHome',materias:'nMaterias',rank:'nRank',erros:'nErr',perfil:'nProf',admin:'nAdmin'};
-let curView='home';
-
-function navTo(view){
-  for(const v of Object.values(VIEWS)){const el=$(v);if(el)el.style.display='none';}
-  for(const n of Object.values(NAVS)){$(n)?.classList.remove('act');}
-  
-  // Sincroniza sidebar desktop
-  document.querySelectorAll('.side-link').forEach(l => l.classList.remove('active'));
-  const activeSbLink = $(`sb_${view}`);
-  if (activeSbLink) activeSbLink.classList.add('active');
-
-  const el=$(VIEWS[view]);if(el)el.style.display='block';
-  $(NAVS[view])?.classList.add('act');
-  curView=view;
-  
-  if(view==='home'){
-    updateUI();
-    updatePendingSimuladosWidget();
-    updateMiniRankingWidget();
-    updateLastActivityWidget();
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
-  if(view==='materias') {
-    updateUI();
-    renderAllAccordionTemas();
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
-  if(view==='rank') buildRanking();
-  if(view==='erros') buildErros();
-  if(view==='perfil') buildPerfil();
-  if(view==='admin') buildAdmin();
-}
-
-// ══════════════════════════════════════════════
-// MODULE ACCORDION
-// ══════════════════════════════════════════════
-let openMod=null;
-function tglMod(id){
-  const el=$('mod'+id);
-  if(openMod&&openMod!==id){$('mod'+openMod)?.classList.remove('open');}
-  if(openMod===id){el.classList.remove('open');openMod=null;}
-  else{el.classList.add('open');openMod=id;setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),150);}
-}
-
-// ══════════════════════════════════════════════
-// QUIZ ENGINE
-// ══════════════════════════════════════════════
-function startQuiz(temaId,temaNome){
-  const saved=load(LS.session,null);
-  if(saved&&saved.temaId===temaId&&!saved.finished){
-    showKronaConfirm(
-      'Retomar simulado?',
-      `Deseja retomar de onde parou ou iniciar um novo simulado de "${saved.temaNome}"?`,
-      'Iniciar Novo',
-      'Retomar Progresso',
-      (restart) => {
-        if (restart) { startFreshQuiz(temaId, temaNome); } else { resumeQuiz(saved); }
-      },
-      '📚'
-    );
-  }else{startFreshQuiz(temaId,temaNome);}
-}
-
-function startFreshQuiz(temaId,temaNome){
-  const qs=QUESTIONS_DB[temaId];
-  if(!qs?.length){showToast('❌ Questões não encontradas!');return;}
-  const questions=[...qs].sort(()=>Math.random()-.5);
-  QS={temaId,temaNome,questions,idx:0,acertos:0,erros:0,answered:false,timerSec:300,timerInterval:null,sessionErrors:[],finished:false,curSlide:0};
-  saveSession();bumpStreak();
-  openQuizScreen();renderQuestion();startTimer();
-}
-
-function resumeQuiz(saved){
-  QS={...saved,timerInterval:null,answered:false,curSlide:0};
-  openQuizScreen();renderQuestion();startTimer();
-  const nb=$('qNext');if(nb)nb.style.display='block';
-}
-
-function saveSession(){
-  if(!QS)return;
-  save(LS.session,{
-    temaId:QS.temaId,temaNome:QS.temaNome,questions:QS.questions,idx:QS.idx,
-    acertos:QS.acertos,erros:QS.erros,sessionErrors:QS.sessionErrors,finished:QS.finished,
-    timerSec:QS.timerSec || 300
-  });
-}
-
-function openQuizScreen(){
-  $('quizScreen').classList.add('active');
-  $('qTemaNm').textContent=QS.temaNome;
-  $('qAcertos').textContent=QS.acertos;
-  $('qErros').textContent=QS.erros;
-  document.body.style.overflow='hidden';
-}
-
-function closeQuizScreen(){
-  $('quizScreen').classList.remove('active');
-  document.body.style.overflow='';
-  stopTimer();
-}
-
-function startTimer(){
-  stopTimer();updateTimerUI();
-  QS.timerInterval=setInterval(()=>{
-    QS.timerSec--;updateTimerUI();
-    if(QS.timerSec<=0){stopTimer();onTimeout();}
-  },1000);
-}
-
-function stopTimer(){if(QS?.timerInterval){clearInterval(QS.timerInterval);QS.timerInterval=null;}}
-
-function updateTimerUI(){
-  if(!QS)return;
-  const m=Math.floor(QS.timerSec/60);const s=QS.timerSec%60;
-  const el=$('qTimer');const fill=$('qTimerFill');
-  el.textContent=`⏱ ${m}:${String(s).padStart(2,'0')}`;
-  const pct=Math.round(QS.timerSec/300*100);
-  el.className='q-timer'+(QS.timerSec<=30?' danger':QS.timerSec<=60?' warn':'');
-  if(fill){fill.style.width=pct+'%';fill.style.background=QS.timerSec<=30?'var(--red)':QS.timerSec<=60?'var(--org)':'var(--gold)';}
-}
-
-function onTimeout(){
-  if(QS.answered)return;
-  QS.answered=true;QS.erros++;$('qErros').textContent=QS.erros;
-  const q=QS.questions[QS.idx];
-  const card=$(`optCard${q.correta}`);if(card)card.classList.add('correct');
-  document.querySelectorAll('.q-opt-card').forEach(c=>c.classList.add('disabled'));
-  showFeedback(false,`⏰ Tempo esgotado! Resposta: ${q.correta}`,q.explicacao||'');
-  QS.sessionErrors.push({temaId:QS.temaId,temaNome:QS.temaNome,pergunta:q.pergunta,correta:`${q.correta}: ${q.opcoes[q.correta]}`,escolhida:'⏰ tempo esgotado',data:new Date().toISOString()});
-  saveSession();
-  setTimeout(()=>{if(QS&&!QS.finished)nextQuestion();},3000);
-}
-
-function renderQuestion(){
-  const q=QS.questions[QS.idx];
-  const tot=QS.questions.length;
-  $('qProgFill').style.width=Math.round(QS.idx/tot*100)+'%';
-  $('qProgCt').textContent=`${QS.idx+1}/${tot}`;
-  QS.answered=false;QS.curSlide=0;
-  const letters=Object.keys(q.opcoes||{});
-  const slides=letters.map((l,i)=>`
-    <div class="q-opt-slide">
-      <div class="q-opt-card" id="optCard${l}" onclick="selectOpt('${l}')">
-        <div class="q-opt-letter">${l}</div>
-        <div class="q-opt-txt">${q.opcoes[l]}</div>
-      </div>
-    </div>`).join('');
-  const dots=letters.map((_,i)=>`<div class="q-dot${i===0?' active':''}" id="dot${i}"></div>`).join('');
-
-  $('qBody').innerHTML=`
-    <div class="q-question-fixed">
-      <div class="q-num">Questão ${QS.idx+1} de ${tot}</div>
-      <div class="q-txt">${q.pergunta}</div>
-      <div class="q-hint">← Deslize para ver alternativas →</div>
-    </div>
-    <div class="q-carousel-wrap" id="carouselWrap">
-      <div class="q-carousel" id="carousel">${slides}</div>
-      <div class="q-swipe-hint"><span>←</span><div class="q-dots" id="qDots">${dots}</div><span>→</span></div>
-    </div>
-    <div class="q-fb-overlay" id="qFbOv">
-      <div class="q-fb-tt" id="qFbTt"></div>
-      <div class="q-fb-ex" id="qFbEx"></div>
-      <button class="q-next" id="qNextBtn" onclick="nextQuestion()">${QS.idx+1<tot?'Próxima questão →':'Ver resultado 🏁'}</button>
-    </div>`;
-
-  initSwipe();
-}
-
-function initSwipe(){
-  const wrap=$('carouselWrap');const car=$('carousel');
-  if(!wrap||!car)return;
-  const qs=QS.questions[QS.idx];
-  const count=Object.keys(qs.opcoes||{}).length;
-  let startX=0,isDragging=false,offsetX=0;
-
-  function goTo(i){
-    QS.curSlide=Math.max(0,Math.min(i,count-1));
-    car.style.transition='transform .3s cubic-bezier(.4,0,.2,1)';
-    car.style.transform=`translateX(-${QS.curSlide*100}%)`;
-    document.querySelectorAll('.q-dot').forEach((d,j)=>{d.className='q-dot'+(j===QS.curSlide?' active':'');});
-  }
-  wrap.addEventListener('touchstart',e=>{isDragging=true;startX=e.touches[0].clientX;car.style.transition='none';});
-  wrap.addEventListener('touchmove',e=>{if(!isDragging)return;offsetX=e.touches[0].clientX-startX;car.style.transform=`translateX(calc(-${QS.curSlide*100}% + ${offsetX}px))`;});
-  wrap.addEventListener('touchend',()=>{isDragging=false;if(Math.abs(offsetX)>50)goTo(offsetX<0?QS.curSlide+1:QS.curSlide-1);else goTo(QS.curSlide);offsetX=0;});
-  document.querySelectorAll('.q-dot').forEach((d,i)=>d.addEventListener('click',()=>goTo(i)));
-}
-
-function selectOpt(letter){
-  if(QS.answered)return;
-  stopTimer();QS.answered=true;
-  const q=QS.questions[QS.idx];
-  const isOk=letter===q.correta;
-  document.querySelectorAll('.q-opt-card').forEach(c=>c.classList.add('disabled'));
-  const sel=$(`optCard${letter}`);const cor=$(`optCard${q.correta}`);
-  if(isOk){sel.classList.add('correct');}else{sel.classList.add('wrong');if(cor)cor.classList.add('correct');}
-  if(isOk){
-    QS.acertos++;$('qAcertos').textContent=QS.acertos;
-    showFeedback(true,'✅ Correto! Muito bem!',q.explicacao||'');
-    launchConfetti();
-    if(tg.HapticFeedback)tg.HapticFeedback.impactOccurred('light');
-  }else{
-    QS.erros++;$('qErros').textContent=QS.erros;
-    showFeedback(false,`❌ Resposta incorreta — Correta: ${q.correta}`,q.explicacao||'');
-    QS.sessionErrors.push({temaId:QS.temaId,temaNome:QS.temaNome,pergunta:q.pergunta,correta:`${q.correta}: ${q.opcoes[q.correta]}`,escolhida:`${letter}: ${q.opcoes[letter]||'?'}`,data:new Date().toISOString()});
-    if(tg.HapticFeedback)tg.HapticFeedback.notificationOccurred('error');
-  }
-  saveSession();
-}
-
-function showFeedback(ok,title,ex){
-  const ov=$('qFbOv');const tt=$('qFbTt');const exEl=$('qFbEx');const btn=$('qNextBtn');
-  ov.className='q-fb-overlay show '+(ok?'ok':'err');
-  tt.textContent=title;exEl.textContent=ex;
-  btn.className='q-next '+(ok?'ok':'err');
-  btn.textContent=(QS.idx+1<QS.questions.length)?'Próxima questão →':'Ver resultado 🏁';
-}
-
-function nextQuestion(){
-  stopTimer();QS.idx++;
-  if(QS.idx>=QS.questions.length){showResult();}
-  else{renderQuestion();startTimer();}
-}
-
-function showResult(){
-  stopTimer();QS.finished=true;
-  localStorage.removeItem(LS.session);
-  const tot=QS.questions.length;const ac=QS.acertos;
-  const pct=Math.round(ac/tot*100);const nota=(ac/tot*10).toFixed(1);
-  const xpGain=ac*12+(pct>=70?80:0)+(pct>=90?80:0);
-  const prog=load(LS.prog,{acertos:0,questoes:0,byTema:{},history:[]});
-  if(!prog.byTema)prog.byTema={};if(!prog.history)prog.history=[];
-  const prev=prog.byTema[QS.temaId]||{acertos:0,total:0,done:false,attempts:0,bestPct:0};
-  prog.byTema[QS.temaId]={acertos:Math.max(prev.acertos,ac),total:tot,done:prev.done||(pct>=60),lastPct:pct,bestPct:Math.max(prev.bestPct||0,pct),attempts:(prev.attempts||0)+1};
-  prog.acertos+=ac;prog.questoes+=tot;
-  prog.history.push({temaId:QS.temaId,acertos:ac,total:tot,pct,data:new Date().toISOString()});
-  if(prog.history.length>200)prog.history=prog.history.slice(-200);
-  save(LS.prog,prog);
-  if(QS.sessionErrors.length){const ex=load(LS.errors,[]);save(LS.errors,[...ex,...QS.sessionErrors].slice(-200));}
-  pushRanking();checkAchievements();
-
-  let emoji,msg;
-  if(pct===100){emoji='💎';msg='Perfeito! Resultado incrível!';}
-  else if(pct>=90){emoji='🏆';msg='Excelente! Domínio total!';}
-  else if(pct>=70){emoji='🎉';msg='Muito bem! Você passou!';}
-  else if(pct>=50){emoji='📚';msg='Continue estudando!';}
-  else{emoji='💪';msg='Não desanime, revise o tema!';}
-
-  if(pct>=70)launchConfetti(2000);
-
-  $('qBody').innerHTML=`
-    <div class="q-result">
-      <span class="q-res-emoji">${emoji}</span>
-      <div class="q-res-title">${msg}</div>
-      <div class="q-res-nota">${nota}</div>
-      <div class="q-res-pct">${pct}% · ${ac}/${tot} acertos</div>
-      <div class="q-res-grid">
-        <div class="q-rs"><div class="q-rs-v">${ac}</div><div class="q-rs-l">Acertos</div></div>
-        <div class="q-rs"><div class="q-rs-v">${tot-ac}</div><div class="q-rs-l">Erros</div></div>
-        <div class="q-rs"><div class="q-rs-v">${pct}%</div><div class="q-rs-l">Aproveit.</div></div>
-      </div>
-      <div class="q-xp-banner">⚡ +${xpGain} XP ganhos!</div>
-      <button class="q-btn-home btn-primary" onclick="finishAndGoHome()" style="width:100%;">🏠 Voltar ao início</button>
-      <button class="q-btn-retry btn-secondary" onclick="restartQuiz()" style="width:100%; margin-top:8px;">🔄 Refazer simulado</button>
-    </div>`;
-  $('qProgFill').style.width='100%';
-  $('qProgCt').textContent=`${tot}/${tot}`;
-  $('qTimer').textContent='✅ Concluído';$('qTimer').className='q-timer';
-  $('qTimerFill').style.width='100%';$('qTimerFill').style.background='var(--grn)';
-}
-
-function finishAndGoHome(){closeQuizScreen();updateUI();renderAllAccordionTemas();showToast('✅ Resultado salvo!');}
-function restartQuiz(){const{temaId,temaNome}=QS;closeQuizScreen();setTimeout(()=>startFreshQuiz(temaId,temaNome),200);}
-
-function quitQuiz(){
-  showKronaConfirm(
-    'Tem certeza que deseja sair?',
-    'Seu progresso atual será salvo de forma segura para você continuar de onde parou.',
-    'Sair e Salvar',
-    'Continuar Simulado',
-    (exit) => {
-      if (exit) {
-        saveSession();
-        closeQuizScreen();
-        updateUI();
-        renderAllAccordionTemas();
-        showToast('💾 Progresso salvo!');
-      }
-    }
-  );
-}
-
-// ══════════════════════════════════════════════
-// CONFETTI SYSTEM
-// ══════════════════════════════════════════════
-function launchConfetti(duration=1500){
+// ======================== SISTEMA DE CONFETES E SOM ========================
+let confettiActive=false;
+function launchConfetti(duration=2000){
+  if(confettiActive)return;
+  confettiActive=true;
   const canvas=$('confetti-canvas');
   const ctx=canvas.getContext('2d');
   canvas.width=window.innerWidth;canvas.height=window.innerHeight;
-  const pieces=[];const colors=['#F5C842','#00D68F','#4B9EFF','#A855F7','#FF8C42','#FF5A5A'];
-  for(let i=0;i<80;i++){pieces.push({x:Math.random()*canvas.width,y:-10,vy:2+Math.random()*4,vx:(Math.random()-.5)*4,r:4+Math.random()*6,color:colors[Math.floor(Math.random()*colors.length)],rot:Math.random()*360,vr:(Math.random()-.5)*10});}
+  const pieces=[];
+  for(let i=0;i<120;i++){pieces.push({x:Math.random()*canvas.width,y:-10,vy:2+Math.random()*4,vx:(Math.random()-0.5)*5,r:5+Math.random()*8,color:`hsl(${Math.random()*360},70%,60%)`,rot:Math.random()*360,vr:(Math.random()-0.5)*15});}
   const end=Date.now()+duration;
   function frame(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
+    let still=false;
     for(const p of pieces){
-      p.y+=p.vy;p.x+=p.vx;p.rot+=p.vr;p.vy+=.05;
+      p.y+=p.vy;p.x+=p.vx;p.rot+=p.vr;p.vy+=0.1;
       ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.color;ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r);ctx.restore();
+      if(p.y<canvas.height+50)still=true;
     }
-    if(Date.now()<end)requestAnimationFrame(frame);else ctx.clearRect(0,0,canvas.width,canvas.height);
+    if(Date.now()<end && still)requestAnimationFrame(frame);
+    else {ctx.clearRect(0,0,canvas.width,canvas.height);confettiActive=false;}
   }
   requestAnimationFrame(frame);
+  try{$('successSound').play();}catch(e){}
+  showToast("🎉 Parabéns! Resposta correta.");
 }
+function playSuccess(){launchConfetti();}
 
-// ══════════════════════════════════════════════
-// INITIALIZATION
-// ══════════════════════════════════════════════
-(function init(){
-  const usr=load(LS.user,null);
-  const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user;
-  if(tgUser && !usr){
-    const name=tgUser.first_name+(tgUser.last_name?' '+tgUser.last_name:'');
-    const initials=(tgUser.first_name[0]+(tgUser.last_name?.[0]||'')).toUpperCase();
-    save(LS.user,{name,initials,id:String(tgUser.id),isAdmin:false});
-  }
-  
-  // Renderiza a listagem de temas no accordion de matérias
-  renderAllAccordionTemas();
-  
-  if(usr){
-    $('regScreen').style.display='none';
-    $('appHeader').style.display='block';
-    $('appSidebar').style.display='flex';
-    if(usr.isAdmin){
-      $('appNavAdmin').style.display='flex';
-      $('appNavStudent').style.display='none';
-      $('sidebarAdmin').style.display='block';
-      $('sidebarStudent').style.display='none';
-      navTo('admin');
-    } else {
-      $('appNavStudent').style.display='flex';
-      $('appNavAdmin').style.display='none';
-      $('sidebarStudent').style.display='block';
-      $('sidebarAdmin').style.display='none';
-      bumpStreak();checkAchievements();
-      navTo('home');
-      setTimeout(()=>{if(!openMod)tglMod('A');},500);
-      const saved=load(LS.session,null);
-      if(saved&&!saved.finished){
-        setTimeout(()=>showToast(`💾 Simulado salvo: "${saved.temaNome}". Abra a Matéria correspondente para retomar.`,4000),1200);
-      }
-    }
-  }
-})();
+// ======================== UI ATUALIZAÇÃO ========================
+function updateUI(){const prog=load(LS.prog,{acertos:0,questoes:0,byTema:{},history:[]});const usr=load(LS.user,{name:"Aluno",initials:"A"});const sk=load(LS.streak,{days:0});const xp=calcXP(prog);const lvl=calcLevel(xp);const temasDone=Object.values(prog.byTema||{}).filter(t=>t.done).length;const pct=prog.questoes>0?Math.round(prog.acertos/prog.questoes*100):0;const geral=Math.round(temasDone/14*100);
+$('hdrXP').textContent=xp+" XP";$('hdrAv').textContent=usr.initials;$('wcName').textContent=getSafeUserName()+" 👋";$('wcPct').textContent=geral+"%";$('wcProgBar').style.width=geral+"%";$('wcAcertos').textContent=prog.acertos||0;$('wcQuestoes').textContent=prog.questoes||0;$('wcAprov').textContent=pct+"%";$('ribStreak').textContent=sk.days||0;$('ribLevel').textContent=lvl.label;
+const erros=load(LS.errors,[]);const eb=$('errBadge');const ebSb=$('errBadgeSb');if(erros.length){eb.style.display='flex';eb.textContent=Math.min(erros.length,99);if(ebSb){ebSb.style.display='inline-block';ebSb.textContent=Math.min(erros.length,99);}}else{if(eb)eb.style.display='none';if(ebSb)ebSb.style.display='none';}
+updatePendingWidget();updateMiniRanking();updateLastActivity();updateMiniChart(prog);pushRanking();}
+function updatePendingWidget(){const prog=load(LS.prog,{byTema:{}});const pending=[];for(let i=1;i<=14;i++){const tid=`TEMA_${i}`;if(!prog.byTema[tid]?.done)pending.push(tid);}
+const container=$('pendingList');if(!container)return;if(pending.length===0){container.innerHTML='<div style="padding:12px;text-align:center">🎉 Todos concluídos!</div>';return;}
+container.innerHTML=pending.slice(0,4).map(tid=>`<div class="widget-item-link" onclick="openTema('${tid}')"><span>${AUDIO_METADATA[tid].aula}: ${AUDIO_METADATA[tid].tema}</span><span>›</span></div>`).join('');}
+function openTema(tid){navTo('materias');setTimeout(()=>{const mod=Object.entries(MOD_TEMAS).find(([_,ts])=>ts.includes(tid))[0];if(mod)tglMod(mod);setTimeout(()=>toggleTemaExpand(tid),200);},150);}
+function updateMiniRanking(){const rank=load(LS.ranking,[]);const container=$('miniRanking');if(!container)return;if(rank.length===0){container.innerHTML='<div style="padding:12px;text-align:center">Nenhum dado ainda</div>';return;}
+container.innerHTML=rank.slice(0,3).map((u,i)=>`<div style="display:flex;justify-content:space-between;padding:8px 0"><div style="display:flex;gap:8px"><span>${i===0?"🥇":i===1?"🥈":"🥉"}</span><span>${u.name}</span></div><span style="font-weight:800">${u.xp} XP</span></div>`).join('');}
+function updateLastActivity(){const prog=load(LS.prog,{history:[]});const last=prog.history?.[prog.history.length-1];const container=$('lastActivity');if(!last||!container){container.innerHTML='<div style="padding:12px;text-align:center">Nenhuma atividade recente</div>';return;}
+container.innerHTML=`<div class="widget-item-link" style="cursor:default"><div><div>${last.temaId}</div><div style="font-size:10px">${new Date(last.data).toLocaleDateString()}</div></div><div>${last.pct}%</div></div>`;}
+function updateMiniChart(prog){const container=$('miniChart');if(!container)return;const temas=Object.keys(MOD_TEMAS).flatMap(m=>MOD_TEMAS[m]);container.innerHTML=temas.map(tid=>{const td=prog.byTema?.[tid];const pct=td?.total>0?Math.round(td.acertos/td.total*100):0;return `<div class="chart-bar" style="height:60px;position:relative"><div class="chart-fill" style="height:${pct}%;"></div></div>`;}).join('');}
+function pushRanking(){const prog=load(LS.prog,{});const usr=load(LS.user,{});const xp=calcXP(prog);const temasDone=Object.values(prog.byTema||{}).filter(t=>t.done).length;let rank=load(LS.ranking,[]);rank=rank.filter(r=>r.id!==usr.id);rank.push({id:usr.id,name:usr.name,initials:usr.initials,xp,temas:temasDone,isMe:true});rank.sort((a,b)=>b.xp-a.xp);save(LS.ranking,rank.slice(0,50));}
+function buildRanking(){const rank=load(LS.ranking,[]);const top3=rank.slice(0,3);const medals=["🥇","🥈","🥉"];let podium='';for(let i=0;i<3&&i<top3.length;i++){const u=top3[i];podium+=`<div class="podium-item"><div class="podium-av" style="width:${i===0?56:46}px;height:${i===0?56:46}px;border-color:${i===0?'var(--gold)':'var(--tx2)'}">${u.initials}</div><div class="podium-name">${u.name}</div><div class="podium-xp">${u.xp} XP</div><div class="podium-base" style="height:${i===0?50:40}px;background:rgba(245,200,66,.1)">${medals[i]}</div></div>`;} $('rankPodium').innerHTML=podium;$('rankList').innerHTML=rank.map((u,i)=>`<div class="rank-row${u.isMe?' me':''}"><div class="rank-pos">#${i+1}</div><div class="rank-av">${u.initials}</div><div class="rank-info"><div class="rank-nm">${u.name}${u.isMe?' (você)':''}</div><div class="rank-sub">${u.temas||0} temas</div></div><div class="rank-xp">${u.xp} XP</div></div>`).join('');}
+function buildErros(){const erros=load(LS.errors,[]);if(!erros.length){$('errosList').innerHTML='<div style="text-align:center;padding:40px">📓 Nenhum erro registrado</div>';return;}
+$('errosList').innerHTML=erros.slice().reverse().map(e=>`<div class="erro-card"><div class="erro-tema">${e.temaId}</div><div class="erro-q">${e.pergunta}</div><div class="erro-resp">✅ ${e.correta}</div>${e.escolhida?`<div style="color:var(--red);font-size:12px">❌ ${e.escolhida}</div>`:''}</div>`).join('');}
+function limparErros(){save(LS.errors,[]);buildErros();updateUI();showToast("Caderno limpo!");}
+function buildPerfil(){const usr=load(LS.user,{});const prog=load(LS.prog,{});const xp=calcXP(prog);const lvl=calcLevel(xp);const temasDone=Object.values(prog.byTema||{}).filter(t=>t.done).length;const pct=prog.questoes>0?Math.round(prog.acertos/prog.questoes*100):0;$('perfilContent').innerHTML=`<div style="text-align:center;margin-bottom:20px"><div class="usr-av" style="width:80px;height:80px;font-size:28px;margin:0 auto 12px">${usr.initials}</div><div style="font-size:22px;font-weight:900">${usr.name}</div><div style="color:var(--gold)">${lvl.label} · ${xp} XP</div></div><div class="premium-widget-card"><div class="widget-header">Estatísticas</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div><div style="font-size:24px;font-weight:900">${prog.acertos||0}</div><div>Acertos</div></div><div><div style="font-size:24px;font-weight:900">${pct}%</div><div>Aproveit.</div></div><div><div style="font-size:24px;font-weight:900">${temasDone}</div><div>Temas OK</div></div><div><div style="font-size:24px;font-weight:900">${load(LS.streak,{days:0}).days}</div><div>Dias seguidos</div></div></div></div><button class="btn-secondary" style="width:100%;margin-top:8px" onclick="exportData()">📥 Exportar Dados</button><button class="btn-alert" style="width:100%;margin-top:8px" onclick="resetProgresso()">⚠️ Resetar Progresso</button><button class="btn-secondary" style="width:100%;margin-top:8px;border-color:var(--red);color:var(--red)" onclick="logout()">🚪 Sair da Conta</button>`;}
+function exportData(){const data={usuario:load(LS.user,{}),progresso:load(LS.prog,{}),erros:load(LS.errors,[])};const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download="krona_backup.json";a.click();showToast("Backup exportado!");}
+function resetProgresso(){if(confirm("Resetar todo o progresso? Essa ação é irreversível.")){[LS.prog,LS.errors,LS.streak,LS.session].forEach(k=>localStorage.removeItem(k));updateUI();buildPerfil();showToast("Progresso resetado!");}}
+function buildAdminStats(){const rank=load(LS.ranking,[]);$('adminAlunos').textContent=rank.length;$('adminPDFs').textContent=load(LS.pdfcount,0);$('adminModulosCount').textContent=Object.keys(MOD_TEMAS).length;let totalQs=0;for(const q of Object.values(QUESTIONS_DB))totalQs+=q.length;$('adminQuestoesCount').textContent=totalQs;$('studentsList').innerHTML=rank.slice(0,10).map(u=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd)"><div style="display:flex;gap:10px"><div class="usr-av" style="width:32px;height:32px">${u.initials}</div><div><div>${u.name}</div><div class="rank-sub">${u.temas||0} temas</div></div></div><div>${u.xp} XP</div></div>`).join('');$('listaModulosAdmin').innerHTML=Object.entries(MOD_TEMAS).map(([id,temas])=>`<div style="padding:10px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between"><div><strong>${MOD_NOMES[id]}</strong><br><span style="font-size:11px">${temas.length} temas</span></div><button class="btn-secondary" style="padding:4px 12px" onclick="alert('Editar módulo em breve')">Editar</button></div>`).join('');$('listaSimuladosAdmin').innerHTML=Object.entries(QUESTIONS_DB).map(([tid,qs])=>`<div style="padding:8px 0;border-bottom:1px solid var(--bd)">${tid}: ${qs.length} questões</div>`).join('');$('relatoriosContent').innerHTML=`<div>Total de alunos: ${rank.length}</div><div>Total de questões respondidas: ${load(LS.prog,{questoes:0}).questoes}</div><div>Taxa de acerto geral: ${load(LS.prog,{acertos:0,questoes:0}).questoes>0?Math.round(load(LS.prog,{}).acertos/load(LS.prog,{}).questoes*100):0}%</div>`;}
+function saveAdminAudio(){const tema=$('adminAudioTema').value;const url=$('adminAudioUrl').value.trim();if(!url){showToast("Insira uma URL");return;}const custom=load(LS.customAudios,{});custom[tema]=url;save(LS.customAudios,custom);showToast(`Áudio do ${tema} atualizado!`);renderModulos();}
+async function processPDF(file){if(!file||!file.name.endsWith('.pdf')){showToast("Envie um PDF válido.");return;}
+save(LS.pdfcount,load(LS.pdfcount,0)+1);$('aiProgress').innerHTML=`<div style="padding:12px;background:var(--sf2);border-radius:12px;"><div id="aiSteps"></div></div>`;$('aiProgress').style.display='block';
+const stepsDiv=$('aiSteps');stepsDiv.innerHTML='<div>📄 Lendo arquivo...</div>';
+await new Promise(r=>setTimeout(r,800));
+stepsDiv.innerHTML+='<div>🔍 Extraindo texto do PDF (simulação)...</div>';
+const fileName=file.name.replace('.pdf','').replace(/[^a-zA-Z0-9]/g,'_');
+const extractedText=`Conteúdo do PDF "${file.name}". Este é um material rico em informações sobre ${fileName}. Inclui conceitos importantes, definições e exemplos práticos.`;
+stepsDiv.innerHTML+='<div>🎤 Gerando áudio com Web Speech API...</div>';
+const utterance=new SpeechSynthesisUtterance(extractedText.slice(0,500));utterance.lang='pt-BR';utterance.rate=0.9;speechSynthesis.cancel();speechSynthesis.speak(utterance);
+stepsDiv.innerHTML+='<div>🧠 Criando questões automáticas...</div>';
+const generatedQuestions=[];
+const paragraphs=extractedText.split(/\.\s+/);const numQs=Math.min(5,Math.max(2,paragraphs.length));
+for(let i=0;i<numQs;i++){const p=paragraphs[i]||`Conceito central sobre ${fileName}`;const baseText=p.length>80?p.slice(0,80):p;
+generatedQuestions.push({pergunta:`Sobre o conteúdo do arquivo "${fileName}": ${baseText}?`,opcoes:{A:"Alternativa A correta",B:"Alternativa B",C:"Alternativa C",D:"Alternativa D",E:"Alternativa E"},correta:"A",explicacao:`De acordo com o material "${fileName}", a alternativa A está correta.`});}
+stepsDiv.innerHTML+='<div>📦 Criando novo módulo e tema...</div>';
+const newTemaId=`TEMA_${Object.keys(QUESTIONS_DB).length+1}`;const newModId=String.fromCharCode(65+Object.keys(MOD_TEMAS).length);
+QUESTIONS_DB[newTemaId]=generatedQuestions;
+const temaName=fileName.length>30?fileName.slice(0,30):fileName;
+AUDIO_METADATA[newTemaId]={aula:`Aula ${Object.keys(QUESTIONS_DB).length}`,tema:temaName,topico:"PDF Importado",url:URL.createObjectURL(new Blob([extractedText],{type:'text/plain'}))};
+MOD_TEMAS[newModId]=[newTemaId];MOD_NOMES[newModId]=`Módulo ${newModId} (${temaName})`;
+save(LS.extraModules,{QUESTIONS_DB,AUDIO_METADATA,MOD_TEMAS,MOD_NOMES});
+stepsDiv.innerHTML+='<div>✅ Processo concluído! Novo tema disponível.</div>';
+setTimeout(()=>{$('aiProgress').style.display='none';renderModulos();showToast(`Novo tema "${temaName}" criado com sucesso!`);},1500);
+}
+function criarModulo(){const nome=prompt("Nome do novo módulo:");if(!nome)return;const newModId=String.fromCharCode(65+Object.keys(MOD_TEMAS).length);MOD_TEMAS[newModId]=[];MOD_NOMES[newModId]=nome;renderModulos();showToast(`Módulo "${nome}" criado!`);}
+
+// ======================== RENDERIZAÇÃO DOS MÓDULOS E TEMAS ========================
+let openMod=null;let openTemaId=null;
+function tglMod(id){const el=$(`mod_${id}`);if(openMod&&openMod!==id){const prev=$(`mod_${openMod}`);if(prev)prev.classList.remove('open');}if(openMod===id){el.classList.remove('open');openMod=null;}else{el.classList.add('open');openMod=id;}}
+function renderModulos(){const container=$('modulosContainer');container.innerHTML='';for(const [modId,temas] of Object.entries(MOD_TEMAS)){const prog=load(LS.prog,{byTema:{}});let totalAc=0,totalTot=0;for(const t of temas){const td=prog.byTema?.[t];if(td){totalAc+=td.acertos||0;totalTot+=td.total||0;}}const pctMod=totalTot>0?Math.round(totalAc/totalTot*100):0;const modDiv=document.createElement('div');modDiv.className='mod';modDiv.id=`mod_${modId}`;modDiv.innerHTML=`<div class="mod-h" onclick="tglMod('${modId}')"><div class="mod-left"><div class="mod-icon">${modId==='A'?'🌾':modId==='B'?'🌿':modId==='C'?'🌽':modId==='D'?'🐄':modId==='E'?'🧬':modId==='F'?'🐔':'📡'}</div><div><div class="mod-nm">${MOD_NOMES[modId]}</div><div class="mod-sub">${temas.length} temas</div></div></div><div class="mod-right"><div class="mod-ring"><svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="3"/><circle cx="18" cy="18" r="14" fill="none" stroke="#F5C842" stroke-width="3" stroke-dasharray="88" stroke-dashoffset="${88-Math.round(pctMod*88/100)}" stroke-linecap="round"/></svg><div class="mod-ring-val">${pctMod}%</div></div><div class="mod-chev">▸</div></div></div><div class="mod-body"><div class="mod-inner" id="inner_${modId}"></div></div>`;container.appendChild(modDiv);const inner=$(`inner_${modId}`);inner.innerHTML='';for(const tid of temas){renderTemaCard(tid,inner);}}
+}
+function renderTemaCard(tid,container){const prog=load(LS.prog,{byTema:{}});const td=prog.byTema?.[tid];let badgeClass='pending',badgeText='Pendente';if(td?.done){badgeClass='done';badgeText='✅ Concluído';}else if(td?.total>0){badgeClass='partial';badgeText=`${td.acertos}/${td.total}`;}
+const totalQs=QUESTIONS_DB[tid]?.length||10;const bestPct=td?.bestPct||0;const card=document.createElement('div');card.className='tema-card';card.id=`tema_${tid}`;card.innerHTML=`<div class="tema-header" onclick="toggleTemaExpand('${tid}')"><div class="tema-title"><div class="tema-icon">📘</div><div><div class="tema-name">${AUDIO_METADATA[tid]?.tema||tid}</div><div class="tema-meta">${totalQs} questões</div></div></div><span class="tema-badge ${badgeClass}">${badgeText}</span></div><div class="tema-content" id="content_${tid}"><div class="inline-player"><div class="inline-progress-wrap" onclick="seekAudio(event,'${tid}')" id="wrap_${tid}"><div class="inline-progress-bar" id="bar_${tid}"></div></div><div class="inline-player-meta"><span id="curr_${tid}">00:00</span><span id="total_${tid}">00:00</span></div><div class="inline-controls"><button class="player-btn" onclick="restartAudio('${tid}')">🔄</button><button class="player-btn play-btn" id="play_${tid}" onclick="toggleAudio('${tid}')">▶</button></div></div><div class="quiz-info-row"><div class="quiz-info-item"><span class="qi-label">Questões</span><span class="qi-val">${totalQs}</span></div><div class="quiz-info-item"><span class="qi-label">Melhor nota</span><span class="qi-val">${bestPct}%</span></div><div class="quiz-info-item"><span class="qi-label">Tempo</span><span class="qi-val">5min</span></div></div><button class="btn-success" style="width:100%" onclick="startQuiz('${tid}','${AUDIO_METADATA[tid]?.tema||tid}')">Iniciar Simulado →</button></div>`;container.appendChild(card);}
+
+let currentAudioTema=null;const globalAudio=$('kronaAudio');
+function toggleAudio(tid){if(currentAudioTema===tid){if(globalAudio.paused)globalAudio.play();else globalAudio.pause();}else{if(currentAudioTema){const oldBtn=$(`play_${currentAudioTema}`);if(oldBtn)oldBtn.textContent='▶';}currentAudioTema=tid;const custom=load(LS.customAudios,{});const url=custom[tid]||AUDIO_METADATA[tid]?.url;if(url)globalAudio.src=url;const saved=load(`kr_audio_pos_${tid}`,0);globalAudio.currentTime=saved;globalAudio.play();const btn=$(`play_${tid}`);if(btn)btn.textContent='⏸';}}
+function restartAudio(tid){if(currentAudioTema===tid){globalAudio.currentTime=0;}save(`kr_audio_pos_${tid}`,0);const bar=$(`bar_${tid}`);if(bar)bar.style.width='0%';const curr=$(`curr_${tid}`);if(curr)curr.textContent='00:00';if(currentAudioTema===tid)globalAudio.play();}
+function seekAudio(e,tid){if(currentAudioTema!==tid)return;const wrap=$(`wrap_${tid}`);const rect=wrap.getBoundingClientRect();const x=e.clientX-rect.left;const percent=x/rect.width;globalAudio.currentTime=percent*globalAudio.duration;}
+globalAudio.addEventListener('timeupdate',()=>{if(!currentAudioTema)return;const cur=globalAudio.currentTime;const dur=globalAudio.duration;save(`kr_audio_pos_${currentAudioTema}`,cur);const bar=$(`bar_${currentAudioTema}`);if(bar&&dur)bar.style.width=(cur/dur*100)+'%';const curr=$(`curr_${currentAudioTema}`);if(curr)curr.textContent=formatTime(cur);const total=$(`total_${currentAudioTema}`);if(total&&dur)total.textContent=formatTime(dur);});
+globalAudio.addEventListener('play',()=>{if(currentAudioTema){const btn=$(`play_${currentAudioTema}`);if(btn)btn.textContent='⏸';}});
+globalAudio.addEventListener('pause',()=>{if(currentAudioTema){const btn=$(`play_${currentAudioTema}`);if(btn)btn.textContent='▶';}});
+function formatTime(sec){if(isNaN(sec))return'00:00';const m=Math.floor(sec/60);const s=Math.floor(sec%60);return `${m}:${s<10?'0'+s:s}`;}
+function toggleTemaExpand(tid){const content=$(`content_${tid}`);const card=$(`tema_${tid}`);if(openTemaId&&openTemaId!==tid){const old=$(`content_${openTemaId}`);if(old)old.style.display='none';const oldCard=$(`tema_${openTemaId}`);if(oldCard)oldCard.classList.remove('expanded');}
+if(content.style.display==='none'||!content.style.display){content.style.display='block';card.classList.add('expanded');openTemaId=tid;}else{content.style.display='none';card.classList.remove('expanded');openTemaId=null;}}
+
+// ======================== QUIZ ENGINE ========================
+let QS=null;
+function startQuiz(tid,tname){const saved=load(LS.session,null);if(saved&&saved.temaId===tid&&!saved.finished){if(confirm(`Simulado em andamento para "${tname}". Deseja continuar?`))resumeQuiz(saved);else startFreshQuiz(tid,tname);}else startFreshQuiz(tid,tname);}
+function startFreshQuiz(tid,tname){let qs=QUESTIONS_DB[tid];if(!qs||qs.length===0){qs=[{pergunta:"Questão exemplo",opcoes:{A:"Opção A",B:"Opção B",C:"Opção C",D:"Opção D",E:"Opção E"},correta:"A",explicacao:"Exemplo"}];}
+const questions=qs.slice().sort(()=>Math.random()-0.5).slice(0,10);QS={temaId:tid,temaNome:tname,questions,idx:0,acertos:0,erros:0,answered:false,timerSec:300,timerInt:null,sessionErrors:[],finished:false};saveSession();openQuiz();renderQuestion();startTimer();}
+function resumeQuiz(saved){QS={...saved,answered:false,timerInt:null};openQuiz();renderQuestion();startTimer();}
+function saveSession(){if(QS)save(LS.session,{temaId:QS.temaId,temaNome:QS.temaNome,questions:QS.questions,idx:QS.idx,acertos:QS.acertos,erros:QS.erros,sessionErrors:QS.sessionErrors,finished:QS.finished,timerSec:QS.timerSec});}
+function openQuiz(){$('quizScreen').classList.add('active');$('qAcertos').textContent=QS.acertos;$('qErros').textContent=QS.erros;document.body.style.overflow='hidden';}
+function closeQuiz(){$('quizScreen').classList.remove('active');document.body.style.overflow='';if(QS&&QS.timerInt)clearInterval(QS.timerInt);}
+function quitQuiz(){if(confirm("Sair do simulado? O progresso será salvo.")){saveSession();closeQuiz();updateUI();showToast("Progresso salvo!");}}
+function startTimer(){if(QS.timerInt)clearInterval(QS.timerInt);updateTimerUI();QS.timerInt=setInterval(()=>{QS.timerSec--;updateTimerUI();if(QS.timerSec<=0){clearInterval(QS.timerInt);QS.timerInt=null;onTimeout();}},1000);}
+function updateTimerUI(){const m=Math.floor(QS.timerSec/60);const s=QS.timerSec%60;$('qTimer').textContent=`⏱ ${m}:${s<10?'0'+s:s}`;$('qTimerFill').style.width=(QS.timerSec/300*100)+'%';}
+function onTimeout(){if(QS.answered)return;QS.answered=true;QS.erros++;$('qErros').textContent=QS.erros;const q=QS.questions[QS.idx];QS.sessionErrors.push({temaId:QS.temaId,pergunta:q.pergunta,correta:`${q.correta}: ${q.opcoes[q.correta]}`,escolhida:"⏰ tempo esgotado",data:new Date()});saveSession();document.querySelectorAll('.q-opt-card').forEach(c=>{if(c.id===`opt_${q.correta}`)c.classList.add('correct');c.classList.add('disabled');});showFeedback(false,`Tempo esgotado! Resposta: ${q.correta}`,q.explicacao||'');setTimeout(()=>nextQuestion(),3000);}
+function renderQuestion(){const q=QS.questions[QS.idx];const total=QS.questions.length;$('qProgFill').style.width=(QS.idx/total*100)+'%';$('qProgCt').textContent=`${QS.idx+1}/${total}`;QS.answered=false;const letters=Object.keys(q.opcoes||{});const slides=letters.map(l=>`<div class="q-opt-card" id="opt_${l}" onclick="selectOpt('${l}')"><div class="q-opt-letter">${l}</div><div class="q-opt-txt">${q.opcoes[l]}</div></div>`).join('');$('qBody').innerHTML=`<div class="q-num">Questão ${QS.idx+1}</div><div class="q-txt">${q.pergunta}</div><div class="q-carousel-wrap">${slides}</div><div class="q-fb-overlay" id="qFbOv"><div id="qFbTt"></div><div id="qFbEx"></div><button class="q-next" id="qNextBtn" onclick="nextQuestion()">${QS.idx+1<total?'Próxima →':'Ver resultado'}</button></div>`;}
+function selectOpt(letter){if(QS.answered)return;if(QS.timerInt)clearInterval(QS.timerInt);QS.answered=true;const q=QS.questions[QS.idx];const isOk=letter===q.correta;document.querySelectorAll('.q-opt-card').forEach(c=>c.classList.add('disabled'));if(isOk){$(`opt_${letter}`).classList.add('correct');QS.acertos++;$('qAcertos').textContent=QS.acertos;playSuccess();}else{$(`opt_${letter}`).classList.add('wrong');$(`opt_${q.correta}`).classList.add('correct');QS.erros++;$('qErros').textContent=QS.erros;QS.sessionErrors.push({temaId:QS.temaId,pergunta:q.pergunta,correta:`${q.correta}: ${q.opcoes[q.correta]}`,escolhida:`${letter}: ${q.opcoes[letter]}`,data:new Date()});}saveSession();showFeedback(isOk,isOk?"✅ Correto!":"❌ Errado",q.explicacao||'');setTimeout(()=>nextQuestion(),1500);}
+function showFeedback(ok,title,ex){const ov=$('qFbOv');$('qFbTt').textContent=title;$('qFbEx').textContent=ex;ov.classList.add('show');setTimeout(()=>ov.classList.remove('show'),1200);}
+function nextQuestion(){QS.idx++;if(QS.idx>=QS.questions.length){showResult();}else{renderQuestion();startTimer();}}
+function showResult(){if(QS.timerInt)clearInterval(QS.timerInt);QS.finished=true;localStorage.removeItem(LS.session);const tot=QS.questions.length;const ac=QS.acertos;const pct=Math.round(ac/tot*100);const nota=(ac/tot*10).toFixed(1);const prog=load(LS.prog,{acertos:0,questoes:0,byTema:{},history:[]});if(!prog.byTema)prog.byTema={};const prev=prog.byTema[QS.temaId]||{acertos:0,total:0,done:false,bestPct:0};prog.byTema[QS.temaId]={acertos:Math.max(prev.acertos,ac),total:tot,done:prev.done||(pct>=60),bestPct:Math.max(prev.bestPct||0,pct),attempts:(prev.attempts||0)+1};prog.acertos+=ac;prog.questoes+=tot;prog.history=prog.history||[];prog.history.push({temaId:QS.temaId,acertos:ac,total:tot,pct,data:new Date()});if(prog.history.length>100)prog.history=prog.history.slice(-100);save(LS.prog,prog);if(QS.sessionErrors.length){const err=load(LS.errors,[]);save(LS.errors,[...err,...QS.sessionErrors].slice(-200));}pushRanking();bumpStreak();updateUI();renderModulos();$('qBody').innerHTML=`<div class="q-result"><div class="q-res-emoji">${pct>=70?"🏆":"📚"}</div><div class="q-res-nota">${nota}</div><div class="q-res-pct">${pct}% (${ac}/${tot})</div><div class="q-res-grid"><div class="q-rs"><div>${ac}</div><div>Acertos</div></div><div class="q-rs"><div>${tot-ac}</div><div>Erros</div></div><div class="q-rs"><div>${pct}%</div><div>Aproveit.</div></div></div><div class="q-xp-banner">⚡ +${ac*12+(pct>=70?80:0)} XP</div><button class="btn-primary" style="width:100%" onclick="closeQuiz();updateUI();renderModulos();">Voltar ao início</button><button class="btn-secondary" style="width:100%;margin-top:8px" onclick="startFreshQuiz('${QS.temaId}','${QS.temaNome}')">Refazer simulado</button></div>`;$('qProgFill').style.width='100%';$('qProgCt').textContent=`${tot}/${tot}`;$('qTimer').textContent="✅ Concluído";}
+
+// ======================== NAVEGAÇÃO ========================
+const views=['home','materias','rank','erros','perfil','admin','adminModulos','adminPdfs','adminAudios','adminSimulados','adminAlunos','adminRelatorios','adminConfig'];let curView='home';
+function navTo(view){views.forEach(v=>{const el=$(VIEWS[v]);if(el)el.style.display='none';});const target=$(VIEWS[view]);if(target)target.style.display='block';document.querySelectorAll('.side-link').forEach(l=>l.classList.remove('active'));const sb=$(`sb_${view}`);if(sb)sb.classList.add('active');curView=view;if(view==='home'){updateUI();updatePendingWidget();updateMiniRanking();updateLastActivity();updateWelcome();}if(view==='materias'){renderModulos();}if(view==='rank'){buildRanking();}if(view==='erros'){buildErros();}if(view==='perfil'){buildPerfil();}if(view.startsWith('admin')){buildAdminStats();if(view==='adminPdfs'){$('listaPdfs').innerHTML=`<div>PDFs enviados: ${load(LS.pdfcount,0)}</div>`;}if(view==='adminAudios'){const select=$('adminAudioTema');select.innerHTML='';for(let i=1;i<=14;i++){const tid=`TEMA_${i}`;select.innerHTML+=`<option value="${tid}">${tid} - ${AUDIO_METADATA[tid]?.tema||tid}</option>`;}}}}
+const VIEWS={home:'viewHome',materias:'viewMaterias',rank:'viewRank',erros:'viewErros',perfil:'viewPerfil',admin:'viewAdmin',adminModulos:'viewAdminModulos',adminPdfs:'viewAdminPdfs',adminAudios:'viewAdminAudios',adminSimulados:'viewAdminSimulados',adminAlunos:'viewAdminAlunos',adminRelatorios:'viewAdminRelatorios',adminConfig:'viewAdminConfig'};
+(function init(){const user=load(LS.user,null);if(user){initApp();}else{$('regScreen').style.display='flex';$('appContainer').style.display='none';}})();
 </script>
 </body>
 </html>
