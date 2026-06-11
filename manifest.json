@@ -1,15 +1,15 @@
 {
   "name": "KRONA Analytics",
   "short_name": "KRONA",
-  "description": "Simulado Técnico em Agronegócio — SENAR",
+  "description": "Plataforma de estudos para o Agronegócio — Simulados, áudios, ranking e muito mais. Prepare-se para o SENAR com conteúdo completo e interativo.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#060A13",
-  "theme_color": "#060A13",
+  "background_color": "#0B1120",
+  "theme_color": "#FBBF24",
   "lang": "pt-BR",
-  "categories": ["education", "productivity"],
+  "categories": ["education", "productivity", "reference"],
   "icons": [
     {
       "src": "./icons/icon-72.png",
@@ -78,16 +78,39 @@
       "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Tela inicial do KRONA Analytics"
+      "label": "Dashboard do aluno com progresso e ranking"
+    },
+    {
+      "src": "./screenshots/screen2.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Painel administrativo com gestão de PDFs e automação"
     }
   ],
   "shortcuts": [
     {
-      "name": "Iniciar Simulado",
-      "short_name": "Simulado",
-      "description": "Acesse os módulos do simulado",
-      "url": "./?shortcut=quiz",
+      "name": "Dashboard",
+      "short_name": "Início",
+      "description": "Acesse seu dashboard de estudos",
+      "url": "./?view=home",
+      "icons": [{ "src": "./icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Simulados",
+      "short_name": "Simulados",
+      "description": "Inicie um simulado rapidamente",
+      "url": "./?view=simulados",
+      "icons": [{ "src": "./icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Ranking",
+      "short_name": "Ranking",
+      "description": "Veja os líderes da plataforma",
+      "url": "./?view=ranking",
       "icons": [{ "src": "./icons/icon-96.png", "sizes": "96x96" }]
     }
-  ]
+  ],
+  "prefer_related_applications": false,
+  "display_override": ["window-controls-overlay", "standalone"]
 }
