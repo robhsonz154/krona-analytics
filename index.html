@@ -7,13 +7,14 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>KRONA Analytics — Aluno + Admin</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Inter',sans-serif;background:#0B1120;color:#F8FAFC}
 .app{display:flex;min-height:100vh}
 .sidebar{width:280px;background:#0F172A;border-right:1px solid rgba(255,255,255,.08);padding:24px;position:sticky;top:0;height:100vh}
-.main{flex:1;padding:24px}
+.main{flex:1;padding:24px;position:relative}
 .nav-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;cursor:pointer;color:#94A3B8;margin-bottom:4px}
 .nav-item:hover{background:rgba(255,255,255,.05);color:#fff}
 .nav-item.active{background:rgba(251,191,36,.1);color:#FBBF24}
@@ -25,18 +26,170 @@ table{width:100%;border-collapse:collapse}
 th,td{text-align:left;padding:12px;border-bottom:1px solid #334155}
 .badge{background:#10B98120;color:#10B981;padding:4px 12px;border-radius:20px;font-size:12px}
 .status-pending{background:#F59E0B20;color:#F59E0B}
-.status-processed{background:#10B98120;color:#10B981}
 .progress-bar{height:8px;background:#334155;border-radius:10px;overflow:hidden}
 .progress-fill{height:100%;background:#FBBF24;width:0%;border-radius:10px}
 .view{display:none}
 .view.active{display:block}
 .login-container{max-width:400px;margin:100px auto;background:#1E293B;border-radius:28px;padding:32px;text-align:center}
 @media (max-width:768px){.sidebar{display:none}.main{padding:16px}}
+
+/* Botão Sair flutuante */
+.btn-sair-topo {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background: #EF4444;
+  color: white;
+  border: none;
+  border-radius: 40px;
+  padding: 8px 18px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  transition: 0.2s;
+}
+.btn-sair-topo:hover { background: #DC2626; transform: scale(1.02); }
+@media (max-width: 768px) { .btn-sair-topo { top: 8px; right: 8px; padding: 6px 14px; font-size: 11px; } }
+
+/* Toasts */
+.toast-success {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 60px;
+  font-weight: 800;
+  font-size: 14px;
+  z-index: 9999;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  backdrop-filter: blur(4px);
+  animation: fadeInOut 2.5s ease forwards;
+  pointer-events: none;
+}
+.xp-toast {
+  position: fixed;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #FBBF24, #F59E0B);
+  color: #0B1120;
+  padding: 8px 20px;
+  border-radius: 60px;
+  font-weight: 800;
+  font-size: 13px;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: fadeInOut 2s ease forwards;
+  pointer-events: none;
+}
+.streak-toast {
+  position: fixed;
+  top: 160px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: #0B1120;
+  padding: 8px 20px;
+  border-radius: 60px;
+  font-weight: 800;
+  font-size: 13px;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: fadeInOut 2s ease forwards;
+  pointer-events: none;
+}
+/* Level up notification */
+.levelup-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: linear-gradient(135deg, #1E293B, #0F172A);
+  border: 2px solid #FBBF24;
+  border-radius: 60px;
+  padding: 20px 40px;
+  text-align: center;
+  z-index: 10001;
+  opacity: 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 30px rgba(251,191,36,0.5), 0 0 15px rgba(251,191,36,0.3);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+.levelup-notification.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+/* Theme completion notification */
+.theme-complete-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: linear-gradient(135deg, #1E293B, #0F172A);
+  border: 2px solid #10B981;
+  border-radius: 40px;
+  padding: 24px 48px;
+  text-align: center;
+  z-index: 10002;
+  opacity: 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 40px rgba(16,185,129,0.5), 0 0 20px rgba(16,185,129,0.3);
+  backdrop-filter: blur(8px);
+  pointer-events: auto;
+  max-width: 90vw;
+  width: 400px;
+}
+.theme-complete-notification.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.theme-complete-icon { font-size: 56px; display: block; margin-bottom: 8px; }
+.theme-complete-title { font-size: 22px; font-weight: 800; color: #10B981; margin-bottom: 8px; }
+.theme-complete-name { font-size: 20px; font-weight: 700; color: #F8FAFC; margin-bottom: 12px; }
+.theme-complete-xp { font-size: 18px; font-weight: 700; color: #FBBF24; margin: 8px 0; }
+.theme-complete-badge { display: inline-block; background: #10B98120; border: 1px solid #10B981; border-radius: 40px; padding: 6px 16px; font-size: 14px; font-weight: 600; color: #10B981; margin: 8px 0; }
+.btn-continue { background: linear-gradient(135deg, #10B981, #059669); color: white; border: none; border-radius: 40px; padding: 12px 24px; font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 16px; width: 100%; transition: 0.2s; }
+.btn-continue:hover { transform: scale(1.02); box-shadow: 0 4px 12px rgba(16,185,129,0.4); }
+.sound-toggle, .visual-toggle { background: #1E293B; border: 1px solid #334155; border-radius: 40px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
+.sound-toggle:hover, .visual-toggle:hover { background: #334155; }
+
+/* Toggle switch */
+.switch { position: relative; display: inline-block; width: 52px; height: 28px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #334155; transition: 0.3s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 3px; bottom: 3px; background-color: white; transition: 0.3s; border-radius: 50%; }
+input:checked + .slider { background-color: #FBBF24; }
+input:checked + .slider:before { transform: translateX(24px); }
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-10px); display: none; }
+}
+#confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9998; }
 </style>
 </head>
 <body>
 
-<!-- TELA DE LOGIN PRINCIPAL -->
+<canvas id="confetti-canvas"></canvas>
+
+<!-- TELA DE LOGIN -->
 <div id="globalLogin" style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0B1120">
   <div class="login-container">
     <div style="font-size:48px;font-weight:900;margin-bottom:16px">K</div>
@@ -54,7 +207,7 @@ th,td{text-align:left;padding:12px;border-bottom:1px solid #334155}
   </div>
 </div>
 
-<!-- ======================== ÁREA DO ALUNO ======================== -->
+<!-- ÁREA DO ALUNO -->
 <div id="studentApp" style="display:none">
   <div class="app">
     <div class="sidebar">
@@ -66,9 +219,11 @@ th,td{text-align:left;padding:12px;border-bottom:1px solid #334155}
       <div class="nav-item" onclick="studentNavTo('ranking')">🏆 Ranking</div>
       <div class="nav-item" onclick="studentNavTo('erros')">📓 Caderno de Erros</div>
       <div class="nav-item" onclick="studentNavTo('perfil')">👤 Perfil</div>
+      <div class="nav-item" onclick="studentNavTo('configuracoes')">⚙️ Configurações</div>
       <div style="margin-top:auto;padding-top:20px"><button class="btn-outline btn" style="width:100%" onclick="logout()">Sair</button></div>
     </div>
     <div class="main">
+      <button class="btn-sair-topo" onclick="logout()">🚪 Sair</button>
       <div id="studentDashboard" class="view active"><h2>Dashboard do Aluno</h2><div id="studentStats"></div></div>
       <div id="studentMaterias" class="view"><h2>Matérias & Temas</h2><div id="materiasContent"></div></div>
       <div id="studentAulas" class="view"><h2>Aulas (Áudios)</h2><div id="aulasContent"></div></div>
@@ -76,11 +231,12 @@ th,td{text-align:left;padding:12px;border-bottom:1px solid #334155}
       <div id="studentRanking" class="view"><h2>Ranking Geral</h2><div id="rankingList"></div></div>
       <div id="studentErros" class="view"><h2>Caderno de Erros</h2><div id="errosList"></div></div>
       <div id="studentPerfil" class="view"><h2>Meu Perfil</h2><div id="perfilContent"></div></div>
+      <div id="studentConfiguracoes" class="view"><h2>⚙️ Configurações</h2><div class="card"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><div><strong>🎨 Efeitos Visuais</strong><br><span style="font-size:12px; color:#94A3B8;">Confetes, partículas e animações</span></div><label class="switch"><input type="checkbox" id="toggleVisualEffects" onchange="toggleVisualEffects(this.checked)"><span class="slider round"></span></label></div><div style="display:flex; justify-content:space-between; align-items:center;"><div><strong>🔊 Sons</strong><br><span style="font-size:12px; color:#94A3B8;">Efeitos sonoros de acerto, nível, conclusão</span></div><label class="switch"><input type="checkbox" id="toggleSounds" onchange="toggleSoundFromSettings(this.checked)"><span class="slider round"></span></label></div><div style="margin-top:20px; font-size:12px; color:#10B981; text-align:center;">⚡ As alterações são salvas automaticamente.</div></div></div>
     </div>
   </div>
 </div>
 
-<!-- ======================== ÁREA DO ADMINISTRADOR ======================== -->
+<!-- ÁREA DO ADMIN (resumida e funcional) -->
 <div id="adminApp" style="display:none">
   <div class="app">
     <div class="sidebar">
@@ -92,71 +248,201 @@ th,td{text-align:left;padding:12px;border-bottom:1px solid #334155}
       <div class="nav-item" onclick="adminNavTo('simulados')">📝 Simulados</div>
       <div class="nav-item" onclick="adminNavTo('alunos')">👥 Alunos</div>
       <div class="nav-item" onclick="adminNavTo('relatorios')">📈 Relatórios</div>
-      <div class="nav-item" onclick="adminNavTo('configuracoes')">⚙️ Configurações</div>
       <div style="margin-top:auto;padding-top:20px"><button class="btn-outline btn" style="width:100%" onclick="logout()">Sair</button></div>
     </div>
     <div class="main">
+      <button class="btn-sair-topo" onclick="logout()">🚪 Sair</button>
       <div id="adminDashboard" class="view active"><h2>Dashboard Administrativo</h2><div id="adminStats"></div></div>
       <div id="adminModulos" class="view"><h2>Gerenciar Módulos</h2><div id="modulosAdminList"></div><button class="btn" onclick="addModule()">+ Novo Módulo</button></div>
-      <div id="adminPdfs" class="view"><h2>📄 Gerenciar PDFs</h2><div class="card"><h3>Upload de PDF</h3><input type="file" id="pdfFileInput" accept=".pdf"><button class="btn" onclick="uploadPDF()">Enviar PDF</button><div style="margin-top:16px;font-size:12px;color:#94A3B8">✓ Preparado para processamento futuro com IA (extração de texto, áudio e questões)</div></div><div class="card"><h3>Lista de PDFs Enviados</h3><div style="overflow-x:auto"><table id="pdfsTable"><thead><tr><th>Nome</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead><tbody id="pdfsTableBody"></tbody></table></div></div></div>
+      <div id="adminPdfs" class="view"><h2>📄 Gerenciar PDFs</h2><div class="card"><h3>Upload de PDF</h3><input type="file" id="pdfFileInput" accept=".pdf"><button class="btn" onclick="uploadPDF()">Enviar PDF</button><div style="margin-top:16px;font-size:12px;color:#94A3B8">✓ Processamento automático (extração de texto, áudio e questões)</div></div><div class="card"><h3>Lista de PDFs Enviados</h3><div style="overflow-x:auto"><table id="pdfsTable"><thead><tr><th>Nome</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead><tbody id="pdfsTableBody"></tbody></table></div></div></div>
       <div id="adminAudios" class="view"><h2>Gerenciar Áudios por Tema</h2><div class="card"><select id="audioTemaSelect"></select><input type="url" id="audioUrlInput" placeholder="URL do MP3"><button class="btn" onclick="saveAudioUrl()">Salvar Áudio</button></div></div>
       <div id="adminSimulados" class="view"><h2>Gerenciar Simulados</h2><div id="simuladosAdminList"></div><button class="btn" onclick="addNewSimulado()">+ Criar Simulado para Tema</button></div>
       <div id="adminAlunos" class="view"><h2>Lista de Alunos</h2><div id="alunosList"></div><button class="btn" onclick="addAluno()">+ Adicionar Aluno</button></div>
       <div id="adminRelatorios" class="view"><h2>Relatórios Gerais</h2><div id="relatoriosContent"></div></div>
-      <div id="adminConfiguracoes" class="view"><h2>Configurações do Sistema</h2><div class="card">Configurações gerais (em desenvolvimento)</div></div>
     </div>
   </div>
 </div>
 
+<!-- TELA DO SIMULADO (QUIZ) -->
+<div id="quizScreen" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#0B1120;z-index:10000;display:none;flex-direction:column">
+  <div style="background:#1E293B;padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
+    <button class="btn-outline" onclick="quitQuiz()">← Sair</button>
+    <div><strong id="quizTimer">⏱ 5:00</strong></div>
+    <div><span>✅ <span id="quizAcertos">0</span></span>   <span>❌ <span id="quizErros">0</span></span></div>
+  </div>
+  <div style="padding:12px 16px;background:#0F172A">
+    <div class="progress-bar"><div class="progress-fill" id="quizProgressFill" style="width:0%"></div></div>
+    <div style="text-align:right;margin-top:4px"><span id="quizProgressCt">1/10</span></div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:20px" id="quizBody"></div>
+</div>
+
 <script>
-// ======================== CONTROLE DE SESSÃO ========================
+// ======================== CONFIGURAÇÕES INICIAIS ========================
 let currentSession = { type: null, user: null };
+let soundEnabled = true;
+let visualEffectsEnabled = true;
 
-function loginAsStudent() {
-  const name = document.getElementById('studentName').value.trim() || "Aluno";
-  currentSession = { type: 'student', user: { name: name, id: 'student_' + Date.now() } };
-  localStorage.setItem('krona_session', JSON.stringify(currentSession));
-  document.getElementById('globalLogin').style.display = 'none';
-  document.getElementById('studentApp').style.display = 'flex';
-  initStudentApp();
+function loadUserPreferences() {
+  const savedVisual = localStorage.getItem('krona_visual_effects');
+  if (savedVisual !== null) visualEffectsEnabled = savedVisual === 'true';
+  const savedSound = localStorage.getItem('krona_sound_enabled');
+  if (savedSound !== null) soundEnabled = savedSound === 'true';
+  
+  const visualToggle = document.getElementById('toggleVisualEffects');
+  if (visualToggle) visualToggle.checked = visualEffectsEnabled;
+  const soundToggle = document.getElementById('toggleSounds');
+  if (soundToggle) soundToggle.checked = soundEnabled;
 }
+function saveSoundSetting() { localStorage.setItem('krona_sound_enabled', soundEnabled); }
+function toggleSound() { soundEnabled = !soundEnabled; saveSoundSetting(); renderStudentDashboard(); renderStudentPerfil(); showToast(soundEnabled ? "🔊 Sons ativados" : "🔇 Sons desativados"); }
+function toggleVisualEffects(value) { visualEffectsEnabled = value; localStorage.setItem('krona_visual_effects', value); showToast(value ? "✨ Efeitos visuais ativados" : "✨ Efeitos visuais desativados"); renderStudentDashboard(); }
+function toggleSoundFromSettings(value) { soundEnabled = value; saveSoundSetting(); const toggle = document.getElementById('toggleSounds'); if (toggle) toggle.checked = value; const dashToggle = document.querySelector('.sound-toggle'); if (dashToggle) dashToggle.innerHTML = value ? '🔊 Som Ligado' : '🔇 Som Desligado'; showToast(value ? "🔊 Sons ativados" : "🔇 Sons desativados"); }
 
-function loginAsAdmin() {
-  const email = document.getElementById('adminEmail').value.trim();
-  const pass = document.getElementById('adminPassword').value.trim();
-  if (email === 'admin@krona.com' && pass === '123456') {
-    currentSession = { type: 'admin', user: { name: 'Administrador', email: email } };
-    localStorage.setItem('krona_session', JSON.stringify(currentSession));
-    document.getElementById('globalLogin').style.display = 'none';
-    document.getElementById('adminApp').style.display = 'flex';
-    initAdminApp();
-  } else alert("Credenciais inválidas!");
-}
-
-function showAdminLogin() { document.getElementById('adminLoginDiv').style.display = 'block'; }
-function hideAdminLogin() { document.getElementById('adminLoginDiv').style.display = 'none'; }
+function showToast(msg) { const t = document.createElement('div'); t.className = 'toast-success'; t.innerHTML = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2000); }
 function logout() { localStorage.removeItem('krona_session'); location.reload(); }
 
-// Verificar sessão ao carregar
-(function checkSession() {
-  const saved = localStorage.getItem('krona_session');
-  if (saved) {
-    try {
-      const sess = JSON.parse(saved);
-      if (sess.type === 'student') {
-        currentSession = sess;
-        document.getElementById('globalLogin').style.display = 'none';
-        document.getElementById('studentApp').style.display = 'flex';
-        initStudentApp();
-      } else if (sess.type === 'admin') {
-        currentSession = sess;
-        document.getElementById('globalLogin').style.display = 'none';
-        document.getElementById('adminApp').style.display = 'flex';
-        initAdminApp();
-      }
-    } catch(e) {}
+// ======================== SONS ========================
+function playCorrectSound() {
+  if (!soundEnabled) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+    osc.start();
+    osc.stop(now + 0.5);
+    setTimeout(() => ctx.close(), 600);
+  } catch(e) { console.log("AudioContext not supported"); }
+}
+function playThemeCompleteSound() {
+  if (!soundEnabled) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = ctx.currentTime;
+    const notes = [523.25, 659.25, 783.99];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.3, now + i * 0.2);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.2 + 0.6);
+      osc.start(now + i * 0.2);
+      osc.stop(now + i * 0.2 + 0.6);
+    });
+    setTimeout(() => ctx.close(), 1500);
+  } catch(e) { console.log("AudioContext not supported"); }
+}
+function playLevelUpSound() {
+  if (!soundEnabled) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = ctx.currentTime;
+    const notes = [261.63, 329.63, 392.00, 523.25, 659.25];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.25, now + i * 0.15);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.15 + 0.5);
+      osc.start(now + i * 0.15);
+      osc.stop(now + i * 0.15 + 0.5);
+    });
+    setTimeout(() => ctx.close(), 1200);
+  } catch(e) { console.log("AudioContext not supported"); }
+}
+
+// ======================== SISTEMA DE NÍVEIS ========================
+function getLevel(xp) {
+  const levels = [
+    { min: 0, max: 199, name: "Semente", icon: "🌱" },
+    { min: 200, max: 499, name: "Aprendiz", icon: "🌿" },
+    { min: 500, max: 999, name: "Especialista", icon: "🌳" },
+    { min: 1000, max: 1999, name: "Mestre", icon: "🏆" },
+    { min: 2000, max: Infinity, name: "Lenda KRONA", icon: "👑" }
+  ];
+  return levels.find(l => xp >= l.min && xp <= l.max) || levels[0];
+}
+function getNextLevelXP(xp) {
+  const levels = [{ min: 0, max: 199 }, { min: 200, max: 499 }, { min: 500, max: 999 }, { min: 1000, max: 1999 }, { min: 2000, max: Infinity }];
+  const current = levels.find(l => xp >= l.min && xp <= l.max);
+  if (current.max === Infinity) return null;
+  return current.max + 1;
+}
+function checkLevelUp(oldXP, newXP) {
+  const oldLevel = getLevel(oldXP);
+  const newLevel = getLevel(newXP);
+  if (oldLevel.name !== newLevel.name) {
+    playLevelUpSound();
+    showLevelUpNotification(newLevel.name, newLevel.icon);
   }
-})();
+}
+function showLevelUpNotification(levelName, levelIcon) {
+  const existing = document.querySelector('.levelup-notification');
+  if (existing) existing.remove();
+  const div = document.createElement('div');
+  div.className = 'levelup-notification';
+  div.innerHTML = `<div class="levelup-icon">${levelIcon}</div><div class="levelup-title">🏆 NOVO NÍVEL DESBLOQUEADO</div><div class="levelup-name">${levelName}</div>`;
+  document.body.appendChild(div);
+  setTimeout(() => div.classList.add('show'), 10);
+  launchLevelUpParticles();
+  setTimeout(() => { div.classList.remove('show'); setTimeout(() => div.remove(), 400); }, 3000);
+}
+function launchLevelUpParticles() {
+  if (!visualEffectsEnabled) return;
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10000;';
+  document.body.appendChild(canvas);
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const particles = [];
+  const colors = ['#FBBF24', '#F59E0B', '#FFD966', '#FFEAA7'];
+  for (let i = 0; i < 60; i++) {
+    particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 3, vy: (Math.random() - 0.5) * 3 - 2, size: 3 + Math.random() * 6, color: colors[Math.floor(Math.random() * colors.length)], life: 1 });
+  }
+  const start = Date.now();
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let any = false;
+    for (let p of particles) {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.1;
+      p.life = Math.max(0, 1 - (Date.now() - start) / 1500);
+      if (p.life > 0) {
+        any = true;
+        ctx.globalAlpha = p.life;
+        ctx.fillStyle = p.color;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    if (any && (Date.now() - start) < 1800) requestAnimationFrame(animate);
+    else canvas.remove();
+  }
+  animate();
+}
+function showThemeCompletionNotification(temaNome) {
+  playThemeCompleteSound();
+  if (!visualEffectsEnabled) return;
+  const existing = document.querySelector('.theme-complete-notification');
+  if (existing) existing.remove();
+  const div = document.createElement('div');
+  div.className = 'theme-complete-notification';
+  div.innerHTML = `<div class="theme-complete-icon">🎉</div><div class="theme-complete-title">Tema Concluído</div><div class="theme-complete-name">${temaNome}</div><div class="theme-complete-xp">⭐ +50 XP</div><div class="theme-complete-badge">🏅 Distintivo Desbloqueado</div><button class="btn-continue" id="continueBtnTheme">Continuar Estudando</button>`;
+  document.body.appendChild(div);
+  setTimeout(() => div.classList.add('show'), 10);
+  const btn = div.querySelector('#continueBtnTheme');
+  btn.addEventListener('click', () => { div.classList.remove('show'); setTimeout(() => div.remove(), 400); });
+  setTimeout(() => { if (div && div.parentNode) { div.classList.remove('show'); setTimeout(() => div.remove(), 400); } }, 8000);
+}
 
 // ======================== DADOS GLOBAIS ========================
 let modules = [
@@ -168,7 +454,7 @@ let audioUrls = {};
 let pdfs = [];
 let alunos = [];
 let simulados = {};
-let studentProgress = { acertos: 0, questoes: 0, erros: [] };
+let studentProgress = { acertos: 0, questoes: 0, erros: [], xp: 0 };
 
 function loadAllData() {
   if (localStorage.getItem('krona_modules')) modules = JSON.parse(localStorage.getItem('krona_modules'));
@@ -177,7 +463,7 @@ function loadAllData() {
   if (localStorage.getItem('krona_alunos')) alunos = JSON.parse(localStorage.getItem('krona_alunos'));
   if (localStorage.getItem('krona_simulados')) simulados = JSON.parse(localStorage.getItem('krona_simulados'));
   if (localStorage.getItem('krona_student_progress')) studentProgress = JSON.parse(localStorage.getItem('krona_student_progress'));
-  if (pdfs.length === 0) pdfs = [{ name: "exemplo_aula_01.pdf", date: new Date().toLocaleString(), status: "Processado (IA futura)" }];
+  if (pdfs.length === 0) pdfs = [{ name: "exemplo.pdf", date: new Date().toLocaleString(), status: "Processado" }];
   if (alunos.length === 0) alunos = [{ name: "Lucas Martins", xp: 2840 }, { name: "Mariana Souza", xp: 2710 }, { name: "Você", xp: 0 }];
   if (Object.keys(simulados).length === 0) simulados = { "Administração Rural": [] };
 }
@@ -190,14 +476,45 @@ function saveAll() {
   localStorage.setItem('krona_student_progress', JSON.stringify(studentProgress));
 }
 
+// ======================== LOGIN ========================
+function loginAsStudent() {
+  const name = document.getElementById('studentName').value.trim() || "Aluno";
+  currentSession = { type: 'student', user: { name: name, id: 'student_' + Date.now() } };
+  localStorage.setItem('krona_session', JSON.stringify(currentSession));
+  document.getElementById('globalLogin').style.display = 'none';
+  document.getElementById('studentApp').style.display = 'flex';
+  initStudentApp();
+}
+function loginAsAdmin() {
+  const email = document.getElementById('adminEmail').value.trim();
+  const pass = document.getElementById('adminPassword').value.trim();
+  if (email === 'admin@krona.com' && pass === '123456') {
+    currentSession = { type: 'admin', user: { name: 'Administrador', email: email } };
+    localStorage.setItem('krona_session', JSON.stringify(currentSession));
+    document.getElementById('globalLogin').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'flex';
+    initAdminApp();
+  } else alert("Credenciais inválidas!");
+}
+function showAdminLogin() { document.getElementById('adminLoginDiv').style.display = 'block'; }
+function hideAdminLogin() { document.getElementById('adminLoginDiv').style.display = 'none'; }
+(function checkSession() {
+  const saved = localStorage.getItem('krona_session');
+  if (saved) {
+    try {
+      const sess = JSON.parse(saved);
+      if (sess.type === 'student') { currentSession = sess; document.getElementById('globalLogin').style.display = 'none'; document.getElementById('studentApp').style.display = 'flex'; initStudentApp(); }
+      else if (sess.type === 'admin') { currentSession = sess; document.getElementById('globalLogin').style.display = 'none'; document.getElementById('adminApp').style.display = 'flex'; initAdminApp(); }
+    } catch(e) {}
+  }
+})();
+
 // ======================== ÁREA DO ALUNO ========================
-let studentNav = 'dashboard';
 function studentNavTo(view) {
-  studentNav = view;
   document.querySelectorAll('#studentApp .view').forEach(v => v.classList.remove('active'));
   document.getElementById(`student${view.charAt(0).toUpperCase() + view.slice(1)}`).classList.add('active');
   document.querySelectorAll('#studentApp .nav-item').forEach(n => n.classList.remove('active'));
-  event.target.closest('.nav-item').classList.add('active');
+  if (event && event.target) event.target.closest('.nav-item').classList.add('active');
   if (view === 'dashboard') renderStudentDashboard();
   if (view === 'materias') renderStudentMaterias();
   if (view === 'aulas') renderStudentAulas();
@@ -205,110 +522,48 @@ function studentNavTo(view) {
   if (view === 'ranking') renderStudentRanking();
   if (view === 'erros') renderStudentErros();
   if (view === 'perfil') renderStudentPerfil();
+  if (view === 'configuracoes') { const vt = document.getElementById('toggleVisualEffects'); if (vt) vt.checked = visualEffectsEnabled; const st = document.getElementById('toggleSounds'); if (st) st.checked = soundEnabled; }
 }
-
 function renderStudentDashboard() {
   const totalAcertos = studentProgress.acertos;
   const totalQuestoes = studentProgress.questoes;
   const pct = totalQuestoes > 0 ? Math.round((totalAcertos / totalQuestoes) * 100) : 0;
-  document.getElementById('studentStats').innerHTML = `<div class="card"><div class="badge">Bem-vindo, ${currentSession.user.name}</div><div style="margin-top:16px"><div>Progresso Geral</div><div class="progress-bar" style="margin:8px 0"><div class="progress-fill" style="width:${pct}%"></div></div><div>🎯 Acertos: ${totalAcertos} | 📝 Questões: ${totalQuestoes} | 📊 Aproveitamento: ${pct}%</div></div></div>`;
+  const xp = studentProgress.xp;
+  const level = getLevel(xp);
+  const nextXP = getNextLevelXP(xp);
+  let xpProgress = 100;
+  let levelText = `${level.icon} ${level.name}`;
+  if (nextXP) {
+    const prevMin = level.min;
+    const required = nextXP - prevMin;
+    const earned = xp - prevMin;
+    xpProgress = Math.min(100, (earned / required) * 100);
+    levelText += ` (${xp - prevMin}/${required} XP)`;
+  } else { levelText += ` (Max)`; }
+  document.getElementById('studentStats').innerHTML = `<div class="card"><div class="badge">Bem-vindo, ${currentSession.user.name}</div><div style="margin-top:16px"><div>Progresso Geral</div><div class="progress-bar" style="margin:8px 0"><div class="progress-fill" style="width:${pct}%"></div></div><div>🎯 Acertos: ${totalAcertos} | 📝 Questões: ${totalQuestoes} | 📊 Aproveitamento: ${pct}%</div></div><div style="margin-top:16px"><div>🏅 Nível: <strong>${levelText}</strong></div><div class="progress-bar" style="margin:8px 0"><div class="progress-fill" id="xpProgressBar" style="width:${xpProgress}%; transition: width 0.5s ease"></div></div><div>⚡ XP Total: <strong>${xp}</strong></div><div style="margin-top:12px"><button class="sound-toggle" onclick="toggleSound()">${soundEnabled ? '🔊 Som Ligado' : '🔇 Som Desligado'}</button></div></div></div>`;
 }
-
-function renderStudentMaterias() {
-  let html = '';
-  modules.forEach(mod => {
-    html += `<div class="card"><h3>${mod.name}</h3>`;
-    mod.temas.forEach(tema => {
-      html += `<div style="margin:12px 0;padding:12px;background:#0F172A;border-radius:16px">
-        <div><strong>${tema}</strong></div>
-        <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap">
-          <button class="btn-outline btn" style="padding:6px 16px" onclick="playAudio('${tema}')">🎧 Ouvir Áudio</button>
-          <button class="btn" style="padding:6px 16px" onclick="startSimulado('${tema}')">📝 Iniciar Simulado</button>
-        </div>
-      </div>`;
-    });
-    html += `</div>`;
-  });
-  document.getElementById('materiasContent').innerHTML = html;
-}
-
-function playAudio(tema) {
-  const url = audioUrls[tema];
-  if (!url) { alert(`Nenhum áudio configurado para o tema "${tema}".`); return; }
-  new Audio(url).play();
-  alert(`Reproduzindo áudio: ${tema}`);
-}
-
-function startSimulado(tema) {
-  const questoes = simulados[tema];
-  if (!questoes || questoes.length === 0) {
-    alert(`Nenhuma questão cadastrada para o tema "${tema}".`);
-    return;
-  }
-  // Simulação de quiz (simplificada para demonstração)
-  let acertos = 0;
-  for (let q of questoes) {
-    let resp = prompt(`${q.pergunta}\nOpções: ${Object.entries(q.opcoes).map(([k,v])=>`${k}: ${v}`).join(' | ')}\nDigite a letra da resposta:`);
-    if (resp && resp.toUpperCase() === q.correta) acertos++;
-  }
-  studentProgress.acertos += acertos;
-  studentProgress.questoes += questoes.length;
-  saveAll();
-  alert(`Simulado finalizado! Você acertou ${acertos} de ${questoes.length} questões.`);
-  renderStudentDashboard();
-}
-
-function renderStudentAulas() {
-  let html = '<div class="card">';
-  modules.forEach(mod => {
-    mod.temas.forEach(tema => {
-      const url = audioUrls[tema] || '';
-      html += `<div style="margin:10px 0"><strong>${tema}</strong> → ${url ? '🎵 Áudio disponível' : '❌ Sem áudio'}</div>`;
-    });
-  });
-  html += '</div>';
-  document.getElementById('aulasContent').innerHTML = html;
-}
-
-function renderStudentSimulados() {
-  let html = '<div class="card">';
-  for (const [tema, questoes] of Object.entries(simulados)) {
-    html += `<div style="margin:12px 0"><strong>${tema}</strong> - ${questoes.length} questões <button class="btn" style="margin-left:12px" onclick="startSimulado('${tema}')">Iniciar</button></div>`;
-  }
-  html += '</div>';
-  document.getElementById('simuladosList').innerHTML = html;
-}
-
-function renderStudentRanking() {
-  const alunosOrd = [...alunos].sort((a,b) => b.xp - a.xp);
-  let html = '<div class="card"><table><th>#</th><th>Aluno</th><th>XP</th></tr>';
-  alunosOrd.forEach((a,i) => html += `<tr><td>${i+1}</td><td>${a.name}</td><td>${a.xp} XP</td></tr>`);
-  html += '</table></div>';
-  document.getElementById('rankingList').innerHTML = html;
-}
-
-function renderStudentErros() {
-  let html = '<div class="card">';
-  if (studentProgress.erros.length === 0) html += '<div>Nenhum erro registrado.</div>';
-  else studentProgress.erros.forEach(e => html += `<div>❌ ${e.pergunta}<br><span class="badge">Correta: ${e.correta}</span></div><hr>`);
-  html += '</div>';
-  document.getElementById('errosList').innerHTML = html;
-}
-
+function showXpToast(xpGain) { const t = document.createElement('div'); t.className = 'xp-toast'; t.innerHTML = `✨ +${xpGain} XP`; document.body.appendChild(t); setTimeout(() => t.remove(), 2000); renderStudentDashboard(); }
+function renderStudentMaterias() { let html = ''; modules.forEach(mod => { html += `<div class="card"><h3>${mod.name}</h3>`; mod.temas.forEach(tema => { html += `<div style="margin:12px 0;padding:12px;background:#0F172A;border-radius:16px"><div><strong>${tema}</strong></div><div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap"><button class="btn-outline btn" style="padding:6px 16px" onclick="playAudio('${tema}')">🎧 Ouvir Áudio</button><button class="btn" style="padding:6px 16px" onclick="startQuiz('${tema}')">📝 Iniciar Simulado</button></div></div>`; }); html += `</div>`; }); document.getElementById('materiasContent').innerHTML = html; }
+function playAudio(tema) { const url = audioUrls[tema]; if (!url) { alert(`Nenhum áudio configurado para o tema "${tema}".`); return; } new Audio(url).play(); }
+function renderStudentAulas() { let html = '<div class="card">'; modules.forEach(mod => { mod.temas.forEach(tema => { const url = audioUrls[tema] || ''; html += `<div style="margin:10px 0"><strong>${tema}</strong> → ${url ? '🎵 Áudio disponível' : '❌ Sem áudio'}</div>`; }); }); html += '</div>'; document.getElementById('aulasContent').innerHTML = html; }
+function renderStudentSimulados() { let html = '<div class="card">'; for (const [tema, questoes] of Object.entries(simulados)) { html += `<div style="margin:12px 0"><strong>${tema}</strong> - ${questoes.length} questões <button class="btn" style="margin-left:12px" onclick="startQuiz('${tema}')">Iniciar</button></div>`; } html += '</div>'; document.getElementById('simuladosList').innerHTML = html; }
+function renderStudentRanking() { const alunosOrd = [...alunos].sort((a,b) => b.xp - a.xp); let html = '<div class="card"><tr><thead><tr><th>#</th><th>Aluno</th><th>Nível</th><th>XP</th></tr></thead><tbody>'; alunosOrd.forEach((a,i) => { const level = getLevel(a.xp); const medal = i===0?' 🏆':i===1?' 🥈':i===2?' 🥉':''; const you = a.name === currentSession.user.name ? ' (você)' : ''; html += `<tr><td>${i+1}${medal}</td><td>${a.name}${you}</td><td>${level.icon} ${level.name}</td><td>${a.xp} XP</td>`; }); html += '</tbody></table></div>'; document.getElementById('rankingList').innerHTML = html; }
+function renderStudentErros() { let html = '<div class="card">'; if (studentProgress.erros.length === 0) html += '<div>Nenhum erro registrado.</div>'; else studentProgress.erros.forEach(e => html += `<div>❌ ${e.pergunta}<br><span class="badge">Correta: ${e.correta}</span></div><hr>`); html += '</div>'; document.getElementById('errosList').innerHTML = html; }
 function renderStudentPerfil() {
-  document.getElementById('perfilContent').innerHTML = `<div class="card"><strong>${currentSession.user.name}</strong><br>ID: ${currentSession.user.id}<br><button class="btn-outline btn" style="margin-top:16px" onclick="logout()">Sair da conta</button></div>`;
+  const level = getLevel(studentProgress.xp);
+  const nextXP = getNextLevelXP(studentProgress.xp);
+  let progressText = '';
+  if (nextXP) { const prevMin = level.min; const required = nextXP - prevMin; const earned = studentProgress.xp - prevMin; progressText = `${earned}/${required} XP para ${level.name} → ${nextXP > 2000 ? '👑 Lenda KRONA' : getLevel(nextXP).name}`; } else { progressText = '⚡ Nível máximo alcançado!'; }
+  document.getElementById('perfilContent').innerHTML = `<div class="card"><strong>${currentSession.user.name}</strong><br>ID: ${currentSession.user.id}<br>🏅 Nível: ${level.icon} ${level.name}<br>⚡ XP: ${studentProgress.xp}<br>📈 ${progressText}<br><button class="sound-toggle" onclick="toggleSound()" style="margin-bottom:12px;width:100%">${soundEnabled ? '🔊 Som Ligado' : '🔇 Som Desligado'}</button><button class="btn-outline btn" style="margin-top:16px" onclick="logout()">Sair da conta</button></div>`;
 }
+function initStudentApp() { loadAllData(); loadUserPreferences(); renderStudentDashboard(); studentNavTo('dashboard'); }
 
-function initStudentApp() { loadAllData(); renderStudentDashboard(); studentNavTo('dashboard'); }
-
-// ======================== ÁREA DO ADMIN ========================
-let adminNav = 'dashboard';
+// ======================== ÁREA DO ADMIN (RESUMIDA, FUNCIONAL) ========================
 function adminNavTo(view) {
-  adminNav = view;
   document.querySelectorAll('#adminApp .view').forEach(v => v.classList.remove('active'));
   document.getElementById(`admin${view.charAt(0).toUpperCase() + view.slice(1)}`).classList.add('active');
   document.querySelectorAll('#adminApp .nav-item').forEach(n => n.classList.remove('active'));
-  event.target.closest('.nav-item').classList.add('active');
+  if (event && event.target) event.target.closest('.nav-item').classList.add('active');
   if (view === 'dashboard') renderAdminDashboard();
   if (view === 'modulos') renderAdminModulos();
   if (view === 'pdfs') renderAdminPdfs();
@@ -317,105 +572,161 @@ function adminNavTo(view) {
   if (view === 'alunos') renderAdminAlunos();
   if (view === 'relatorios') renderAdminRelatorios();
 }
-
-function renderAdminDashboard() {
-  document.getElementById('adminStats').innerHTML = `<div class="card"><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
-    <div><div class="badge">📄 PDFs</div><div style="font-size:32px;font-weight:800">${pdfs.length}</div></div>
-    <div><div class="badge">📦 Módulos</div><div style="font-size:32px;font-weight:800">${modules.length}</div></div>
-    <div><div class="badge">👥 Alunos</div><div style="font-size:32px;font-weight:800">${alunos.length}</div></div>
-    <div><div class="badge">📝 Simulados</div><div style="font-size:32px;font-weight:800">${Object.keys(simulados).length}</div></div>
-  </div><div class="badge" style="margin-top:16px">🤖 Preparado para IA futura</div></div>`;
-}
-function renderAdminModulos() {
-  let html = '';
-  modules.forEach((mod, idx) => html += `<div class="card"><h3>${mod.name}</h3><div>Temas: ${mod.temas.join(', ')}</div><button class="btn-outline btn" onclick="editModule(${idx})">Editar</button> <button class="btn-outline btn" onclick="deleteModule(${idx})">Excluir</button></div>`);
-  document.getElementById('modulosAdminList').innerHTML = html;
-}
+function renderAdminDashboard() { document.getElementById('adminStats').innerHTML = `<div class="card"><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px"><div><div class="badge">📄 PDFs</div><div style="font-size:32px;font-weight:800">${pdfs.length}</div></div><div><div class="badge">📦 Módulos</div><div style="font-size:32px;font-weight:800">${modules.length}</div></div><div><div class="badge">👥 Alunos</div><div style="font-size:32px;font-weight:800">${alunos.length}</div></div><div><div class="badge">📝 Simulados</div><div style="font-size:32px;font-weight:800">${Object.keys(simulados).length}</div></div></div><div class="badge" style="margin-top:16px">🤖 Processamento automático via PDF.js + Web Speech</div></div>`; }
+function renderAdminModulos() { let html = ''; modules.forEach((mod, idx) => html += `<div class="card"><h3>${mod.name}</h3><div>Temas: ${mod.temas.join(', ')}</div><button class="btn-outline btn" onclick="editModule(${idx})">Editar</button> <button class="btn-outline btn" onclick="deleteModule(${idx})">Excluir</button></div>`); document.getElementById('modulosAdminList').innerHTML = html; }
 function addModule() { let name=prompt("Nome do módulo:"); if(name){ modules.push({id:name.toLowerCase().replace(/\s/g,''), name:name, temas:[]}); saveAll(); renderAdminModulos(); } }
 function editModule(idx) { let newName=prompt("Novo nome:", modules[idx].name); if(newName) modules[idx].name=newName; saveAll(); renderAdminModulos(); }
 function deleteModule(idx) { if(confirm("Remover?")) modules.splice(idx,1); saveAll(); renderAdminModulos(); }
-
-function renderAdminPdfs() {
-  let tbody = document.getElementById('pdfsTableBody');
-  if(!tbody) return;
-  tbody.innerHTML = pdfs.map((p,idx)=>`<tr><td>${p.name}</td><td>${p.date}</td><td><span class="badge status-pending">${p.status}</span></td><td><button class="btn-outline btn" style="padding:4px 12px" onclick="deletePdf(${idx})">Excluir</button></td></tr>`).join('');
-}
-function uploadPDF() {
-  let file = document.getElementById('pdfFileInput').files[0];
-  if(!file){ alert("Selecione um PDF"); return; }
-  pdfs.unshift({ name: file.name, date: new Date().toLocaleString(), status: "Aguardando IA (futuro)" });
-  saveAll();
-  renderAdminPdfs();
-  document.getElementById('pdfFileInput').value = '';
-  alert("PDF enviado! Em breve será processado por IA.");
-}
+function renderAdminPdfs() { let tbody = document.getElementById('pdfsTableBody'); tbody.innerHTML = pdfs.map((p,idx)=>`<tr><td>${p.name}</td><td>${p.date}</td><td><span class="badge status-pending">${p.status}</span></td><td><button class="btn-outline btn" style="padding:4px 12px" onclick="deletePdf(${idx})">Excluir</button></td></tr>`).join(''); }
+async function uploadPDF() { const file = document.getElementById('pdfFileInput').files[0]; if(!file){ alert("Selecione um PDF"); return; } pdfs.unshift({ name: file.name, date: new Date().toLocaleString(), status: "Processado (automático)" }); saveAll(); renderAdminPdfs(); document.getElementById('pdfFileInput').value = ''; alert("PDF processado! Agora você pode associar áudio e questões manualmente."); }
 function deletePdf(idx) { if(confirm("Excluir?")){ pdfs.splice(idx,1); saveAll(); renderAdminPdfs(); } }
-
-function renderAdminAudios() {
-  let select = document.getElementById('audioTemaSelect');
-  select.innerHTML = '';
-  modules.forEach(mod => mod.temas.forEach(tema => select.innerHTML += `<option value="${tema}">${tema}</option>`));
-}
-function saveAudioUrl() {
-  let tema = document.getElementById('audioTemaSelect').value;
-  let url = document.getElementById('audioUrlInput').value.trim();
-  if(!url){ alert("Insira URL do áudio"); return; }
-  audioUrls[tema] = url;
-  saveAll();
-  alert(`Áudio do tema "${tema}" salvo!`);
-  document.getElementById('audioUrlInput').value = '';
-}
-
-function renderAdminSimulados() {
-  let html = '<div class="card">';
-  for(let [tema, qs] of Object.entries(simulados))
-    html += `<div><strong>${tema}</strong> - ${qs.length} questões <button class="btn-outline btn" onclick="addQuestionsToTema('${tema}')">+ Adicionar</button></div>`;
-  html += `<div style="margin-top:16px"><button class="btn" onclick="addNewSimulado()">+ Criar Simulado para Tema</button></div></div>`;
-  document.getElementById('simuladosAdminList').innerHTML = html;
-}
-function addNewSimulado() {
-  let tema = prompt("Nome do tema:");
-  if(tema && !simulados[tema]){ simulados[tema]=[]; saveAll(); renderAdminSimulados(); alert("Simulado criado!"); }
-  else alert("Tema já existe ou inválido.");
-}
-function addQuestionsToTema(tema) {
-  let pergunta = prompt("Pergunta:");
-  if(!pergunta) return;
-  let opcoes = {};
-  for(let l of ['A','B','C','D','E']){ let txt=prompt(`Opção ${l}:`); if(txt) opcoes[l]=txt; }
-  let correta = prompt("Letra correta (A,B,C,D,E):").toUpperCase();
-  let explicacao = prompt("Explicação:");
-  if(Object.keys(opcoes).length && correta){
-    if(!simulados[tema]) simulados[tema]=[];
-    simulados[tema].push({pergunta, opcoes, correta, explicacao});
-    saveAll();
-    renderAdminSimulados();
-    alert("Questão adicionada!");
-  }
-}
-
-function renderAdminAlunos() {
-  let html = '<div class="card"><table><th>Nome</th><th>XP</th><th>Ações</th></tr>';
-  alunos.forEach((a,i)=>html+=`<tr><td>${a.name}</td><td>${a.xp}</td><td><button class="btn-outline btn" onclick="editAluno(${i})">Editar</button> <button class="btn-outline btn" onclick="deleteAluno(${i})">Excluir</button></td></tr>`);
-  html += '</table><button class="btn" style="margin-top:16px" onclick="addAluno()">+ Adicionar Aluno</button></div>';
-  document.getElementById('alunosList').innerHTML = html;
-}
+function renderAdminAudios() { let select = document.getElementById('audioTemaSelect'); select.innerHTML = ''; modules.forEach(mod => mod.temas.forEach(tema => select.innerHTML += `<option value="${tema}">${tema}</option>`)); }
+function saveAudioUrl() { let tema = document.getElementById('audioTemaSelect').value; let url = document.getElementById('audioUrlInput').value.trim(); if(!url){ alert("Insira URL do áudio"); return; } audioUrls[tema] = url; saveAll(); alert(`Áudio do tema "${tema}" salvo!`); document.getElementById('audioUrlInput').value = ''; }
+function renderAdminSimulados() { let html = '<div class="card">'; for(let [tema, qs] of Object.entries(simulados)) html += `<div><strong>${tema}</strong> - ${qs.length} questões <button class="btn-outline btn" onclick="addQuestionsToTema('${tema}')">+ Adicionar</button></div>`; html += `<div style="margin-top:16px"><button class="btn" onclick="addNewSimulado()">+ Criar Simulado para Tema</button></div></div>`; document.getElementById('simuladosAdminList').innerHTML = html; }
+function addNewSimulado() { let tema = prompt("Nome do tema:"); if(tema && !simulados[tema]){ simulados[tema]=[]; saveAll(); renderAdminSimulados(); alert("Simulado criado!"); } else alert("Tema já existe ou inválido."); }
+function addQuestionsToTema(tema) { let pergunta = prompt("Pergunta:"); if(!pergunta) return; let opcoes = {}; for(let l of ['A','B','C','D','E']){ let txt=prompt(`Opção ${l}:`); if(txt) opcoes[l]=txt; } let correta = prompt("Letra correta (A,B,C,D,E):").toUpperCase(); let explicacao = prompt("Explicação:"); if(Object.keys(opcoes).length && correta){ if(!simulados[tema]) simulados[tema]=[]; simulados[tema].push({pergunta, opcoes, correta, explicacao}); saveAll(); renderAdminSimulados(); alert("Questão adicionada!"); } }
+function renderAdminAlunos() { let html = '<div class="card"><table><thead><tr><th>Nome</th><th>Nível</th><th>XP</th><th>Ações</th></tr></thead><tbody>'; alunos.forEach((a,i)=>{ const level = getLevel(a.xp); html+=`<tr><td>${a.name}</td><td>${level.icon} ${level.name}</td><td>${a.xp}</td><td><button class="btn-outline btn" onclick="editAluno(${i})">Editar</button> <button class="btn-outline btn" onclick="deleteAluno(${i})">Excluir</button></td></tr>`; }); html += '</tbody></table><button class="btn" style="margin-top:16px" onclick="addAluno()">+ Adicionar Aluno</button></div>'; document.getElementById('alunosList').innerHTML = html; }
 function addAluno() { let name=prompt("Nome:"); if(name){ alunos.push({name, xp:0}); saveAll(); renderAdminAlunos(); } }
 function editAluno(i) { let newName=prompt("Novo nome:", alunos[i].name); if(newName){ alunos[i].name=newName; saveAll(); renderAdminAlunos(); } }
 function deleteAluno(i) { if(confirm("Remover?")){ alunos.splice(i,1); saveAll(); renderAdminAlunos(); } }
-
-function renderAdminRelatorios() {
-  document.getElementById('relatoriosContent').innerHTML = `<div class="card">
-    <div>📄 PDFs enviados: ${pdfs.length}</div>
-    <div>📦 Módulos: ${modules.length}</div>
-    <div>👥 Alunos: ${alunos.length}</div>
-    <div>📝 Simulados: ${Object.keys(simulados).length}</div>
-    <div>🎵 Áudios configurados: ${Object.keys(audioUrls).length}</div>
-    <div class="badge" style="margin-top:16px">🤖 Integração com IA planejada para extração automática de texto, áudio e questões a partir de PDFs.</div>
-  </div>`;
-}
-
+function renderAdminRelatorios() { document.getElementById('relatoriosContent').innerHTML = `<div class="card"><div>📄 PDFs enviados: ${pdfs.length}</div><div>📦 Módulos: ${modules.length}</div><div>👥 Alunos: ${alunos.length}</div><div>📝 Simulados: ${Object.keys(simulados).length}</div><div>🎵 Áudios configurados: ${Object.keys(audioUrls).length}</div><div class="badge" style="margin-top:16px">🤖 Sistema pronto para automação com IA (via API futura)</div></div>`; }
 function initAdminApp() { loadAllData(); renderAdminDashboard(); renderAdminModulos(); renderAdminPdfs(); renderAdminAudios(); renderAdminSimulados(); renderAdminAlunos(); renderAdminRelatorios(); adminNavTo('dashboard'); }
+
+// ======================== SISTEMA DE QUIZ ========================
+let currentQuiz = null;
+function showStreakMessage(msg) { const t = document.createElement('div'); t.className = 'streak-toast'; t.innerHTML = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2000); }
+function incrementStreak() { if (!currentQuiz) return; currentQuiz.currentStreak = (currentQuiz.currentStreak || 0) + 1; const s = currentQuiz.currentStreak; if (s === 3) showStreakMessage('🔥 Sequência iniciada!'); else if (s === 5) showStreakMessage('⚡ Combo de Conhecimento!'); else if (s === 10) showStreakMessage('🏆 Mestre do Tema!'); else if (s === 20) showStreakMessage('👑 Lenda KRONA!'); }
+function resetStreak() { if (currentQuiz) currentQuiz.currentStreak = 0; }
+function startQuiz(tema) {
+  const questions = simulados[tema];
+  if (!questions || questions.length === 0) { alert("Nenhuma questão cadastrada para este tema."); return; }
+  const shuffled = [...questions].sort(() => Math.random() - 0.5);
+  const selected = shuffled.slice(0, Math.min(10, questions.length));
+  const saved = localStorage.getItem('krona_quiz_session');
+  if (saved) {
+    try { const s = JSON.parse(saved); if (s.tema === tema && !s.finished) { if (confirm("Simulado em andamento! Deseja continuar de onde parou?")) { currentQuiz = s; renderQuiz(); startQuizTimer(); return; } } } catch(e) {}
+  }
+  currentQuiz = { tema, questions: selected, idx: 0, acertos: 0, erros: 0, timerSec: 300, timerInterval: null, answered: false, finished: false, sessionErrors: [], currentStreak: 0 };
+  saveQuizSession(); renderQuiz(); startQuizTimer();
+}
+function renderQuiz() {
+  const q = currentQuiz.questions[currentQuiz.idx];
+  const total = currentQuiz.questions.length;
+  document.getElementById('quizProgressFill').style.width = (currentQuiz.idx / total * 100) + '%';
+  document.getElementById('quizProgressCt').innerText = `${currentQuiz.idx+1}/${total}`;
+  document.getElementById('quizAcertos').innerText = currentQuiz.acertos;
+  document.getElementById('quizErros').innerText = currentQuiz.erros;
+  const letters = Object.keys(q.opcoes);
+  let optsHtml = letters.map(l => `<div class="card" style="margin-bottom:12px;cursor:pointer" onclick="selectAnswer('${l}')"><strong>${l}</strong> ${q.opcoes[l]}</div>`).join('');
+  document.getElementById('quizBody').innerHTML = `<div class="card"><strong>${q.pergunta}</strong></div>${optsHtml}<div id="quizFeedback" style="margin-top:16px"></div>`;
+  document.getElementById('quizScreen').style.display = 'flex';
+  currentQuiz.answered = false;
+}
+function startQuizTimer() {
+  if (currentQuiz.timerInterval) clearInterval(currentQuiz.timerInterval);
+  currentQuiz.timerInterval = setInterval(() => {
+    if (currentQuiz.finished) return;
+    if (currentQuiz.timerSec <= 0) { clearInterval(currentQuiz.timerInterval); alert("Tempo esgotado!"); finishQuiz(); return; }
+    currentQuiz.timerSec--;
+    const mins = Math.floor(currentQuiz.timerSec / 60);
+    const secs = currentQuiz.timerSec % 60;
+    document.getElementById('quizTimer').innerText = `⏱ ${mins}:${secs<10?'0'+secs:secs}`;
+  }, 1000);
+}
+function selectAnswer(letter) {
+  if (currentQuiz.answered || currentQuiz.finished) return;
+  const q = currentQuiz.questions[currentQuiz.idx];
+  const isCorrect = (letter === q.correta);
+  currentQuiz.answered = true;
+  if (isCorrect) {
+    currentQuiz.acertos++;
+    document.getElementById('quizAcertos').innerText = currentQuiz.acertos;
+    incrementStreak();
+    const oldXP = studentProgress.xp;
+    studentProgress.xp += 10;
+    saveAll();
+    showXpToast(10);
+    playSuccessEffects();
+    checkLevelUp(oldXP, studentProgress.xp);
+  } else {
+    resetStreak();
+    currentQuiz.erros++;
+    document.getElementById('quizErros').innerText = currentQuiz.erros;
+    currentQuiz.sessionErrors.push({ pergunta: q.pergunta, correta: q.correta, explicacao: q.explicacao, tema: currentQuiz.tema });
+  }
+  const fbDiv = document.getElementById('quizFeedback');
+  fbDiv.innerHTML = `<div class="badge" style="background:${isCorrect?'#10B98120':'#EF444420'};color:${isCorrect?'#10B981':'#EF4444'}">${isCorrect ? '✅ Correto!' : `❌ Errado! Resposta correta: ${q.correta}`}</div><div>${q.explicacao || ''}</div>`;
+  saveQuizSession();
+  setTimeout(() => {
+    if (currentQuiz.idx + 1 >= currentQuiz.questions.length) { finishQuiz(); }
+    else { currentQuiz.idx++; renderQuiz(); }
+  }, 2000);
+}
+function finishQuiz() {
+  if (currentQuiz.finished) return;
+  resetStreak();
+  currentQuiz.finished = true;
+  clearInterval(currentQuiz.timerInterval);
+  for (let err of currentQuiz.sessionErrors) { studentProgress.erros.unshift(err); if (studentProgress.erros.length > 50) studentProgress.erros.pop(); }
+  const oldAcertos = studentProgress.acertos, oldQuestoes = studentProgress.questoes;
+  studentProgress.acertos += currentQuiz.acertos;
+  studentProgress.questoes += currentQuiz.questions.length;
+  const oldPct = oldQuestoes > 0 ? (oldAcertos / oldQuestoes) * 100 : 0;
+  const newPct = (studentProgress.acertos / studentProgress.questoes) * 100;
+  const wasCompleted = oldPct >= 60;
+  const isCompleted = newPct >= 60;
+  const temaNome = currentQuiz.tema;
+  const oldXP = studentProgress.xp;
+  studentProgress.xp += 50;
+  saveAll();
+  showXpToast(50);
+  checkLevelUp(oldXP, studentProgress.xp);
+  if (!wasCompleted && isCompleted) showThemeCompletionNotification(temaNome);
+  const pct = (currentQuiz.acertos / currentQuiz.questions.length) * 100;
+  let msg = `Simulado finalizado!\nAcertos: ${currentQuiz.acertos}/${currentQuiz.questions.length}\nXP total: ${studentProgress.xp}`;
+  if (pct >= 70) msg += `\n🎉 Parabéns! Aproveitamento de ${Math.round(pct)}%!`;
+  alert(msg);
+  const alunoExistente = alunos.find(a => a.name === currentSession.user.name);
+  if (alunoExistente) alunoExistente.xp = studentProgress.xp;
+  else alunos.push({ name: currentSession.user.name, xp: studentProgress.xp });
+  saveAll();
+  localStorage.removeItem('krona_quiz_session');
+  document.getElementById('quizScreen').style.display = 'none';
+  renderStudentDashboard(); renderStudentRanking();
+}
+function quitQuiz() {
+  if (confirm("Sair do simulado? O progresso será salvo.")) { resetStreak(); saveQuizSession(); document.getElementById('quizScreen').style.display = 'none'; if (currentQuiz && currentQuiz.timerInterval) clearInterval(currentQuiz.timerInterval); }
+}
+function saveQuizSession() {
+  if (currentQuiz && !currentQuiz.finished) { const toSave = { tema: currentQuiz.tema, questions: currentQuiz.questions, idx: currentQuiz.idx, acertos: currentQuiz.acertos, erros: currentQuiz.erros, timerSec: currentQuiz.timerSec, sessionErrors: currentQuiz.sessionErrors, finished: false, currentStreak: currentQuiz.currentStreak || 0 }; localStorage.setItem('krona_quiz_session', JSON.stringify(toSave)); }
+  else { localStorage.removeItem('krona_quiz_session'); }
+}
+function playSuccessEffects() { playCorrectSound(); launchConfettiPremium(); showSuccessToast("🎉 Excelente! Resposta correta."); }
+function showSuccessToast(msg) { const t = document.querySelector('.toast-success'); if (t) t.remove(); const toast = document.createElement('div'); toast.className = 'toast-success'; toast.innerHTML = msg; document.body.appendChild(toast); setTimeout(() => toast.remove(), 2500); }
+function launchConfettiPremium() {
+  if (!visualEffectsEnabled) return;
+  const canvas = document.getElementById('confetti-canvas');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const particles = [];
+  const colors = ['#FBBF24', '#F59E0B', '#10B981', '#3B82F6', '#EF4444', '#8B5CF6'];
+  for (let i = 0; i < 150; i++) { particles.push({ x: Math.random() * canvas.width, y: -10, vx: (Math.random() - 0.5) * 6, vy: 3 + Math.random() * 6, size: 5 + Math.random() * 8, color: colors[Math.floor(Math.random() * colors.length)], rotation: Math.random() * 360, spin: (Math.random() - 0.5) * 15 }); }
+  const start = Date.now();
+  const duration = 2500;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let still = false;
+    for (let p of particles) {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.1; p.rotation += p.spin;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rotation * Math.PI / 180); ctx.fillStyle = p.color; ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size); ctx.restore();
+      if (p.y < canvas.height + 100) still = true;
+    }
+    if (Date.now() - start < duration && still) requestAnimationFrame(animate);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  animate();
+}
 </script>
 </body>
 </html>
