@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="KRONA">
 <meta name="description" content="KRONA Analytics — Plataforma de estudos SENAR">
-<link rel="manifest" id="manifestLink">
+<link rel="manifest" href="./manifest.json">
 <title>KRONA Analytics — Aluno + Admin</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -357,69 +357,17 @@ input:checked + .slider:before{transform:translateX(24px)}
 </div>
 
 <script>
-// ======================== PWA MANIFEST INLINE ATUALIZADO ========================
-(function() {
-  const manifest = {
-    id: "krona_analytics_pwa",
-    name: "KRONA Analytics",
-    short_name: "KRONA",
-    description: "Plataforma avançada de monitoramento e estudos SENAR",
-    start_url: "./",
-    scope: "./",
-    display: "standalone",
-    display_override: ["window-controls-overlay", "standalone", "minimal-ui"],
-    background_color: "#0B1120",
-    theme_color: "#0B1120",
-    orientation: "portrait-primary",
-    icons: [
-      { src: "data:image/svg+xml;base64," + btoa(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect width='96' height='96' rx='24' fill='%230F172A'/><path d='M22 18 L22 78 L34 78 L34 56 L55 78 L70 78 L44 50 L68 18 L53 18 L34 43 L34 18 Z' fill='%23FBBF24'/><circle cx='72' cy='26' r='6' fill='%23FBBF24' opacity='.7'/></svg>`), sizes: "96x96", type: "image/svg+xml", purpose: "any maskable" },
-      { src: "data:image/svg+xml;base64," + btoa(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='48' fill='%230F172A'/><path d='M44 36 L44 156 L68 156 L68 112 L110 156 L140 156 L88 100 L136 36 L106 36 L68 86 L68 36 Z' fill='%23FBBF24'/><circle cx='144' cy='52' r='12' fill='%23FBBF24' opacity='.7'/></svg>`), sizes: "192x192", type: "image/svg+xml", purpose: "any maskable" },
-      { src: "data:image/svg+xml;base64," + btoa(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%230F172A'/><path d='M117 96 L117 416 L181 416 L181 299 L293 416 L373 416 L235 267 L363 96 L283 96 L181 229 L181 96 Z' fill='%23FBBF24'/><circle cx='385' cy='139' r='32' fill='%23FBBF24' opacity='.7'/></svg>`), sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
-    ],
-    shortcuts: [
-      {
-        name: "Ver Dashboard",
-        short_name: "Painel",
-        description: "Acessar o painel de desempenho e score KRONA",
-        url: "./#dashboard",
-        icons: [{ src: "data:image/svg+xml;base64," + btoa(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FBBF24'><path d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z'/></svg>`), sizes: "192x192", type: "image/svg+xml" }]
-      },
-      {
-        name: "Abrir Simulados",
-        short_name: "Simulados",
-        description: "Ir diretamente para a seção de testes",
-        url: "./#simulados",
-        icons: [{ src: "data:image/svg+xml;base64," + btoa(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FBBF24'><path d='M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h10v2zm0-4H8v-2h10v2zm-3-5V3.5L18.5 9H15z'/></svg>`), sizes: "192x192", type: "image/svg+xml" }]
-      }
-    ],
-    categories: ["education", "productivity"],
-    lang: "pt-BR"
-  };
-  const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
-  const url = URL.createObjectURL(blob);
-  document.getElementById('manifestLink').href = url;
-})();
-
-// ======================== SERVICE WORKER ========================
+// ======================== REGISTRO DE SERVICE WORKER FÍSICO ========================
 if ('serviceWorker' in navigator) {
-  const swCode = `
-    const CACHE_NAME = 'krona-v3';
-    const urlsToCache = ['/'];
-    self.addEventListener('install', e => {
-      self.skipWaiting();
-      e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll([])));
-    });
-    self.addEventListener('activate', e => {
-      e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))));
-      self.clients.claim();
-    });
-    self.addEventListener('fetch', e => {
-      e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
-    });
-  `;
-  const swBlob = new Blob([swCode], {type: 'application/javascript'});
-  const swUrl = URL.createObjectURL(swBlob);
-  navigator.serviceWorker.register(swUrl).catch(()=>{});
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => {
+        console.log('Service Worker registrado com escopo:', reg.scope);
+      })
+      .catch(err => {
+        console.warn('Falha ao registrar o Service Worker:', err);
+      });
+  });
 }
 
 // ======================== PWA INSTALL ========================
@@ -463,7 +411,7 @@ function saveSoundSetting() { localStorage.setItem('krona_sound_enabled', soundE
 function toggleSound() { soundEnabled = !soundEnabled; saveSoundSetting(); renderStudentDashboard(); renderStudentPerfil(); showToast(soundEnabled ? "🔊 Sons ativados" : "🔇 Sons desativados"); }
 function toggleVisualEffects(v) { visualEffectsEnabled = v; localStorage.setItem('krona_visual_effects', v); showToast(v ? "✨ Efeitos visuais ativados" : "✨ Efeitos visuais desativados"); renderStudentDashboard(); }
 
-// toggleSoundFromSettings estendida do rbson para atualizar elementos flutuantes .sound-toggle
+// toggleSoundFromSettings para atualizar elementos flutuantes .sound-toggle
 function toggleSoundFromSettings(v) { 
   soundEnabled = v; 
   saveSoundSetting(); 
@@ -476,7 +424,7 @@ function toggleSoundFromSettings(v) {
 
 function showToast(msg) { const t = document.createElement('div'); t.className = 'toast-success'; t.innerHTML = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2500); }
 
-// showSuccessToast adicionada do rbson para evitar sobreposições de avisos de acerto
+// showSuccessToast para evitar sobreposições de avisos de acerto
 function showSuccessToast(msg) { 
   const t = document.querySelector('.toast-success'); 
   if (t) t.remove(); 
@@ -605,7 +553,7 @@ const bancoQuestoes = {
     { p:"Qual macronutriente é fundamental para a síntese de proteínas nas plantas?", ops:{A:"Potássio (K)",B:"Cálcio (Ca)",C:"Nitrogênio (N)",D:"Enxofre (S)",E:"Magnésio (Mg)"}, c:"C", exp:"O Nitrogênio é componente essencial dos aminoácidos e proteínas, sendo o macronutriente mais demandado pelas plantas." },
     { p:"A deficiência de ferro nas plantas causa:", ops:{A:"Manchas necróticas nas folhas velhas",B:"Clorose internerval nas folhas jovens",C:"Murcha generalizada",D:"Queima das bordas das folhas",E:"Encurvamento das folhas"}, c:"B", exp:"O ferro é imóvel na planta; sua deficiência se manifesta primeiro nas folhas jovens como clorose internerval (nervuras verdes, entre nervuras amarelas)." },
     { p:"O pH ideal do solo para máxima disponibilidade de nutrientes é aproximadamente:", ops:{A:"4.0 – 4.5",B:"5.0 – 5.5",C:"6.0 – 6.5",D:"7.5 – 8.0",E:"8.5 – 9.0"}, c:"C", exp:"Na faixa de pH 6,0 a 6,5 ocorre a maior disponibilidade simultânea da maioria dos nutrientes essenciais." },
-    { p:"Qual é o papel do Potássio na planta?", ops:{A:"Componente da clorofila",B:"Síntese de DNA",C:"Regulação osmótica e abertura de estômatos",D:"Formação de raízes",E:"Síntese de vitaminas"}, c:"C", exp:"O Potássio regula o turgor celular, a abertura dos estômatos e diversas enzimas, sendo essencial para eficiência hídrica." },
+    { p:"Qual é o papel do Potássio na planta?", ops:{A:"Componente da clorofila",B:"Síntese de DNA",C:"Regulação osmótica e abertura de estômatos",D:"Formação de raízes",E:"Síntese de vitaminas"}, c:"C", exp:"O Potássio regula o turgor celular, a abertura dos estômatos e diversas enzymes, sendo essencial para eficiência hídrica." },
     { p:"A calagem tem como principal objetivo:", ops:{A:"Adicionar fósforo ao solo",B:"Aumentar a acidez",C:"Corrigir a acidez e fornecer Ca e Mg",D:"Controlar pragas do solo",E:"Melhorar a textura argilosa"}, c:"C", exp:"A calagem eleva o pH, neutraliza alumínio tóxico e fornece cálcio e magnésio, melhorando o ambiente radicular." }
   ],
   "Produção Animal": [
