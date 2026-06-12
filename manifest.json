@@ -1,116 +1,48 @@
 {
+  "id": "krona_analytics_pwa",
   "name": "KRONA Analytics",
   "short_name": "KRONA",
-  "description": "Plataforma de estudos para o Agronegócio — Simulados, áudios, ranking e muito mais. Prepare-se para o SENAR com conteúdo completo e interativo.",
+  "description": "Plataforma avançada de monitoramento e estudos SENAR",
+  "lang": "pt-BR",
+  "categories": ["education", "productivity"],
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#0B1120",
-  "theme_color": "#FBBF24",
-  "lang": "pt-BR",
-  "categories": ["education", "productivity", "reference"],
+  "theme_color": "#0B1120",
+  "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "./icons/icon-72.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icons/icon-96.png",
+      "src": "icons/icon-96x96.png",
       "sizes": "96x96",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icons/icon-128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icons/icon-144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icons/icon-152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icons/icon-192.png",
+      "src": "icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "./icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "./icons/icon-384.png",
-      "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icons/icon-512.png",
+      "src": "icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "./screenshots/screen1.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Dashboard do aluno com progresso e ranking"
-    },
-    {
-      "src": "./screenshots/screen2.png",
-      "sizes": "1280x800",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Painel administrativo com gestão de PDFs e automação"
+      "purpose": "any maskable"
     }
   ],
   "shortcuts": [
     {
-      "name": "Dashboard",
-      "short_name": "Início",
-      "description": "Acesse seu dashboard de estudos",
-      "url": "./?view=home",
-      "icons": [{ "src": "./icons/icon-96.png", "sizes": "96x96" }]
+      "name": "Ver Dashboard",
+      "short_name": "Painel",
+      "description": "Acessar o painel de desempenho e score KRONA",
+      "url": "./#dashboard"
     },
     {
-      "name": "Simulados",
+      "name": "Abrir Simulados",
       "short_name": "Simulados",
-      "description": "Inicie um simulado rapidamente",
-      "url": "./?view=simulados",
-      "icons": [{ "src": "./icons/icon-96.png", "sizes": "96x96" }]
-    },
-    {
-      "name": "Ranking",
-      "short_name": "Ranking",
-      "description": "Veja os líderes da plataforma",
-      "url": "./?view=ranking",
-      "icons": [{ "src": "./icons/icon-96.png", "sizes": "96x96" }]
+      "description": "Ir diretamente para a seção de testes",
+      "url": "./#simulados"
     }
-  ],
-  "prefer_related_applications": false,
-  "display_override": ["window-controls-overlay", "standalone"]
+  ]
 }
