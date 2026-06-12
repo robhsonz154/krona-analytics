@@ -357,14 +357,17 @@ input:checked + .slider:before{transform:translateX(24px)}
 </div>
 
 <script>
-// ======================== PWA MANIFEST INLINE ========================
+// ======================== PWA MANIFEST INLINE ATUALIZADO ========================
 (function() {
   const manifest = {
+    id: "krona_analytics_pwa",
     name: "KRONA Analytics",
     short_name: "KRONA",
-    description: "Plataforma de estudos SENAR",
+    description: "Plataforma avançada de monitoramento e estudos SENAR",
     start_url: "./",
+    scope: "./",
     display: "standalone",
+    display_override: ["window-controls-overlay", "standalone", "minimal-ui"],
     background_color: "#0B1120",
     theme_color: "#0B1120",
     orientation: "portrait-primary",
@@ -373,7 +376,23 @@ input:checked + .slider:before{transform:translateX(24px)}
       { src: "data:image/svg+xml;base64," + btoa(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='48' fill='%230F172A'/><path d='M44 36 L44 156 L68 156 L68 112 L110 156 L140 156 L88 100 L136 36 L106 36 L68 86 L68 36 Z' fill='%23FBBF24'/><circle cx='144' cy='52' r='12' fill='%23FBBF24' opacity='.7'/></svg>`), sizes: "192x192", type: "image/svg+xml", purpose: "any maskable" },
       { src: "data:image/svg+xml;base64," + btoa(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%230F172A'/><path d='M117 96 L117 416 L181 416 L181 299 L293 416 L373 416 L235 267 L363 96 L283 96 L181 229 L181 96 Z' fill='%23FBBF24'/><circle cx='385' cy='139' r='32' fill='%23FBBF24' opacity='.7'/></svg>`), sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
     ],
-    categories: ["education"],
+    shortcuts: [
+      {
+        name: "Ver Dashboard",
+        short_name: "Painel",
+        description: "Acessar o painel de desempenho e score KRONA",
+        url: "./#dashboard",
+        icons: [{ src: "data:image/svg+xml;base64," + btoa(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FBBF24'><path d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z'/></svg>`), sizes: "192x192", type: "image/svg+xml" }]
+      },
+      {
+        name: "Abrir Simulados",
+        short_name: "Simulados",
+        description: "Ir diretamente para a seção de testes",
+        url: "./#simulados",
+        icons: [{ src: "data:image/svg+xml;base64," + btoa(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FBBF24'><path d='M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h10v2zm0-4H8v-2h10v2zm-3-5V3.5L18.5 9H15z'/></svg>`), sizes: "192x192", type: "image/svg+xml" }]
+      }
+    ],
+    categories: ["education", "productivity"],
     lang: "pt-BR"
   };
   const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
