@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Simulador SENAR | Assessoria e Consultoria no Agronegócio</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2e7d32">
+    <meta name="description" content="Simulador de provas para o Curso Técnico em Agronegócio - SENAR">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f5f5f0;
+            color: #1e2a1f;
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        header {
+            background: linear-gradient(135deg, #1b5e20, #2e7d32);
+            color: white;
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            font-size: 1.6rem;
+            margin-bottom: 6px;
+        }
+        header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.1s ease;
+        }
+        .tema-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .tema-btn {
+            background: #e8f5e9;
+            border: none;
+            padding: 14px 8px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1b5e20;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .tema-btn.active {
+            background: #2e7d32;
+            color: white;
+            box-shadow: 0 2px 8px rgba(46,125,50,0.3);
+        }
+        .tema-btn.completed {
+            background: #c8e6c9;
+            border-left: 4px solid #2e7d32;
+        }
+        .question-area {
+            background: #fef9e6;
+            border-left: 5px solid #ffb300;
+        }
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .option {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 40px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .option.selected {
+            background: #e3f2fd;
+            border-color: #2e7d32;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .option-letter {
+            font-weight: bold;
+            background: #e0e0e0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 40px;
+        }
+        .option.selected .option-letter {
+            background: #2e7d32;
+            color: white;
+        }
+        .option-text {
+            flex: 1;
+        }
+        button {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+        }
+        button:active {
+            transform: scale(0.97);
+        }
+        button.secondary {
+            background: #6c757d;
+        }
+        .feedback {
+            background: #e9ecef;
+            padding: 16px;
+            border-radius: 20px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        .feedback.correct {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+        }
+        .feedback.wrong {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+        }
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            color: #5a5a5a;
+        }
+        .result-stats {
+            text-align: center;
+            padding: 20px;
+        }
+        .score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+        footer {
+            text-align: center;
+            margin-top: 32px;
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+        @media (max-width: 500px) {
+            body { padding: 12px; }
+            .question-text { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>🌾 Simulador SENAR</h1>
+        <p>Curso Técnico em Agronegócio<br>Assessoria, Consultoria e Inovação</p>
+    </header>
+
+    <div class="card">
+        <div style="margin-bottom: 12px; font-weight: 600;">📘 Escolha o Tema</div>
+        <div class="tema-grid" id="temaButtons"></div>
+    </div>
+
+    <div class="card" id="quizPanel" style="display: none;">
+        <div class="progress-info">
+            <span id="temaTitle">Tema 1</span>
+            <span>Questão <span id="qCurrent">0</span> de <span id="qTotal">0</span></span>
+        </div>
+        <div id="questionContainer"></div>
+        <div id="nextButtonContainer"></div>
+    </div>
+
+    <footer>
+        📖 Baseado no material SENAR | Simulador offline PWA
+    </footer>
+</div>
+
+<script src="data.js"></script>
+<script>
+    // Variáveis globais
+    let questoes = [];     // será populado pelo data.js
+    let temaAtual = 1;
+    let questoesTema = [];
+    let indiceAtual = 0;
+    let respostasUsuario = []; // armazena { questao, resposta, correta, pag, explicacao }
+    let quizAtivo = false;
+
+    // Elementos DOM
+    const temaButtonsDiv = document.getElementById('temaButtons');
+    const quizPanel = document.getElementById('quizPanel');
+    const temaTitleSpan = document.getElementById('temaTitle');
+    const qCurrentSpan = document.getElementById('qCurrent');
+    const qTotalSpan = document.getElementById('qTotal');
+    const questionContainer = document.getElementById('questionContainer');
+    const nextButtonContainer = document.getElementById('nextButtonContainer');
+
+    // Carregar questões do data.js (global window.questoesData)
+    function carregarQuestoes() {
+        if (typeof window.questoesData !== 'undefined') {
+            questoes = window.questoesData;
+        } else {
+            console.error("data.js não carregado");
+            questionContainer.innerHTML = '<div class="feedback">Erro: base de questões não encontrada.</div>';
+        }
+    }
+
+    // Renderizar botões dos temas (1 a 6)
+    function renderizarBotoesTema() {
+        temaButtonsDiv.innerHTML = '';
+        for (let t = 1; t <= 6; t++) {
+            const btn = document.createElement('button');
+            btn.className = 'tema-btn';
+            btn.textContent = `Tema ${t}`;
+            btn.onclick = () => iniciarTema(t);
+            temaButtonsDiv.appendChild(btn);
+        }
+    }
+
+    // Iniciar o quiz para um tema
+    function iniciarTema(tema) {
+        temaAtual = tema;
+        // Filtrar questões do tema
+        questoesTema = questoes.filter(q => q.tema === tema);
+        if (questoesTema.length === 0) {
+            alert(`Nenhuma questão encontrada para o Tema ${tema}`);
+            return;
+        }
+        // Embaralhar as questões
+        questoesTema = shuffleArray(questoesTema);
+        indiceAtual = 0;
+        respostasUsuario = [];
+        quizAtivo = true;
+        quizPanel.style.display = 'block';
+        temaTitleSpan.textContent = `Tema ${tema} - Simulador`;
+        qTotalSpan.textContent = questoesTema.length;
+        carregarQuestaoAtual();
+        // scroll suave
+        quizPanel.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function carregarQuestaoAtual() {
+        if (!quizAtivo || indiceAtual >= questoesTema.length) {
+            finalizarTema();
+            return;
+        }
+        const q = questoesTema[indiceAtual];
+        qCurrentSpan.textContent = indiceAtual + 1;
+
+        let html = `<div class="question-text">${q.pergunta}</div>`;
+        if (q.tipo === 'mc') {
+            html += `<div class="options" id="optionsContainer">`;
+            const letras = ['a', 'b', 'c', 'd', 'e'];
+            for (let letra of letras) {
+                if (q.opcoes[letra]) {
+                    html += `
+                        <div class="option" data-letra="${letra}">
+                            <div class="option-letter">${letra.toUpperCase()}</div>
+                            <div class="option-text">${q.opcoes[letra]}</div>
+                        </div>
+                    `;
+                }
+            }
+            html += `</div>`;
+        } else if (q.tipo === 'vf') {
+            html += `<div class="options" id="optionsContainer">
+                        <div class="option" data-letra="v">
+                            <div class="option-letter">V</div>
+                            <div class="option-text">Verdadeiro</div>
+                        </div>
+                        <div class="option" data-letra="f">
+                            <div class="option-letter">F</div>
+                            <div class="option-text">Falso</div>
+                        </div>
+                    </div>`;
+        }
+        html += `<div id="feedbackArea"></div>`;
+        questionContainer.innerHTML = html;
+
+        // Adicionar eventos de clique nas opções
+        document.querySelectorAll('.option').forEach(opt => {
+            opt.addEventListener('click', () => selecionarOpcao(opt.dataset.letra));
+        });
+
+        // Botão "Próxima" (inicialmente desabilitado até resposta)
+        nextButtonContainer.innerHTML = `<button id="nextBtn" disabled>Responder e avançar</button>`;
+        const nextBtn = document.getElementById('nextBtn');
+        nextBtn.disabled = true;
+        window.respostaSelecionada = null;
+    }
+
+    function selecionarOpcao(letra) {
+        if (window.respostaSelecionada) return; // já respondeu
+        window.respostaSelecionada = letra;
+        // destacar a opção escolhida
+        document.querySelectorAll('.option').forEach(opt => {
+            opt.classList.remove('selected');
+            if (opt.dataset.letra === letra) opt.classList.add('selected');
+        });
+        // habilitar botão próxima
+        const nextBtn = document.getElementById('nextBtn');
+        if (nextBtn) nextBtn.disabled = false;
+        nextBtn.onclick = () => enviarResposta(letra);
+    }
+
+    function enviarResposta(letra) {
+        const q = questoesTema[indiceAtual];
+        let correta = false;
+        let respostaCorretaLetra = q.correta;
+        if (q.tipo === 'mc') {
+            correta = (letra === q.correta);
+        } else if (q.tipo === 'vf') {
+            correta = (letra.toUpperCase() === q.correta);
+        }
+        // Armazenar resposta
+        respostasUsuario.push({
+            questao: q.pergunta,
+            resposta: letra,
+            correta: correta,
+            pagina: q.pagina,
+            explicacao: q.explicacao,
+            correta_letra: respostaCorretaLetra
+        });
+        // Exibir feedback
+        const feedbackDiv = document.getElementById('feedbackArea');
+        let feedbackHtml = `<div class="feedback ${correta ? 'correct' : 'wrong'}">
+                            ${correta ? '✅ CORRETO!' : '❌ ERRADO!'}<br>
+                            <strong>📖 Página ${q.pagina}</strong><br>
+                            ${q.explicacao}
+                           </div>`;
+        feedbackDiv.innerHTML = feedbackHtml;
+        // Desabilitar todas as opções e mudar o botão para "Próxima questão"
+        document.querySelectorAll('.option').forEach(opt => {
+            opt.style.pointerEvents = 'none';
+        });
+        const nextBtn = document.getElementById('nextBtn');
+        nextBtn.disabled = false;
+        nextBtn.textContent = '➡️ Próxima questão';
+        nextBtn.onclick = () => {
+            indiceAtual++;
+            carregarQuestaoAtual();
+        };
+    }
+
+    function finalizarTema() {
+        // Calcular acertos
+        const acertos = respostasUsuario.filter(r => r.correta).length;
+        const total = respostasUsuario.length;
+        const percentual = (acertos/total)*100;
+        let mensagem = '';
+        if (percentual >= 70) mensagem = '🎉 Parabéns! Você está preparado para a prova.';
+        else if (percentual >= 50) mensagem = '📚 Bom desempenho! Revise os tópicos com erros.';
+        else mensagem = '⚠️ Sugerimos revisar o material didático antes da prova.';
+
+        let html = `<div class="result-stats">
+                        <div class="score">${acertos}/${total}</div>
+                        <div>Percentual: ${percentual.toFixed(1)}%</div>
+                        <p>${mensagem}</p>
+                        <button id="resetQuizBtn">🔁 Voltar aos temas</button>
+                    </div>
+                    <div style="margin-top: 20px; max-height: 300px; overflow-y: auto;">
+                        <h4>📝 Revisão das respostas</h4>`;
+        respostasUsuario.forEach((r, idx) => {
+            html += `<div style="border-top:1px solid #ddd; padding: 12px 0;">
+                        <strong>${idx+1}. ${r.questao.substring(0,100)}</strong><br>
+                        Sua resposta: ${r.resposta.toUpperCase()} | Correta: ${r.correta_letra.toUpperCase()}<br>
+                        <span style="color:${r.correta ? 'green' : 'red'}">${r.correta ? '✓' : '✗'}</span> 
+                        Pág. ${r.pagina}<br>
+                        <small>${r.explicacao.substring(0,150)}...</small>
+                     </div>`;
+        });
+        html += `</div>`;
+        questionContainer.innerHTML = html;
+        nextButtonContainer.innerHTML = '';
+        document.getElementById('resetQuizBtn').onclick = () => {
+            quizPanel.style.display = 'none';
+            quizAtivo = false;
+        };
+    }
+
+    // Inicialização
+    function init() {
+        carregarQuestoes();
+        renderizarBotoesTema();
+        // Registra service worker se disponível
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(reg => {
+                console.log('Service Worker registrado', reg);
+            }).catch(err => console.log('SW falhou', err));
+        }
+    }
+    init();
+</script>
+</body>
+</html>
